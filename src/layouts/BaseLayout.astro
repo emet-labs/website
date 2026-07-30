@@ -1,0 +1,39 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Emet Labs.',
+	description = 'Runtime Verification for Graph-based Agentic Execution.',
+} = Astro.props;
+
+const pageTitle = title === 'Emet Labs.' ? title : `${title} — Emet Labs.`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{pageTitle}</title>
+	</head>
+	<body class="min-h-svh bg-white text-black antialiased">
+		<div class="flex min-h-svh flex-col">
+			<Header />
+			<main class="flex flex-1 flex-col">
+				<slot />
+			</main>
+			<Footer />
+		</div>
+	</body>
+</html>

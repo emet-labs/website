@@ -1,0 +1,36 @@
+---
+const year = new Date().getFullYear();
+
+const placeholderLinks = ['Careers', 'Legal', 'Privacy', 'LinkedIn'];
+---
+
+<footer id="footer" class="border-t border-black/10">
+	<div
+		class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-8 text-sm sm:flex-row sm:items-end sm:justify-between lg:px-10"
+	>
+		<div>
+			<a href="/" class="font-medium tracking-[-0.02em]">Emet Labs.</a>
+			<p class="mt-2 text-black/50">© {year} Emet Labs. All rights reserved.</p>
+		</div>
+
+		<nav class="flex flex-wrap gap-x-6 gap-y-3 text-black/60" aria-label="Footer navigation">
+			<a class="transition-colors hover:text-black" href="/about">About</a>
+			<a class="transition-colors hover:text-black" href="/blog">Blog</a>
+			{
+				placeholderLinks.map((label) => (
+					<a
+						href="#"
+						aria-disabled="true"
+						class="cursor-default transition-colors hover:text-black"
+						onclick="return false;"
+					>
+						{label}
+					</a>
+				))
+			}
+			<a class="transition-colors hover:text-black" href="mailto:contact@emetlabs.com">
+				Contact
+			</a>
+		</nav>
+	</div>
+</footer>
