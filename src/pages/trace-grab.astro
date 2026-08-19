@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const githubUrl = 'https://github.com/emet-labs/trace-grab';
+const npmUrl = 'https://www.npmjs.com/package/@emetlabs/trace-grab';
+
+const jsonBefore = `{
+  "name": "modify_account",
+  "inputs": {
+    "account": "acct_1208",
+    "actor": "alice@corp.com"
+  }
+}`;
+
+const jsonAfter = `{
+  "name": "modify_account",
+  "inputs": {
+    "account": "TOK_4f1ab9c072",
+    "actor": "TOK_88b0e13a5d"
+  }
+}`;
+---
+
+<BaseLayout
+	title="trace-grab"
+	description="Contribute sanitized trace exports to Emet Labs' research on agentic AI system behavior."
+>
+	<section class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+		<div class="grid gap-12 lg:grid-cols-12">
+			<p class="text-xs font-medium uppercase tracking-[0.16em] text-black/50 lg:col-span-3">
+				trace-grab
+			</p>
+			<div class="max-w-3xl lg:col-span-8">
+				<h1 class="font-serif text-4xl font-light tracking-[-0.045em] sm:text-5xl">
+					trace-grab
+				</h1>
+
+				<p class="mt-8 text-lg leading-snug text-black/70">
+					We're studying how agentic AI systems behave in production. If you run agents
+					with tracing enabled, you can contribute.
+				</p>
+
+				<p class="mt-6 text-lg leading-snug text-black/70">
+					Run trace-grab on your machine to sanitize a trace export. It tokenizes every
+					string value so no sensitive data leaves your environment. Share the corpus
+					with us, and it feeds Sentinel, our runtime verification engine.
+				</p>
+
+				<div class="mt-10 max-w-2xl">
+					<pre class="overflow-x-auto rounded-lg border border-black/10 bg-black px-5 py-4 text-sm leading-relaxed text-white"><code><span class="text-white/40">$</span> npx @emetlabs/trace-grab grab ./your-export --out ./corpus
+<span class="text-green-400">✓</span> Wrote 100 record(s) to ./corpus</code></pre>
+				</div>
+
+				<div class="mt-10 grid gap-4 sm:grid-cols-2">
+					<div>
+						<p class="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-black/40">Before</p>
+						<pre class="overflow-x-auto rounded-lg border border-black/10 bg-black/[0.03] px-5 py-4 text-sm leading-relaxed"><code>{jsonBefore}</code></pre>
+					</div>
+					<div>
+						<p class="mb-3 text-xs font-medium uppercase tracking-[0.16em] text-black/40">After</p>
+						<pre class="overflow-x-auto rounded-lg border border-black/10 bg-black/[0.03] px-5 py-4 text-sm leading-relaxed"><code>{jsonAfter}</code></pre>
+					</div>
+				</div>
+
+				<p class="mt-8 text-lg leading-snug text-black/70">
+					The same value always produces the same token. Equality is preserved;
+					identity is not.
+				</p>
+
+				<div class="mt-10 flex flex-wrap gap-4 text-sm font-medium">
+					<a href={githubUrl} target="_blank" rel="noopener noreferrer" class="underline hover:no-underline">GitHub ↗</a>
+					<span class="text-black/20">·</span>
+					<a href={npmUrl} target="_blank" rel="noopener noreferrer" class="underline hover:no-underline">npm ↗</a>
+					<span class="text-black/20">·</span>
+					<a href={githubUrl + '/blob/main/README.md'} target="_blank" rel="noopener noreferrer" class="underline hover:no-underline">README ↗</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

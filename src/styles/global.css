@@ -35,9 +35,10 @@
 		border-color: currentColor;
 	}
 
-	html {
-		scroll-behavior: smooth;
-	}
+html {
+	scroll-behavior: smooth;
+	scrollbar-gutter: stable;
+}
 
 	body {
 		margin: 0;

@@ -4,8 +4,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Legal" description="Legal information for Emet Labs.">
 	<section class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-		<h1 class="font-serif text-5xl font-light tracking-[-0.045em] sm:text-7xl">
-			Legal
-		</h1>
+		<div class="grid gap-12 lg:grid-cols-12">
+			<p class="text-xs font-medium uppercase tracking-[0.16em] text-black/50 lg:col-span-3">
+				Legal
+			</p>
+			<div class="max-w-3xl lg:col-span-8">
+				<h1 class="font-serif text-4xl font-light tracking-[-0.045em] sm:text-5xl">
+					Legal
+				</h1>
+			</div>
+		</div>
 	</section>
 </BaseLayout>

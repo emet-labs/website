@@ -1,35 +1,23 @@
 ---
-import ContactLink from '../components/ContactLink';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
 	<section class="flex flex-1 items-center">
 		<div class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-			<div class="max-w-5xl">
-				<p
-					class="mb-8 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-black/60"
-				>
-					Coming soon
-				</p>
-
-				<h1
-					class="font-serif text-6xl font-light leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-[8.5rem]"
-				>
+			<div class="max-w-3xl">
+				<h1 class="font-serif text-4xl font-light leading-[0.95] tracking-[-0.045em] sm:text-5xl">
 					Emet Labs.
 				</h1>
 
-				<p
-					class="mt-8 max-w-3xl text-xl leading-snug tracking-[-0.025em] text-black/70 sm:text-2xl lg:text-3xl"
-				>
-					AI Security
+				<p class="mt-6 text-lg leading-snug tracking-[-0.025em] text-black/70 sm:text-xl">
+					Runtime verification and AI security.
 				</p>
 
-				<div class="mt-12">
-					<ContactLink
-						class="inline-flex items-center rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-70"
-						label="Contact us →"
-					/>
+				<div class="mt-10">
+					<a href="/trace-grab" class="text-sm font-medium underline hover:no-underline">
+						Help us study traces →
+					</a>
 				</div>
 			</div>
 		</div>

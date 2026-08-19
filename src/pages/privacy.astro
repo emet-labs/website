@@ -4,8 +4,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Privacy" description="Privacy information for Emet Labs.">
 	<section class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-		<h1 class="font-serif text-5xl font-light tracking-[-0.045em] sm:text-7xl">
-			Privacy
-		</h1>
+		<div class="grid gap-12 lg:grid-cols-12">
+			<p class="text-xs font-medium uppercase tracking-[0.16em] text-black/50 lg:col-span-3">
+				Privacy
+			</p>
+			<div class="max-w-3xl lg:col-span-8">
+				<h1 class="font-serif text-4xl font-light tracking-[-0.045em] sm:text-5xl">
+					Privacy
+				</h1>
+
+				<div class="mt-10 space-y-8 text-lg leading-snug text-black/70">
+					<p>
+						<strong class="font-medium text-black">trace-grab</strong> runs entirely on
+						your machine. It does not transmit, upload, or phone home any data. There is
+						no telemetry, no analytics, and no update check. If you choose to share a
+						sanitized corpus with us, that transfer happens through a method you control
+						&mdash; the tool has no built-in upload mechanism.
+					</p>
+					<p>
+						<strong class="font-medium text-black">Sentinel</strong> is in private
+						development. When it launches, this page will describe what data it processes,
+						where it is stored, and how long it is retained.
+					</p>
+					<p>
+						We do not sell or share data with third parties. We do not use tracking
+						pixels, advertising cookies, or third-party analytics on this website.
+					</p>
+					<p>
+						For privacy questions, contact {" "}
+						<a href="mailto:founders@emetlabs.ai" target="_blank" rel="noopener noreferrer" class="underline hover:no-underline">founders@emetlabs.ai</a>.
+					</p>
+				</div>
+			</div>
+		</div>
 	</section>
 </BaseLayout>
