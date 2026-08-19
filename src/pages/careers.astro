@@ -1,11 +1,28 @@
 ---
+import ContactLink from '../components/ContactLink';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Careers" description="Careers at Emet Labs.">
 	<section class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-		<h1 class="font-serif text-5xl font-light tracking-[-0.045em] sm:text-7xl">
-			Careers
-		</h1>
+		<div class="grid gap-12 lg:grid-cols-12">
+			<p class="text-xs font-medium uppercase tracking-[0.16em] text-black/50 lg:col-span-3">
+				Careers
+			</p>
+			<div class="max-w-3xl lg:col-span-8">
+				<h1 class="font-serif text-4xl font-light tracking-[-0.045em] sm:text-5xl">
+					Careers
+				</h1>
+
+				<p class="mt-8 text-lg leading-snug text-black/70">
+					No listed positions right now. If you're interested in runtime verification,
+					security tooling for agentic AI, or the research behind it, reach out.
+				</p>
+
+				<div class="mt-10">
+					<ContactLink class="inline-flex text-sm font-medium underline hover:no-underline" />
+				</div>
+			</div>
+		</div>
 	</section>
 </BaseLayout>
