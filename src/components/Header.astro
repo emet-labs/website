@@ -8,6 +8,7 @@ const navItems = [
 	{ href: '/trace-grab', label: 'trace-grab' },
 	{ href: '/about', label: 'About' },
 	{ href: '/blog', label: 'Blog' },
+	{ href: 'https://docs.emetlabs.ai', label: 'Docs', external: true },
 ];
 ---
 
@@ -23,9 +24,11 @@ const navItems = [
 
 		<nav class="flex items-center gap-5 text-sm sm:gap-8" aria-label="Primary navigation">
 			{
-				navItems.map(({ href, label }) => (
+				navItems.map(({ href, label, external }) => (
 					<a
 						href={href}
+						target={external ? '_blank' : undefined}
+						rel={external ? 'noopener noreferrer' : undefined}
 						class:list={[
 							'transition-opacity hover:opacity-50',
 							pathname.startsWith(href) && 'underline',
