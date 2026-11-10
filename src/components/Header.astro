@@ -1,47 +1,115 @@
 ---
+import { primaryNav } from '../config/site';
 import ContactLink from './ContactLink';
+import Logo from './Logo.astro';
 
-const pathname = Astro.url.pathname;
-
-const navItems = [
-	{ href: '/sentinel', label: 'Sentinel' },
-	{ href: '/trace-grab', label: 'trace-grab' },
-	{ href: '/about', label: 'About' },
-	{ href: '/blog', label: 'Blog' },
-	{ href: 'https://docs.emetlabs.ai', label: 'Docs', external: true },
-];
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 ---
 
-<header class="border-b border-black/10">
-	<div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
-		<a
-			href="/"
-			class="text-lg font-medium tracking-[-0.03em]"
-			aria-label="Emet Labs home"
-		>
-			Emet Labs.
+<header class="sticky top-0 z-40 border-b border-line bg-paper">
+	<div class="wrap flex h-18 items-center justify-between gap-6 lg:h-20">
+		<a href="/" aria-label="Emet Labs home" class="-ml-1 shrink-0 p-1">
+			<Logo class="h-10 w-auto lg:h-12" />
 		</a>
 
-		<nav class="flex items-center gap-5 text-sm sm:gap-8" aria-label="Primary navigation">
-			{
-				navItems.map(({ href, label, external }) => (
-					<a
-						href={href}
-						target={external ? '_blank' : undefined}
-						rel={external ? 'noopener noreferrer' : undefined}
-						class:list={[
-							'transition-opacity hover:opacity-50',
-							pathname.startsWith(href) && 'underline',
-						]}
-						aria-current={pathname.startsWith(href) ? 'page' : undefined}
-					>
-						{label}
-					</a>
-				))
-			}
+		<nav aria-label="Primary" class="hidden items-center gap-8 lg:flex">
+			<ul class="flex items-center gap-7 text-small">
+				{
+					primaryNav.map(({ href, label, external }) => (
+						<li>
+							<a
+								href={href}
+								target={external ? '_blank' : undefined}
+								rel={external ? 'noopener noreferrer' : undefined}
+								aria-current={isCurrent(href) ? 'page' : undefined}
+								class:list={[
+									'py-2 underline-offset-[0.5em] transition-colors hover:text-ink',
+									isCurrent(href) ? 'text-ink underline decoration-silver' : 'text-slate',
+								]}
+							>
+								{label}
+								{external && <span class="sr-only">(opens in a new tab)</span>}
+							</a>
+						</li>
+					))
+				}
+			</ul>
 			<ContactLink
-				class="hidden rounded-full border border-black px-4 py-2 transition-colors hover:bg-black hover:text-white sm:inline-flex"
+				class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition-colors hover:border-ink"
+				label="Contact"
 			/>
 		</nav>
+
+		<button
+			type="button"
+			class="-mr-2 inline-flex size-11 items-center justify-center rounded-sm lg:hidden"
+			aria-controls="mobile-nav"
+			aria-expanded="false"
+			data-menu-toggle
+		>
+			<span class="sr-only">Menu</span>
+			<svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5">
+				<path data-icon-open d="M3 7h16M3 15h16"></path>
+				<path data-icon-close class="hidden" d="M5 5l12 12M17 5L5 17"></path>
+			</svg>
+		</button>
 	</div>
+
+	<nav id="mobile-nav" aria-label="Primary" class="hidden border-t border-line bg-paper lg:hidden" data-menu>
+		<ul class="wrap flex flex-col py-3">
+			{
+				primaryNav.map(({ href, label, external }) => (
+					<li>
+						<a
+							href={href}
+							target={external ? '_blank' : undefined}
+							rel={external ? 'noopener noreferrer' : undefined}
+							aria-current={isCurrent(href) ? 'page' : undefined}
+							class:list={[
+								'flex min-h-12 items-center border-b border-line font-display text-subhead',
+								isCurrent(href) ? 'text-ink' : 'text-slate',
+							]}
+						>
+							{label}
+							{external && <span aria-hidden="true" class="ml-2 text-small">↗</span>}
+							{external && <span class="sr-only">(opens in a new tab)</span>}
+						</a>
+					</li>
+				))
+			}
+			<li class="pt-5 pb-3">
+				<ContactLink
+					class="inline-flex min-h-11 items-center rounded-sm bg-ink px-5 text-small font-medium text-white"
+					label="Contact us"
+				/>
+			</li>
+		</ul>
+	</nav>
 </header>
+
+<script>
+	const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+	if (toggle && menu) {
+		const setOpen = (open: boolean) => {
+			toggle.setAttribute('aria-expanded', String(open));
+			menu.classList.toggle('hidden', !open);
+			toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
+			toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
+		};
+
+		toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+				setOpen(false);
+				toggle.focus();
+			}
+		});
+
+		// Close if the viewport grows past the mobile breakpoint.
+		window.matchMedia('(min-width: 64rem)').addEventListener('change', (e) => e.matches && setOpen(false));
+	}
+</script>

@@ -1,50 +1,64 @@
 ---
+import Fonts from '../components/Fonts.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { site } from '../config/site';
 import '../styles/global.css';
 
 interface Props {
+	/** Page name; rendered as "Name — Emet Labs". Omit on the homepage. */
 	title?: string;
 	description?: string;
+	/** Exclude from search indexes (e.g. placeholder pages). */
+	noindex?: boolean;
 }
 
-const {
-	title = 'Emet Labs.',
-	description = 'Runtime Verification for Graph-based Agentic Execution.',
-} = Astro.props;
+const { title, description = site.description, noindex = false } = Astro.props;
 
-const pageTitle = title === 'Emet Labs.' ? title : `${title} — Emet Labs.`;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — Verification infrastructure for AI agents`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL('/brand/og-image.png', site.url).href;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
-		<link
-			rel="preload"
-			as="font"
-			type="font/woff2"
-			href="/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			as="font"
-			type="font/woff2"
-			href="/Sentient_Complete/Fonts/WEB/fonts/Sentient-Variable.woff2"
-			crossorigin
-		/>
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex" />}
+
+		<Fonts />
+
+		<link rel="icon" href="/favicon.ico" sizes="48x48" />
+		<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta name="theme-color" content="#ffffff" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="The Emet Labs logo: the words Emet Labs beside an owl." />
+		<meta name="twitter:card" content="summary_large_image" />
 	</head>
-	<body class="min-h-svh bg-white text-black antialiased">
+	<body class="min-h-svh bg-paper text-ink antialiased">
+		<a
+			href="#main"
+			class="sr-only rounded-sm bg-ink px-4 py-2 text-small text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
+		>
+			Skip to content
+		</a>
 		<div class="flex min-h-svh flex-col">
 			<Header />
-			<main class="flex flex-1 flex-col">
+			<main id="main" tabindex="-1" class="flex flex-1 flex-col focus:outline-none">
 				<slot />
 			</main>
 			<Footer />

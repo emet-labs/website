@@ -1,0 +1,22 @@
+---
+/**
+ * Decorative motif taken from the owl's geometry: the long diagonal of its wing
+ * (about 48° from horizontal) and the silver dot at its base. Purely ornamental.
+ */
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+	aria-hidden="true"
+	focusable="false"
+	viewBox="0 0 240 216"
+	fill="none"
+	class={className}
+>
+	<line x1="4" y1="212" x2="196" y2="4" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+	<circle cx="226" cy="198" r="7" fill="var(--color-silver)"></circle>
+</svg>

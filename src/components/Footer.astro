@@ -1,40 +1,51 @@
 ---
-const year = new Date().getFullYear();
+import { footerNav, site } from '../config/site';
+import Logo from './Logo.astro';
 
-const pageLinks = [
-	{ label: 'Careers', href: '/careers' },
-	{ label: 'Legal', href: '/legal' },
-	{ label: 'Privacy', href: '/privacy' },
-];
+const year = new Date().getFullYear();
 ---
 
-<footer id="footer" class="border-t border-black/10">
-	<div
-		class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-8 text-sm sm:flex-row sm:items-end sm:justify-between lg:px-10"
-	>
-		<div>
-			<a href="/" class="font-medium tracking-[-0.02em]">Emet Labs.</a>
-			<p class="mt-2 text-black/50">© {year} Emet Labs. All rights reserved.</p>
+<footer class="border-t border-line bg-paper">
+	<div class="wrap grid gap-12 py-14 md:grid-cols-12 md:py-20">
+		<div class="md:col-span-5">
+			<a href="/" aria-label="Emet Labs home" class="inline-block">
+				<Logo class="h-14 w-auto" loading="lazy" />
+			</a>
+			<p class="mt-6 max-w-xs text-small text-slate">
+				Verification infrastructure for AI agents.
+			</p>
 		</div>
 
-		<nav class="flex flex-wrap gap-x-6 gap-y-3 text-black/60" aria-label="Footer navigation">
-			<a class="transition-colors hover:text-black" href="/about">About</a>
-			<a class="transition-colors hover:text-black" href="/blog">Blog</a>
-			<a class="transition-colors hover:text-black" href="https://docs.emetlabs.ai" target="_blank" rel="noopener noreferrer">Docs</a>
-			{pageLinks.map(({ label, href }) => (
-				<a class="transition-colors hover:text-black" href={href}>{label}</a>
-			))}
-			<a
-				class="transition-colors hover:text-black"
-				href="https://www.linkedin.com/company/emetlabsai/"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				LinkedIn
-			</a>
-			<a class="transition-colors hover:text-black" href="mailto:founders@emetlabs.ai" target="_blank" rel="noopener noreferrer">
-				Contact
-			</a>
+		<nav aria-label="Footer" class="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
+			{
+				footerNav.map(({ heading, items }) => (
+					<div>
+						<p class="eyebrow">{heading}</p>
+						<ul class="mt-4 space-y-2.5 text-small">
+							{items.map(({ href, label, external }) => (
+								<li>
+									<a
+										href={href}
+										target={external ? '_blank' : undefined}
+										rel={external ? 'noopener noreferrer' : undefined}
+										class="text-slate transition-colors hover:text-ink"
+									>
+										{label}
+										{external && <span class="sr-only">(opens in a new tab)</span>}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
 		</nav>
+	</div>
+
+	<div class="wrap flex flex-col gap-2 border-t border-line py-6 text-small text-dusk sm:flex-row sm:justify-between">
+		<p>© {year} {site.name}. All rights reserved.</p>
+		<p>
+			<a href={`mailto:${site.email}`} class="link">{site.email}</a>
+		</p>
 	</div>
 </footer>
