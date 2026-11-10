@@ -1,57 +1,249 @@
 @import "tailwindcss";
 
+/*
+ * Emet Labs design tokens.
+ *
+ * Colour is derived from the logo: the owl's navy body and wordmark (#262c57),
+ * the violet-grey midpoint of its gradient, and the silver of its head and the
+ * dot at its base. The default Tailwind palette is cleared so every colour in
+ * the codebase comes from this list.
+ */
+
 @font-face {
 	font-family: "Satoshi";
-	src: url("/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2") format("woff2");
+	src: url("/fonts/satoshi/Satoshi-Variable.woff2") format("woff2");
 	font-style: normal;
 	font-weight: 300 900;
 	font-display: swap;
 }
 
-@font-face {
-	font-family: "Sentient";
-	src: url("/Sentient_Complete/Fonts/WEB/fonts/Sentient-Variable.woff2") format("woff2");
-	font-style: normal;
-	font-weight: 200 700;
-	font-display: swap;
+@theme {
+	--color-*: initial;
+	--color-paper: #ffffff;
+	--color-mist: #f4f4f7;
+	--color-ink: #262c57; /* logo navy */
+	--color-ink-deep: #1b2044;
+	--color-slate: #4b4f6e; /* body copy on paper, 7.9:1 */
+	--color-dusk: #5d5872; /* owl gradient midpoint, 6.8:1 on paper */
+	--color-silver: #9b9ca1; /* owl head and dot; decorative only on paper */
+	--color-haze: #c9cad6; /* secondary text on ink, 8.2:1 */
+	--color-line: rgb(38 44 87 / 0.14);
+	--color-line-strong: rgb(38 44 87 / 0.32);
+	--color-white: #ffffff;
+	--color-transparent: transparent;
+	--color-current: currentColor;
+
+	/* Minerva Modern is served by Adobe Fonts (see src/config/site.ts). The
+	   fallbacks are locally installed serifs with a similar inscriptional,
+	   moderate-contrast character, so no third-party font is substituted. */
+	--font-display: "minerva-modern", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+	--font-sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+
+	--font-weight-display: 400;
+
+	/* Type scale. Display sizes are fluid; body sizes are fixed for legibility. */
+	--text-display: clamp(2.75rem, 1.55rem + 5.2vw, 6.5rem);
+	--text-display--line-height: 0.98;
+	--text-display--letter-spacing: -0.025em;
+	--text-title: clamp(2.375rem, 1.65rem + 3vw, 4.25rem);
+	--text-title--line-height: 1.04;
+	--text-title--letter-spacing: -0.02em;
+	--text-headline: clamp(1.875rem, 1.45rem + 1.7vw, 2.875rem);
+	--text-headline--line-height: 1.1;
+	--text-headline--letter-spacing: -0.015em;
+	--text-subhead: clamp(1.375rem, 1.22rem + 0.6vw, 1.75rem);
+	--text-subhead--line-height: 1.25;
+	--text-subhead--letter-spacing: -0.01em;
+	--text-lede: clamp(1.125rem, 1.06rem + 0.3vw, 1.3125rem);
+	--text-lede--line-height: 1.55;
+	--text-body: 1.0625rem;
+	--text-body--line-height: 1.65;
+	--text-small: 0.9375rem;
+	--text-small--line-height: 1.55;
+	--text-eyebrow: 0.75rem;
+	--text-eyebrow--line-height: 1.2;
+	--text-eyebrow--letter-spacing: 0.16em;
+
+	--radius-sm: 2px;
+
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+	--animate-rise: rise 700ms var(--ease-out) both;
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+	}
 }
 
-@theme {
-	--font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
-	--font-serif: "Sentient", ui-serif, Georgia, serif;
+/* Page container: one max width and gutter for every section. */
+@utility wrap {
+	width: 100%;
+	max-width: 78rem;
+	margin-inline: auto;
+	padding-inline: 1.25rem;
+
+	@media (width >= 40rem) {
+		padding-inline: 2rem;
+	}
+
+	@media (width >= 64rem) {
+		padding-inline: 2.5rem;
+	}
+}
+
+/* Comfortable reading width for running text. */
+@utility measure {
+	max-width: 40rem;
+}
+
+/* Small uppercase label above a section or page title. */
+@utility eyebrow {
+	font-family: var(--font-sans);
+	font-size: var(--text-eyebrow);
+	line-height: var(--text-eyebrow--line-height);
+	letter-spacing: var(--text-eyebrow--letter-spacing);
+	font-weight: 500;
+	text-transform: uppercase;
+	color: var(--color-dusk);
 }
 
 @layer base {
 	:root {
 		color-scheme: light;
 		font-family: var(--font-sans);
-		background: #fff;
-		color: #0a0a0a;
+		background: var(--color-paper);
+		color: var(--color-ink);
 		font-synthesis: none;
 		text-rendering: optimizeLegibility;
+		-webkit-text-size-adjust: 100%;
 	}
 
 	* {
-		border-color: currentColor;
+		border-color: var(--color-line);
 	}
 
-html {
-	scroll-behavior: smooth;
-	scrollbar-gutter: stable;
-}
+	html {
+		scroll-behavior: smooth;
+		scrollbar-gutter: stable;
+	}
 
 	body {
 		margin: 0;
 		min-width: 320px;
 	}
 
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-display);
+		font-weight: var(--font-weight-display);
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
 	a,
 	button {
-		text-underline-offset: 0.2em;
+		text-underline-offset: 0.22em;
+		text-decoration-thickness: 1px;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 3px;
+		border-radius: var(--radius-sm);
+	}
+
+	.on-ink :focus-visible {
+		outline-color: var(--color-white);
 	}
 
 	::selection {
-		background: #0a0a0a;
-		color: #fff;
+		background: var(--color-ink);
+		color: var(--color-white);
+	}
+
+	code,
+	pre {
+		font-family: var(--font-mono);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
+
+@layer components {
+	/* Inline text link: underline that strengthens on hover. */
+	.link {
+		text-decoration-line: underline;
+		text-decoration-color: var(--color-line-strong);
+		transition: text-decoration-color 200ms var(--ease-out);
+
+		&:hover {
+			text-decoration-color: currentColor;
+		}
+	}
+
+	/* Long-form text (legal, privacy). */
+	.prose-emet {
+		color: var(--color-slate);
+		font-size: var(--text-body);
+		line-height: var(--text-body--line-height);
+
+		& > * + * {
+			margin-top: 1.25em;
+		}
+
+		& h2 {
+			margin-top: 2.5em;
+			color: var(--color-ink);
+			font-size: var(--text-subhead);
+			line-height: var(--text-subhead--line-height);
+		}
+
+		& strong {
+			font-weight: 500;
+			color: var(--color-ink);
+		}
+
+		& a {
+			color: var(--color-ink);
+			text-decoration-line: underline;
+			text-decoration-color: var(--color-line-strong);
+
+			&:hover {
+				text-decoration-color: currentColor;
+			}
+		}
+
+		& ul {
+			padding-left: 1.25em;
+			list-style: disc;
+
+			& > li + li {
+				margin-top: 0.5em;
+			}
+		}
+
+		& li::marker {
+			color: var(--color-silver);
+		}
 	}
 }
