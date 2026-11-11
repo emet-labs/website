@@ -7,28 +7,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const questions = ['What did it do?', 'Was it allowed?', 'How sure can we be?'];
 
-const commitments = [
-	{ term: 'Retraceable', body: 'Each answer links to its rule and the observations behind it.' },
-	{ term: 'Explicit about gaps', body: 'Incomplete evidence is reported as inconclusive, never as a pass.' },
-	{ term: 'Across systems', body: 'It follows a chain of actions across every system you instrument.' },
-	{ term: 'Rules you own', body: 'Requirements are written down and reviewed by your team.' },
-	{
-		term: 'Prevention where sound',
-		body: 'For a narrow class of rules, it is designed to stop an action before it takes effect.',
-	},
+// An illustration of a public design commitment (each answer carries its rule,
+// its evidence and its gaps), continuing the homepage example. It is not
+// product output and shows no internal format.
+const evidence = [
+	{ time: '10:02', event: 'Refund issued', system: 'Payments' },
+	{ time: '10:05', event: 'Request approved', system: 'Approvals' },
 ];
 
+const notes = {
+	rule: { term: 'Rules you own', body: 'Written down and reviewed by your team.' },
+	evidence: {
+		term: 'Retraceable',
+		body: 'Each answer cites the observations behind it, across every system you instrument.',
+	},
+	gaps: { term: 'Explicit about gaps', body: 'Incomplete evidence is never reported as a pass.' },
+};
+
 const status = [
-	{ term: 'Availability', body: 'Not yet generally available.' },
 	{ term: 'Instrumentation SDKs', body: 'Source published under MPL-2.0.', href: links.github, linkLabel: 'GitHub' },
 	{ term: 'Documentation', body: 'Early and in progress.', href: `${links.docs}/sentinel`, linkLabel: 'Docs' },
-	{ term: 'Real-world data', body: 'Teams can contribute traces to this work through trace-grab.', href: '/trace-grab/', linkLabel: 'trace-grab' },
+	{ term: 'Real-world data', body: 'Contribute traces from your own agents.', href: '/trace-grab/', linkLabel: 'trace-grab' },
 ];
+
+const cell = 'bg-paper px-5 py-4 sm:px-6 md:col-span-5';
+const note =
+	'relative px-5 pb-4 text-small text-dusk sm:px-6 md:col-span-4 md:px-0 md:py-4 md:text-haze md:before:absolute md:before:top-[1.55rem] md:before:-left-7 md:before:h-px md:before:w-5 md:before:bg-white/40';
 ---
 
 <BaseLayout
 	title="Sentinel"
-	description="Sentinel is runtime verification for AI agents: it checks what a deployment did against rules you define and reports each conclusion with its evidence. In private development."
+	description="Sentinel checks what AI agents did against rules your team sets, and reports each answer with its evidence. In private development."
 >
 	<header class="wrap grid gap-12 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-28">
 		<div class="lg:col-span-6">
@@ -47,29 +56,74 @@ const status = [
 					))
 				}
 			</ol>
-			<p class="mt-6 max-w-sm text-small text-slate">
-				Open-source instrumentation reports what your systems do; Sentinel checks it against the rules
-				your team writes and answers with the evidence attached.
-			</p>
 		</div>
 	</header>
 
-	<Section label="Design commitments" tone="ink">
-		<div class="grid gap-10 md:grid-cols-9 md:gap-8">
-			<p class="statement md:sticky md:top-32 md:col-span-4 md:self-start">
-				Built for settings where a wrong answer is worse than no&nbsp;answer.
-			</p>
-			<dl class="divide-y divide-white/15 md:col-span-5">
-				{
-					commitments.map(({ term, body }) => (
-						<div class="py-6 first:pt-0">
-							<dt class="font-display text-subhead text-white">{term}</dt>
-							<dd class="mt-2 text-body text-haze">{body}</dd>
+	<Section label="An answer, with its evidence" tone="ink">
+		<p class="statement measure">Built for settings where a wrong answer is worse than no&nbsp;answer.</p>
+
+		<figure class="mt-12 sm:mt-16">
+			<div class="overflow-hidden rounded-sm md:overflow-visible">
+				<div class="grid bg-paper md:grid-cols-9 md:gap-8 md:bg-transparent">
+					<div class:list={[cell, 'md:rounded-t-sm']}>
+						<p class="flex justify-between gap-4 text-label text-dusk">
+							Rule <span aria-hidden="true">Illustration</span>
+						</p>
+						<div class="mt-1 text-body text-ink">A refund is issued only after an approval.</div>
+					</div>
+					<div class={note}>
+						<span class="font-medium text-ink md:text-white">{notes.rule.term}.</span> {notes.rule.body}
+					</div>
+				</div>
+
+				<div class="grid bg-paper md:grid-cols-9 md:gap-8 md:bg-transparent">
+					<div class:list={[cell, 'border-t border-line']}>
+						<p class="text-label text-dusk">Answer</p>
+						<div class="mt-1 font-display text-headline text-ink">Violated.</div>
+					</div>
+				</div>
+
+				<div class="grid bg-paper md:grid-cols-9 md:gap-8 md:bg-transparent">
+					<div class:list={[cell, 'border-t border-line']}>
+						<p class="text-label text-dusk">Evidence</p>
+						<div class="mt-2">
+							<ol class="space-y-1.5 text-small">
+								{
+									evidence.map(({ time, event, system }) => (
+										<li class="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-2">
+											<span class="text-dusk tabular-nums">{time}</span>
+											<span class="text-ink">
+												{event} <span class="text-dusk">· {system}</span>
+											</span>
+										</li>
+									))
+								}
+							</ol>
 						</div>
-					))
-				}
-			</dl>
-		</div>
+					</div>
+					<div class={note}>
+						<span class="font-medium text-ink md:text-white">{notes.evidence.term}.</span> {notes.evidence.body}
+					</div>
+				</div>
+
+				<div class="grid bg-paper md:grid-cols-9 md:gap-8 md:bg-transparent">
+					<div class:list={[cell, 'border-t border-line md:rounded-b-sm']}>
+						<p class="text-label text-dusk">Gaps</p>
+						<div class="mt-1 text-body text-ink">None. Both systems reported.</div>
+					</div>
+					<div class={note}>
+						<span class="font-medium text-ink md:text-white">{notes.gaps.term}.</span> {notes.gaps.body}
+					</div>
+				</div>
+			</div>
+			<figcaption class="sr-only">
+				An illustration of an answer from the homepage example: the refund came before the approval.
+			</figcaption>
+		</figure>
+
+		<p class="measure mt-12 text-small text-haze">
+			For a narrow class of rules, Sentinel is designed to stop an action before it takes effect.
+		</p>
 	</Section>
 
 	<Section label="Status">
