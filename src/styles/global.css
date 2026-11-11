@@ -283,10 +283,17 @@
 
 @supports (animation-timeline: view()) {
 	@media (prefers-reduced-motion: no-preference) {
+		/* Longhands, and the timeline on its own selector, so the minifier cannot
+		   fold animation-timeline into the shorthand (which browsers reject). */
 		.scroll-ink {
-			animation: ink-in linear both;
-			animation-timeline: view();
+			animation-name: ink-in;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
 			animation-range: entry 10% cover 40%;
+		}
+
+		:where(.scroll-ink) {
+			animation-timeline: view();
 		}
 
 		.tone-ink .scroll-ink {
