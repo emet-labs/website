@@ -7,11 +7,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 // What the evidence view below shows, in plain terms.
 const callouts = [
-	{ term: 'The rule', body: 'Checked by exact version. Rules are written down and reviewed by your team.' },
+	{ term: 'The rule', body: 'Checked by exact version. Rules are written down, for your team to review.' },
 	{ term: 'The evidence', body: 'Each event the answer rests on, with the system it came from.' },
 	{
 		term: 'The gap',
-		body: 'The approval was never retained, so the answer is inconclusive instead of a pass.',
+		body: 'The event the refund depends on was never retained. Coverage shows two of three sources, so the answer is inconclusive instead of a pass.',
+		coverage: true,
 	},
 ];
 
@@ -19,7 +20,7 @@ const callouts = [
 const status = [
 	{
 		label: 'Instrumentation SDKs',
-		state: 'Published',
+		state: 'Source published',
 		body: 'Open source under MPL-2.0: TypeScript, Python, Go, JVM, .NET and Elixir.',
 		href: links.github,
 		linkLabel: 'GitHub',
@@ -47,36 +48,35 @@ const status = [
 	footerEmail={false}
 >
 	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
-		<p class="meta inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-dusk">
-			<span class="size-1.5 rounded-full bg-dusk" aria-hidden="true"></span>In private development
+		<p class="meta text-dusk">In private development</p>
+		<h1 class="mt-6 text-hero text-ink">Sentinel</h1>
+		<p class="mt-8 max-w-2xl text-lede text-slate sm:mt-10">
+			Runtime verification for AI agents. Your team sets the rules; Sentinel checks what your agents did
+			against them, and shows the evidence behind each answer.
 		</p>
-		<div class="mt-10 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
-			<h1 class="text-hero text-ink lg:col-span-6">Sentinel</h1>
-			<p class="text-lede text-slate lg:col-span-5 lg:col-start-8 lg:pb-2">
-				Runtime verification for AI agents. Your team sets the rules; Sentinel checks what your agents
-				did against them, and shows the evidence behind each answer.
-			</p>
-		</div>
 	</header>
 
-	<figure class="wrap mt-16 sm:mt-20 lg:mt-24">
-		<div class="rounded-md bg-mist p-2 sm:p-5 lg:p-8">
-			<img
-				src="/product/sentinel-verdicts.webp"
-				width="2200"
-				height="962"
-				alt="The Sentinel dashboard's Verdicts list: eight answers for three refund rules, marked Satisfy, Violate or Inconclusive."
-				class="block h-auto w-full rounded-[4px] border border-line shadow-[0_1px_2px_rgb(26_28_39/0.06),0_12px_32px_-12px_rgb(26_28_39/0.18)]"
-				decoding="async"
-				fetchpriority="high"
-			/>
+	<figure class="wrap mt-12 sm:mt-16 lg:mt-20">
+		<div class="stage rounded-md p-3 sm:p-6 lg:p-10">
+			<picture>
+				<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="776" height="572" />
+				<img
+					src="/product/sentinel-verdicts.webp"
+					width="2200"
+					height="962"
+					alt="The Sentinel dashboard's Verdicts list: eight answers for three refund rules, marked Satisfy, Violate or Inconclusive."
+					class="block h-auto w-full rounded-frame border border-line shadow-frame"
+					decoding="async"
+					fetchpriority="high"
+				/>
+			</picture>
 		</div>
 	</figure>
 
-	<Section index="01" label="One rule, three answers">
+	<Section label="One rule, three answers">
 		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
 			<p class="statement lg:col-span-4">
-				The same rule, checked against three records. <span class="quiet">“Not yet known” is an answer too.</span>
+				The same rule, checked against three records. “Inconclusive” is an answer too.
 			</p>
 			<div class="lg:col-span-7 lg:col-start-6">
 				<RuleExample />
@@ -84,47 +84,51 @@ const status = [
 		</div>
 	</Section>
 
-	<Section index="02" label="An answer, with its evidence" tone="panel">
+	<Section label="An answer, with its evidence" tone="panel">
 		<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 			<div class="lg:col-span-4">
 				<p class="statement">Built for settings where a wrong answer is worse than no&nbsp;answer.</p>
 				<ol class="mt-12 space-y-7">
 					{
-						callouts.map(({ term, body }) => (
-							<li class="grid grid-cols-[1.25rem_1fr] gap-3 border-t border-rule pt-4">
-								<span aria-hidden="true" class="mt-[0.7em] h-px w-3 bg-ember-light" />
+						callouts.map(({ term, body, coverage }) => (
+							<li class="border-t border-rule pt-4">
 								<p class="text-small text-haze">
 									<span class="font-medium text-white">{term}.</span> {body}
 								</p>
+								{coverage && (
+									<img
+										src="/product/sentinel-coverage.webp"
+										width="768"
+										height="106"
+										alt="Evidence coverage in the dashboard: two of three required sources, one gap."
+										class="mt-4 block h-auto w-full rounded-frame"
+										loading="lazy"
+										decoding="async"
+									/>
+								)}
 							</li>
 						))
 					}
 				</ol>
 			</div>
-			<figure class="relative sm:pb-10 lg:col-span-8">
-				<img
-					src="/product/sentinel-missing-evidence.webp"
-					width="1400"
-					height="996"
-					alt="A Sentinel verdict marked Inconclusive: the rule refund-requires-approval, the events it rests on, and an approval event that was never retained."
-					class="block h-auto w-full rounded-[4px]"
-					loading="lazy"
-					decoding="async"
-				/>
-				<img
-					src="/product/sentinel-coverage.webp"
-					width="768"
-					height="170"
-					alt="Evidence coverage: two of three required sources, one gap."
-					class="mt-3 block h-auto w-full max-w-sm rounded-[4px] shadow-[0_18px_40px_-12px_rgb(0_0_0/0.55)] sm:absolute sm:right-4 sm:-bottom-8 sm:mt-0 sm:w-[52%] lg:-right-6"
-					loading="lazy"
-					decoding="async"
-				/>
+			<figure class="lg:col-span-8">
+				<picture>
+					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-missing-evidence-mobile.webp" width="1056" height="520" />
+					<img
+						src="/product/sentinel-missing-evidence.webp"
+						width="1400"
+						height="996"
+						alt="A Sentinel verdict marked Inconclusive: the rule refund-requires-approval, the events it rests on, and an event, evt-2302, that was never retained."
+						class="block h-auto w-full rounded-frame shadow-float"
+						loading="lazy"
+						decoding="async"
+					/>
+				</picture>
 			</figure>
 		</div>
 	</Section>
 
-	<Section index="03" label="Where it stands">
+	<Section label="Where it stands">
 		<ul class="ticks grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
 			{
 				status.map(({ label, state, body, href, linkLabel }) => (

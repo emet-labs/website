@@ -17,35 +17,30 @@ const work = [
 		href: '/trace-grab/',
 		title: 'trace-grab',
 		status: 'Open source · Apache-2.0',
-		body: 'A tool for contributing agent traces without sharing the sensitive values inside them.',
+		body: 'A tool for contributing agent traces without sharing their string values.',
 	},
 ];
 ---
 
 <BaseLayout footerEmail={false}>
 	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
-		<div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
-			<h1 class="text-hero text-ink lg:col-span-6">Know what your agents&nbsp;did.</h1>
-			<div class="lg:col-span-5 lg:col-start-8">
-				<p class="text-lede text-slate">
-					Emet Labs builds verification infrastructure for AI agents, so that what they did can be
-					checked against the rules they were given.
-				</p>
-				<div class="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3">
-					<Button href="/sentinel/">See how Sentinel answers</Button>
-					<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">Our research</a>
-				</div>
+		<h1 class="max-w-3xl text-hero text-ink">Know what your agents&nbsp;did.</h1>
+		<div class="mt-8 flex flex-col gap-8 sm:mt-10 lg:flex-row lg:items-end lg:justify-between">
+			<p class="max-w-xl text-lede text-slate">Emet Labs builds verification infrastructure for AI agents.</p>
+			<div class="flex flex-wrap items-center gap-x-7 gap-y-3">
+				<Button href="/sentinel/">See how Sentinel answers</Button>
+				<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">Our research</a>
 			</div>
 		</div>
 	</header>
 
-	<div class="wrap mt-16 sm:mt-20 lg:mt-24">
+	<div class="wrap mt-12 sm:mt-16 lg:mt-20">
 		<div class="tone-ink overflow-hidden rounded-md bg-ink px-5 pt-6 pb-5 text-white sm:px-8 sm:pt-8 lg:px-10">
 			<TraceField />
 		</div>
 	</div>
 
-	<section class="wrap py-24 sm:py-32 lg:py-40">
+	<section class="wrap py-20 sm:py-28 lg:py-32">
 		<p class="max-w-4xl font-display text-[length:var(--text-title)] leading-[1.18] tracking-[-0.01em] text-ink text-balance">
 			Agents now act on their own.{' '}
 			<span class="quiet">
@@ -55,11 +50,11 @@ const work = [
 		</p>
 	</section>
 
-	<Section index="01" label="Why it is hard to know">
+	<Section label="Why it is hard to know">
 		<StoryTrace />
 	</Section>
 
-	<Section index="02" label="What we work on">
+	<Section label="What we work on">
 		<a href="/sentinel/" class="group grid overflow-hidden rounded-md bg-mist lg:grid-cols-12">
 			<div class="flex flex-col p-6 sm:p-10 lg:col-span-5 lg:p-12">
 				<span class="meta text-dusk">In private development</span>
@@ -74,27 +69,30 @@ const work = [
 				</span>
 			</div>
 			<div class="relative min-h-64 overflow-hidden pl-6 sm:pl-10 lg:col-span-7 lg:min-h-0 lg:pt-12 lg:pl-0">
-				<img
-					src="/product/sentinel-verdicts.webp"
-					width="2200"
-					height="962"
-					alt="The Sentinel dashboard's list of verdicts."
-					class="absolute top-6 left-6 w-[190%] max-w-none rounded-tl-[4px] border-t border-l border-line shadow-[0_12px_32px_-12px_rgb(26_28_39/0.25)] sm:left-10 lg:top-12 lg:left-0 lg:w-[150%]"
-					loading="lazy"
-					decoding="async"
-				/>
+				<picture>
+					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="776" height="572" />
+					<img
+						src="/product/sentinel-verdicts.webp"
+						width="2200"
+						height="962"
+						alt="The Sentinel dashboard's list of verdicts."
+						class="absolute top-6 left-6 w-[115%] max-w-none rounded-tl-(--radius-frame) border-t border-l border-line shadow-(--shadow-frame) sm:left-10 sm:w-[190%] lg:top-12 lg:left-0 lg:w-[150%]"
+						loading="lazy"
+						decoding="async"
+					/>
+				</picture>
 			</div>
 		</a>
 
-		<ul class="mt-10 grid gap-px overflow-hidden rounded-md bg-line md:grid-cols-2">
+		<ul class="mt-10 border-t border-line">
 			{
 				work.map(({ href, title, status, body }) => (
-					<li class="bg-card">
-						<a href={href} class="group flex h-full flex-col p-6 transition-colors hover:bg-paper sm:p-8">
-							<span class="meta text-dusk">{status}</span>
-							<span class="mt-10 font-display text-headline text-ink">{title}</span>
-							<span class="mt-4 max-w-md text-small text-slate">{body}</span>
-							<span aria-hidden="true" class="mt-8 text-ink transition-transform duration-200 group-hover:translate-x-1">
+					<li class="border-b border-line">
+						<a href={href} class="group grid gap-2 py-7 md:grid-cols-12 md:items-baseline md:gap-8">
+							<span class="font-display text-headline text-ink md:col-span-4">{title}</span>
+							<span class="text-small text-slate md:col-span-5">{body}</span>
+							<span class="meta text-dusk md:col-span-2">{status}</span>
+							<span aria-hidden="true" class="hidden text-right text-ink transition-transform duration-200 group-hover:translate-x-1 md:block">
 								→
 							</span>
 						</a>
