@@ -2,7 +2,7 @@
 import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// The fields Emet Labs works in. Areas of interest, not job listings.
+// Fields close to Emet Labs' work. Areas of interest, not job listings.
 const areas = ['Runtime verification', 'Formal methods', 'Distributed systems', 'Agent infrastructure'];
 ---
 
@@ -34,10 +34,10 @@ const areas = ['Runtime verification', 'Formal methods', 'Distributed systems', 
 				<span class="break-all underline decoration-rule-strong decoration-1 underline-offset-[0.18em] transition-colors group-hover:decoration-white">
 					{site.email}
 				</span>
-				<span aria-hidden="true" class="text-ember-light transition-transform duration-200 group-hover:translate-x-1">→</span>
+				<span aria-hidden="true" class="text-haze transition-transform duration-200 group-hover:translate-x-1">→</span>
 			</a>
 			<div class="mt-16 border-t border-rule pt-6">
-				<p class="meta text-haze">Areas we work in</p>
+				<p class="meta text-haze">Fields close to our work</p>
 				<ul class="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-small text-white">
 					{areas.map((a) => <li>{a}</li>)}
 				</ul>

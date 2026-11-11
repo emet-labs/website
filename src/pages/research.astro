@@ -1,4 +1,5 @@
 ---
+import ContactSection from '../components/ContactSection.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -35,6 +36,7 @@ const questions = [
 ---
 
 <BaseLayout
+	footerEmail={false}
 	title="Research"
 	description="The research behind Emet Labs: runtime verification for autonomous AI agents, and the open questions in specifying, observing and controlling systems that act on their own."
 >
@@ -45,26 +47,9 @@ const questions = [
 			runtime verification; <span class="text-ink">these are the questions we are working on.</span>
 		</p>
 
-		<nav aria-label="Open questions" class="mt-16 sm:mt-24">
-			<ol class="relative grid grid-cols-5 before:absolute before:top-[5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
-				{
-					questions.map(({ topic }, i) => (
-						<li class="relative">
-							<a href={`#q${i + 1}`} class="group flex flex-col items-start gap-3 pr-2">
-								<span aria-hidden="true" class="size-2.5 rounded-full border border-ink bg-paper transition-colors group-hover:bg-ink" />
-								<span class="meta text-dusk">{String(i + 1).padStart(2, '0')}</span>
-								<span class="text-small font-medium text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current">
-									{topic}
-								</span>
-							</a>
-						</li>
-					))
-				}
-			</ol>
-		</nav>
 	</header>
 
-	<div class="wrap mt-20 sm:mt-28">
+	<div class="wrap mt-16 sm:mt-20">
 		<ol class="border-t border-line">
 			{
 				questions.map(({ topic, question, why, href, linkLabel }, i) => (
@@ -94,4 +79,6 @@ const questions = [
 			that can be stated&nbsp;precisely.
 		</p>
 	</Section>
+
+	<ContactSection lead="Working on these problems?" follow="We would like to compare notes." />
 </BaseLayout>
