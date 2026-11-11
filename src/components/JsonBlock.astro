@@ -1,0 +1,57 @@
+---
+/**
+ * A JSON value rendered as syntax-highlighted code, tokenized at build time
+ * (no runtime script, no dependency). Keys, strings, numbers, literals (true,
+ * false, null) and punctuation each have a colour token from global.css.
+ *
+ * `mark` lists keys whose string values are emphasised (for example, the values
+ * trace-grab replaces); `tone` sets how the mark is drawn.
+ */
+type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+
+interface Props {
+	value: Json;
+	mark?: string[];
+	tone?: 'before' | 'after';
+	class?: string;
+}
+
+const { value, mark = [], tone = 'before', class: className } = Astro.props;
+
+type Token = { t: string; c?: 'key' | 'string' | 'number' | 'literal' | 'punct' | 'mark' };
+const out: Token[] = [];
+const push = (t: string, c?: Token['c']) => out.push({ t, c });
+const pad = (n: number) => '  '.repeat(n);
+
+function walk(v: Json, depth: number, key?: string) {
+	if (v === null || typeof v === 'boolean') return push(String(v), 'literal');
+	if (typeof v === 'number') return push(String(v), 'number');
+	if (typeof v === 'string') return push(JSON.stringify(v), key && mark.includes(key) ? 'mark' : 'string');
+	const isArray = Array.isArray(v);
+	const entries: [string | undefined, Json][] = isArray ? v.map((x) => [undefined, x]) : Object.entries(v);
+	push(isArray ? '[' : '{', 'punct');
+	entries.forEach(([k, x], i) => {
+		push(`\n${pad(depth + 1)}`);
+		if (k !== undefined) {
+			push(JSON.stringify(k), 'key');
+			push(': ', 'punct');
+		}
+		walk(x, depth + 1, k);
+		if (i < entries.length - 1) push(',', 'punct');
+	});
+	push(`\n${pad(depth)}`);
+	push(isArray ? ']' : '}', 'punct');
+}
+walk(value, 0);
+
+const colour = {
+	key: 'text-code-key',
+	string: 'text-code-string',
+	number: 'text-code-number',
+	literal: 'text-code-literal',
+	punct: 'text-code-punct',
+};
+const markClass = tone === 'after' ? 'rounded-sm bg-ink px-0.5 text-white' : 'rounded-sm bg-line px-0.5 text-code-string';
+---
+
+<pre class={className}><code>{out.map(({ t, c }) => (!c ? t : c === 'mark' ? <mark class={markClass}>{t}</mark> : <span class={colour[c]}>{t}</span>))}</code></pre>

@@ -1,4 +1,5 @@
 ---
+import JsonBlock from '../components/JsonBlock.astro';
 import Section from '../components/Section.astro';
 import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -8,13 +9,20 @@ const command = `npx @emetlabs/trace-grab grab \\
     ./langsmith-export --out ./corpus \\
     --from langsmith`;
 
-// The two string values that change; everything else passes through.
-const fields = [
-	{ key: 'account', before: 'acct_1208', after: 'TOK_4f1ab9c072' },
-	{ key: 'actor', before: 'alice@corp.com', after: 'TOK_88b0e13a5d' },
-];
+// One tool call before and after trace-grab. String values become stable
+// tokens; the tool name, field names, numbers and booleans pass through, as
+// the public README documents.
+const before = {
+	name: 'modify_account',
+	inputs: { account: 'acct_1208', actor: 'alice@corp.com', amount: 860, notify: true },
+};
+const after = {
+	name: 'modify_account',
+	inputs: { account: 'TOK_4f1ab9c072', actor: 'TOK_88b0e13a5d', amount: 860, notify: true },
+};
+const changed = ['account', 'actor'];
 
-// Each claim is documented, with a command that verifies it, in the trace-grab README.
+// Each claim is documented in the trace-grab README, with a way to check it.
 const claims = [
 	'No Emet Labs endpoint and no upload command.',
 	'No telemetry, analytics or update check.',
@@ -45,10 +53,8 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 >
 	<header class="wrap grid gap-14 pt-16 pb-8 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-12">
 		<div class="lg:col-span-6">
-			<p class="meta inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-dusk">
-				<span class="size-1.5 rounded-full bg-ink" aria-hidden="true"></span>Open source · Apache-2.0 · Node 20+
-			</p>
-			<h1 class="mt-10 text-hero text-ink">trace-grab</h1>
+			<p class="meta text-dusk">Open source · Apache-2.0 · Node 20+</p>
+			<h1 class="mt-6 text-hero text-ink">trace-grab</h1>
 			<p class="mt-8 max-w-md text-lede text-slate sm:mt-10">
 				Contribute the structure of your agent traces while their string values stay with you. It runs on
 				your machine and replaces each value with a stable token.
@@ -70,28 +76,26 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 		</div>
 	</header>
 
-	<Section index="01" label="What changes">
+	<Section label="What changes">
 		<p class="statement">Equality is preserved. Identity is&nbsp;not.</p>
 		<div class="mt-10 grid gap-6 md:grid-cols-2">
 			{
 				(['before', 'after'] as const).map((side) => (
 					<figure class="min-w-0">
 						<figcaption class="meta mb-3 text-dusk">{side === 'before' ? 'Before' : 'After'}</figcaption>
-						<pre class={codeClass}><code>{'{\n  "name": "modify_account",\n  "inputs": {\n'}{fields.map(({ key, before, after }, i) => (
-							<>{`    "${key}": `}<mark class:list={['rounded-sm px-0.5', side === 'after' ? 'bg-ink text-white' : 'bg-line text-ink']}>"{side === 'before' ? before : after}"</mark>{i < fields.length - 1 ? ',\n' : '\n'}</>
-						))}{'  }\n}'}</code></pre>
+						<JsonBlock value={side === 'before' ? before : after} mark={changed} tone={side} class={codeClass} />
 					</figure>
 				))
 			}
 		</div>
 		<p class="measure mt-6 text-small text-slate">
-			Numbers, timestamps, field names, and tool and span names pass through. Tokenization is
+			Numbers, booleans, timestamps, field names, and tool and span names pass through. Tokenization is
 			pseudonymization, not anonymization: see the{' '}
 			<a href={links.traceGrabThreatModel} class="link text-ink" target="_blank" rel="noopener noreferrer">threat model<span class="sr-only"> (opens in a new tab)</span></a>.
 		</p>
 	</Section>
 
-	<Section index="02" label="How to contribute">
+	<Section label="How to contribute">
 		<div class="grid gap-12 lg:grid-cols-4 lg:gap-8">
 			{
 				[
@@ -122,12 +126,12 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 		</p>
 	</Section>
 
-	<Section index="03" label="Claims you can check">
+	<Section label="Claims you can check">
 		<ul class="divide-y divide-line border-y border-line">
 			{claims.map((claim) => <li class="py-4 text-lede text-ink">{claim}</li>)}
 		</ul>
 		<p class="mt-6 text-small text-slate">
-			Each comes with a verifying command in the{' '}
+			Each is documented, with a way to check it, in the{' '}
 			<a href={`${links.traceGrabRepo}#what-it-does-not-do`} class="link text-ink" target="_blank" rel="noopener noreferrer">README<span class="sr-only"> (opens in a new tab)</span></a>.
 		</p>
 	</Section>
