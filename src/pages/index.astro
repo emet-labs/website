@@ -23,15 +23,15 @@ const work = [
 ---
 
 <BaseLayout footerEmail={false}>
-	<header class="wrap pt-14 sm:pt-20 lg:pt-24">
-		<div class="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-8">
-			<h1 class="text-hero text-ink lg:col-span-8">Know what your agents&nbsp;did.</h1>
-			<div class="lg:col-span-4 lg:pb-2">
+	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
+		<div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
+			<h1 class="text-hero text-ink lg:col-span-6">Know what your agents&nbsp;did.</h1>
+			<div class="lg:col-span-5 lg:col-start-8">
 				<p class="text-lede text-slate">
 					Emet Labs builds verification infrastructure for AI agents, so that what they did can be
 					checked against the rules they were given.
 				</p>
-				<div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2">
+				<div class="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3">
 					<Button href="/sentinel/">See how Sentinel answers</Button>
 					<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">Our research</a>
 				</div>
@@ -39,14 +39,14 @@ const work = [
 		</div>
 	</header>
 
-	<div class="wrap mt-12 sm:mt-16">
+	<div class="wrap mt-16 sm:mt-20 lg:mt-24">
 		<div class="tone-ink overflow-hidden rounded-md bg-ink px-5 pt-6 pb-5 text-white sm:px-8 sm:pt-8 lg:px-10">
 			<TraceField />
 		</div>
 	</div>
 
-	<section class="wrap py-20 sm:py-28 lg:py-32">
-		<p class="max-w-5xl font-display text-[length:var(--text-title)] leading-[1.12] tracking-[-0.015em] text-ink text-balance">
+	<section class="wrap py-24 sm:py-32 lg:py-40">
+		<p class="max-w-4xl font-display text-[length:var(--text-title)] leading-[1.18] tracking-[-0.01em] text-ink text-balance">
 			Agents now act on their own.{' '}
 			<span class="quiet">
 				We build the means to check what they did against the rules people set, and to say plainly
@@ -63,8 +63,8 @@ const work = [
 		<a href="/sentinel/" class="group grid overflow-hidden rounded-md bg-mist lg:grid-cols-12">
 			<div class="flex flex-col p-6 sm:p-10 lg:col-span-5 lg:p-12">
 				<span class="meta text-dusk">In private development</span>
-				<span class="mt-8 font-display text-[length:var(--text-title)] leading-none text-ink">Sentinel</span>
-				<span class="mt-5 max-w-sm text-body text-slate">
+				<span class="mt-10 font-display text-[length:var(--text-title)] leading-none text-ink">Sentinel</span>
+				<span class="mt-6 max-w-sm text-body text-slate">
 					Runtime verification for AI agents: rules your team sets, checked against what happened, with the
 					evidence behind each answer.
 				</span>
@@ -87,14 +87,14 @@ const work = [
 		</a>
 		<p class="meta mt-3 text-dusk">Dashboard in development, sample data.</p>
 
-		<ul class="mt-6 grid gap-px overflow-hidden rounded-md bg-line md:grid-cols-2">
+		<ul class="mt-10 grid gap-px overflow-hidden rounded-md bg-line md:grid-cols-2">
 			{
 				work.map(({ href, title, status, body }) => (
 					<li class="bg-card">
 						<a href={href} class="group flex h-full flex-col p-6 transition-colors hover:bg-paper sm:p-8">
 							<span class="meta text-dusk">{status}</span>
 							<span class="mt-10 font-display text-headline text-ink">{title}</span>
-							<span class="mt-3 max-w-md text-small text-slate">{body}</span>
+							<span class="mt-4 max-w-md text-small text-slate">{body}</span>
 							<span aria-hidden="true" class="mt-8 text-ink transition-transform duration-200 group-hover:translate-x-1">
 								→
 							</span>

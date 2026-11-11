@@ -11,11 +11,11 @@ const areas = ['Runtime verification', 'Formal methods', 'Distributed systems', 
 	description="Work with Emet Labs on verification infrastructure for AI agents."
 	footerEmail={false}
 >
-	<header class="wrap pt-14 pb-16 sm:pt-20 sm:pb-24 lg:pt-24">
+	<header class="wrap pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-28">
 		<p class="meta text-dusk">Careers</p>
-		<div class="mt-6 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
-			<h1 class="text-hero text-ink lg:col-span-7">Work With Us</h1>
-			<div class="lg:col-span-5 lg:pb-3">
+		<div class="mt-8 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
+			<h1 class="text-hero text-ink lg:col-span-6">Work With Us</h1>
+			<div class="lg:col-span-5 lg:col-start-8 lg:pb-2">
 				<p class="text-lede text-slate">
 					If the problem of checking what autonomous systems do interests you, write to us and tell us
 					what you have been building.
@@ -29,14 +29,14 @@ const areas = ['Runtime verification', 'Formal methods', 'Distributed systems', 
 			<p class="meta text-haze">Write to</p>
 			<a
 				href={links.email}
-				class="group mt-5 inline-flex flex-wrap items-baseline gap-x-4 font-display text-[length:var(--text-headline)] leading-tight sm:text-[length:var(--text-display)] sm:leading-none tracking-[-0.015em] text-white"
+				class="group mt-6 inline-flex flex-wrap items-baseline gap-x-4 font-display text-[length:var(--text-headline)] leading-tight sm:text-[length:var(--text-display)] sm:leading-none tracking-[-0.015em] text-white"
 			>
 				<span class="break-all underline decoration-rule-strong decoration-1 underline-offset-[0.18em] transition-colors group-hover:decoration-white">
 					{site.email}
 				</span>
 				<span aria-hidden="true" class="text-ember-light transition-transform duration-200 group-hover:translate-x-1">→</span>
 			</a>
-			<div class="mt-14 border-t border-rule pt-5">
+			<div class="mt-16 border-t border-rule pt-6">
 				<p class="meta text-haze">Areas we work in</p>
 				<ul class="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-small text-white">
 					{areas.map((a) => <li>{a}</li>)}

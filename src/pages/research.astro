@@ -38,17 +38,14 @@ const questions = [
 	title="Research"
 	description="The research behind Emet Labs: runtime verification for autonomous AI agents, and the open questions in specifying, observing and controlling systems that act on their own."
 >
-	<header class="wrap pt-14 sm:pt-20 lg:pt-24">
-		<p class="meta text-dusk">Research</p>
-		<h1 class="mt-6 max-w-5xl text-display text-ink">
-			Verification for systems that act on their own.
-		</h1>
-		<p class="mt-8 max-w-2xl text-lede text-slate">
-			Runtime verification checks a running system against a precise specification. Autonomous agents
-			strain its assumptions. <span class="text-ink">These are the questions we are working on.</span>
+	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
+		<h1 class="text-hero text-ink">Research</h1>
+		<p class="mt-8 max-w-2xl text-lede text-slate sm:mt-10">
+			Verification for systems that act on their own. Autonomous agents strain the assumptions of
+			runtime verification; <span class="text-ink">these are the questions we are working on.</span>
 		</p>
 
-		<nav aria-label="Open questions" class="mt-14 sm:mt-20">
+		<nav aria-label="Open questions" class="mt-16 sm:mt-24">
 			<ol class="relative grid grid-cols-5 before:absolute before:top-[5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
 				{
 					questions.map(({ topic }, i) => (
@@ -67,17 +64,17 @@ const questions = [
 		</nav>
 	</header>
 
-	<div class="wrap mt-16 sm:mt-24">
+	<div class="wrap mt-20 sm:mt-28">
 		<ol class="border-t border-line">
 			{
 				questions.map(({ topic, question, why, href, linkLabel }, i) => (
-					<li id={`q${i + 1}`} class="grid gap-4 border-b border-line py-10 sm:py-14 lg:grid-cols-12 lg:gap-8">
+					<li id={`q${i + 1}`} class="grid gap-5 border-b border-line py-12 sm:py-16 lg:grid-cols-12 lg:gap-8">
 						<p class="meta text-dusk lg:col-span-3 lg:pt-3">
 							{String(i + 1).padStart(2, '0')} / {topic}
 						</p>
 						<div class="lg:col-span-8 lg:col-start-4">
 							<h2 class="max-w-3xl text-headline text-ink">{question}</h2>
-							<p class="mt-4 max-w-2xl text-body text-slate">{why}</p>
+							<p class="mt-5 max-w-2xl text-body text-slate">{why}</p>
 							{href && (
 								<a href={href} class="link mt-4 inline-flex min-h-11 items-center text-small font-medium text-ink">
 									{linkLabel} →
@@ -92,7 +89,7 @@ const questions = [
 
 	<Section tone="panel">
 		<p class="meta text-haze">Foundations</p>
-		<p class="statement mt-6 max-w-4xl">
+		<p class="statement mt-8 max-w-3xl">
 			We build on runtime verification and the monitoring of distributed systems, and prefer guarantees
 			that can be stated&nbsp;precisely.
 		</p>
