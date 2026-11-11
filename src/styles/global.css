@@ -82,22 +82,23 @@
 
 	--font-weight-display: 400;
 
-	/* Type scale. Forum (display) has a small x-height and one weight, so display
-	   sizes run large with slight negative tracking; Public Sans carries text. */
-	--text-hero: clamp(3rem, 1.4rem + 6vw, 6.75rem);
-	--text-hero--line-height: 0.98;
-	--text-hero--letter-spacing: -0.02em;
-	--text-display: clamp(2.75rem, 1.9rem + 3.4vw, 4.75rem);
-	--text-display--line-height: 1.02;
-	--text-display--letter-spacing: -0.015em;
-	--text-title: clamp(2.375rem, 1.85rem + 2.1vw, 3.625rem);
-	--text-title--line-height: 1.06;
-	--text-title--letter-spacing: -0.012em;
-	--text-headline: clamp(1.875rem, 1.6rem + 1.1vw, 2.5rem);
-	--text-headline--line-height: 1.12;
-	--text-headline--letter-spacing: -0.008em;
-	--text-subhead: clamp(1.375rem, 1.28rem + 0.4vw, 1.625rem);
-	--text-subhead--line-height: 1.25;
+	/* Type scale: restrained, with clear steps. Forum (display) has a small
+	   x-height and one weight, so it relies on size and space, not weight;
+	   Public Sans carries text. Each step is roughly 1.25x the next. */
+	--text-hero: clamp(2.5rem, 1.75rem + 2.6vw, 4.25rem); /* 40-68px: page titles */
+	--text-hero--line-height: 1.04;
+	--text-hero--letter-spacing: -0.015em;
+	--text-display: clamp(2.125rem, 1.65rem + 1.7vw, 3.25rem); /* 34-52px */
+	--text-display--line-height: 1.08;
+	--text-display--letter-spacing: -0.012em;
+	--text-title: clamp(1.875rem, 1.55rem + 1.15vw, 2.625rem); /* 30-42px */
+	--text-title--line-height: 1.12;
+	--text-title--letter-spacing: -0.01em;
+	--text-headline: clamp(1.5rem, 1.33rem + 0.65vw, 2rem); /* 24-32px: statements */
+	--text-headline--line-height: 1.2;
+	--text-headline--letter-spacing: -0.006em;
+	--text-subhead: clamp(1.25rem, 1.18rem + 0.3vw, 1.4375rem);
+	--text-subhead--line-height: 1.3;
 	--text-lede: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
 	--text-lede--line-height: 1.6;
 	--text-body: 1.0625rem;

@@ -11,12 +11,12 @@ interface Props {
 const { title, eyebrow } = Astro.props;
 ---
 
-<header class="wrap pt-14 pb-12 sm:pt-20 sm:pb-16 lg:pt-24">
-	{eyebrow && <p class="meta mb-6 text-dusk">{eyebrow}</p>}
-	<h1 class="max-w-4xl text-display text-ink">{title}</h1>
+<header class="wrap pt-16 pb-14 sm:pt-24 sm:pb-20 lg:pt-28">
+	{eyebrow && <p class="meta mb-8 text-dusk">{eyebrow}</p>}
+	<h1 class="max-w-4xl text-hero text-ink">{title}</h1>
 	{
 		Astro.slots.has('default') && (
-			<div class="mt-8 max-w-2xl text-lede text-slate">
+			<div class="mt-8 max-w-2xl text-lede text-slate sm:mt-10">
 				<slot />
 			</div>
 		)

@@ -21,9 +21,9 @@ const { index, label, tone = 'paper', id, class: className } = Astro.props;
 const panel = tone === 'panel';
 ---
 
-<section id={id} class:list={['py-12 sm:py-16 lg:py-20', className]}>
+<section id={id} class:list={['py-16 sm:py-24 lg:py-28', className]}>
 	<div class="wrap">
-		<div class:list={[panel && 'tone-ink rounded-md bg-ink px-5 py-10 text-white sm:px-10 sm:py-14 lg:px-14 lg:py-16']}>
+		<div class:list={[panel && 'tone-ink rounded-md bg-ink px-6 py-12 text-white sm:px-12 sm:py-16 lg:px-16 lg:py-20']}>
 			{
 				label && (
 					<div class:list={['flex items-baseline gap-4 border-t pt-4', panel ? 'border-rule' : 'border-line']}>
@@ -32,7 +32,7 @@ const panel = tone === 'panel';
 					</div>
 				)
 			}
-			<div class:list={[label && 'mt-10 sm:mt-14']}>
+			<div class:list={[label && 'mt-12 sm:mt-16 lg:mt-20']}>
 				<slot />
 			</div>
 		</div>
