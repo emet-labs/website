@@ -1,8 +1,6 @@
 ---
-import { links, site } from '../config/site';
+import ContactSection from '../components/ContactSection.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <BaseLayout
@@ -10,13 +8,14 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 	description="Emet Labs is a research and engineering company building verification infrastructure for AI agents."
 	footerEmail={false}
 >
-	<header class="wrap pt-16 pb-14 sm:pt-24 sm:pb-20 lg:pt-28">
-		<h1 class="max-w-4xl text-display text-ink">
-			A mistaken answer can be ignored. A mistaken payment&nbsp;cannot.
+	<header class="wrap pt-14 pb-14 sm:pt-20 sm:pb-20 lg:pt-24">
+		<p class="meta text-dusk">About Emet Labs</p>
+		<h1 class="mt-6 max-w-5xl text-hero text-ink">
+			A mistaken answer can be ignored. <span class="quiet">A mistaken payment&nbsp;cannot.</span>
 		</h1>
 	</header>
 
-	<div class="wrap grid gap-12 pb-20 sm:pb-28 lg:grid-cols-12 lg:gap-8">
+	<div class="wrap grid gap-12 pb-12 sm:pb-16 lg:grid-cols-12 lg:gap-8">
 		<div class="measure text-lede text-slate lg:order-last lg:col-span-6 lg:col-start-4">
 			<p>
 				Emet Labs is a research and engineering company building verification infrastructure for AI
@@ -29,29 +28,24 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 			</p>
 		</div>
 
-		<dl class="grid gap-6 text-small sm:grid-cols-2 lg:col-span-3 lg:grid-cols-1 lg:border-t lg:border-line lg:pt-6">
+		<dl class="grid gap-6 text-small sm:grid-cols-2 lg:col-span-3 lg:grid-cols-1 ticks border border-line p-6 lg:border-x-0 lg:border-b-0 lg:bg-none lg:px-0">
 			<div>
-				<dt class="label">Work</dt>
+				<dt class="meta text-dusk">Work</dt>
 				<dd class="mt-1 text-ink">
 					<a href="/sentinel/" class="link">Sentinel</a>, <a href="/research/" class="link">research</a>{' '}
 					and <a href="/trace-grab/" class="link">trace-grab</a>
 				</dd>
 			</div>
 			<div>
-				<dt class="label">Open source</dt>
+				<dt class="meta text-dusk">Open source</dt>
 				<dd class="mt-1 text-slate">Code that runs inside your systems: trace-grab and our instrumentation SDKs.</dd>
 			</div>
 			<div>
-				<dt class="label">Contact</dt>
-				<dd class="mt-1"><a href={links.email} class="link text-ink">{site.email}</a></dd>
-			</div>
-			<div>
-				<dt class="label">Elsewhere</dt>
-				<dd class="mt-1 text-ink">
-					<a href={links.linkedin} class="link" {...ext}>LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>{' '}
-					and <a href={links.github} class="link" {...ext}>GitHub<span class="sr-only"> (opens in a new tab)</span></a>
-				</dd>
+				<dt class="meta text-dusk">Careers</dt>
+				<dd class="mt-1 text-ink"><a href="/careers/" class="link">No open positions right now</a></dd>
 			</div>
 		</dl>
 	</div>
+
+	<ContactSection lead="Engineers, researchers, teams deploying agents:" follow="we are glad to talk." channels />
 </BaseLayout>

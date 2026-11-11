@@ -43,10 +43,12 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 	title="trace-grab"
 	description="trace-grab is an open-source tool for contributing agent traces to Emet Labs research without sharing their string values. It tokenizes trace exports on your own machine."
 >
-	<header class="wrap grid gap-12 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-28">
+	<header class="wrap grid gap-12 pt-14 pb-8 sm:pt-20 lg:grid-cols-12 lg:gap-8 lg:pt-24 lg:pb-12">
 		<div class="lg:col-span-6">
-			<p class="text-small text-dusk">Open source · Apache-2.0 · Node 20+</p>
-			<h1 class="mt-4 text-display text-ink">trace-grab</h1>
+			<p class="meta inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-dusk">
+				<span class="size-1.5 rounded-full bg-ink" aria-hidden="true"></span>Open source · Apache-2.0 · Node 20+
+			</p>
+			<h1 class="mt-8 text-hero text-ink">trace-grab</h1>
 			<p class="mt-8 max-w-md text-lede text-slate">
 				Contribute the structure of your agent traces while their string values stay with you. It runs on
 				your machine and replaces each value with a stable token.
@@ -68,13 +70,13 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 		</div>
 	</header>
 
-	<Section label="What changes">
+	<Section index="01" label="What changes">
 		<p class="statement">Equality is preserved. Identity is&nbsp;not.</p>
 		<div class="mt-10 grid gap-6 md:grid-cols-2">
 			{
 				(['before', 'after'] as const).map((side) => (
 					<figure class="min-w-0">
-						<figcaption class="label mb-3">{side === 'before' ? 'Before' : 'After'}</figcaption>
+						<figcaption class="meta mb-3 text-dusk">{side === 'before' ? 'Before' : 'After'}</figcaption>
 						<pre class={codeClass}><code>{'{\n  "name": "modify_account",\n  "inputs": {\n'}{fields.map(({ key, before, after }, i) => (
 							<>{`    "${key}": `}<mark class:list={['rounded-sm px-0.5', side === 'after' ? 'bg-ink text-white' : 'bg-line text-ink']}>"{side === 'before' ? before : after}"</mark>{i < fields.length - 1 ? ',\n' : '\n'}</>
 						))}{'  }\n}'}</code></pre>
@@ -89,7 +91,7 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 		</p>
 	</Section>
 
-	<Section label="How to contribute">
+	<Section index="02" label="How to contribute">
 		<div class="grid gap-12 lg:grid-cols-4 lg:gap-8">
 			{
 				[
@@ -97,7 +99,7 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 					{ name: 'Your decision', items: steps.slice(3), start: 4, span: '', list: '', rule: 'border-dashed border-line-strong' },
 				].map(({ name, items, start, span, list, rule }) => (
 					<div class={span}>
-						<p class:list={['label border-t pt-3', rule]}>{name}</p>
+						<p class:list={['meta border-t pt-3 text-dusk', rule]}>{name}</p>
 						<ol start={start} class:list={['mt-6 grid gap-10 lg:gap-8', list]}>
 							{items.map(({ label, title, note }, i) => (
 								<li>
@@ -120,7 +122,7 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 		</p>
 	</Section>
 
-	<Section label="Claims you can check">
+	<Section index="03" label="Claims you can check">
 		<ul class="divide-y divide-line border-y border-line">
 			{claims.map((claim) => <li class="py-4 text-lede text-ink">{claim}</li>)}
 		</ul>
