@@ -27,9 +27,9 @@ const steps = [
 ];
 
 const lanes = [
-	{ name: 'agent', y: 70, clock: '10:02:03.120' },
-	{ name: 'crm', y: 175, clock: '10:02:02.870' },
-	{ name: 'payments', y: 280, clock: '10:02:04.015' },
+	{ name: 'agent', y: 70, clock: '10:02:03.120', text: 'fill-ink' },
+	{ name: 'crm', y: 175, clock: '10:02:02.870', text: 'fill-sys-crm-d' },
+	{ name: 'payments', y: 280, clock: '10:02:04.015', text: 'fill-sys-payments-d' },
 ];
 const curve = (x1: number, y1: number, x2: number, y2: number) =>
 	`M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
@@ -40,11 +40,11 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 		<div class="ticks border border-line px-3 py-5 sm:px-8 sm:py-8">
 			<svg viewBox="0 0 440 330" class="block h-auto w-full" role="img" aria-label="Illustration: an agent's actions in two other systems. Their clocks disagree, one write was never recorded, and the agent's own log claims it was.">
 				{
-					lanes.map(({ name, y, clock }) => (
+					lanes.map(({ name, y, clock, text }) => (
 						<g>
-							<text x="0" y={y + 5} class="fill-dusk font-mono text-[14px]">{name}</text>
+							<text x="0" y={y + 5} class:list={[text, 'font-sans text-[12px] font-semibold tracking-[0.09em] uppercase']}>{name}</text>
 							<line x1="82" x2="440" y1={y} y2={y} class="stroke-line-strong" stroke-width="1" />
-							<text x="440" y={y - 12} text-anchor="end" class="s2 fill-dusk font-mono text-[13px]">{clock}</text>
+							<text x="440" y={y - 12} text-anchor="end" class="s2 fill-dusk font-sans text-[13px] tabular-nums">{clock}</text>
 						</g>
 					))
 				}
@@ -56,25 +56,25 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 					<circle cx="230" cy="70" r="5.5" class="fill-ink" />
 					<circle cx="330" cy="70" r="5.5" class="fill-ink" />
 					<path d={curve(230, 70, 262, 280)} fill="none" class="stroke-line-strong" stroke-width="1" />
-					<circle cx="262" cy="280" r="5.5" class="fill-ink" />
+					<circle cx="262" cy="280" r="5.5" class="fill-sys-payments-d" />
 					<path d={curve(130, 70, 162, 175)} fill="none" class="stroke-line-strong" stroke-width="1" />
-					<circle cx="162" cy="175" r="5.5" class="fill-ink" />
+					<circle cx="162" cy="175" r="5.5" class="fill-sys-crm-d" />
 				</g>
 
 				<!-- The write to the CRM: observed in step 1, missing from step 2. -->
 				<path d={curve(330, 70, 364, 175)} fill="none" class="s1-only stroke-line-strong" stroke-width="1" />
-				<circle cx="364" cy="175" r="5.5" class="s1-only fill-ink" />
+				<circle cx="364" cy="175" r="5.5" class="s1-only fill-sys-crm-d" />
 				<g class="s2">
-					<path d={curve(330, 70, 364, 175)} fill="none" class="stroke-silver" stroke-width="1" stroke-dasharray="3 4" />
-					<circle cx="364" cy="175" r="6" fill="none" class="stroke-dusk" stroke-width="1.25" stroke-dasharray="2.5 2.5" />
+					<path d={curve(330, 70, 364, 175)} fill="none" class="stroke-ember" stroke-width="1" stroke-dasharray="3 4" />
+					<circle cx="364" cy="175" r="6" fill="none" class="stroke-ember" stroke-width="1.25" stroke-dasharray="2.5 2.5" />
 				</g>
 
 				<!-- Step 3: the agent's account against the record. -->
 				<g class="s3">
 					<line x1="330" y1="60" x2="330" y2="36" class="stroke-ink" stroke-width="1" />
 					<rect x="178" y="4" width="262" height="32" rx="2" class="fill-ink" />
-					<text x="190" y="25" class="fill-white font-mono text-[13px]">agent log: “record updated”</text>
-					<text x="440" y="206" text-anchor="end" class="fill-dusk font-mono text-[13px]">no write recorded</text>
+					<text x="190" y="25" class="fill-white font-sans text-[13px]">agent log: “record updated”</text>
+					<text x="440" y="206" text-anchor="end" class="fill-ember font-sans text-[13px] font-medium">no write recorded</text>
 				</g>
 			</svg>
 		</div>

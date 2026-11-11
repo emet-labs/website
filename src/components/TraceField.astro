@@ -16,7 +16,16 @@ const W = 1200;
 const H = 430;
 const left = 132;
 const right = W - 40;
+// One hue per system (the same as in every other diagram); the agent is white.
 const lanes = ['agent', 'model', 'tools', 'approvals', 'payments', 'ledger'];
+const hue: Record<number, { fill: string; stroke: string; text: string }> = {
+	0: { fill: 'fill-white', stroke: 'stroke-white', text: 'fill-white' },
+	1: { fill: 'fill-sys-model-l', stroke: 'stroke-sys-model-l', text: 'fill-sys-model-l' },
+	2: { fill: 'fill-sys-tools-l', stroke: 'stroke-sys-tools-l', text: 'fill-sys-tools-l' },
+	3: { fill: 'fill-sys-approvals-l', stroke: 'stroke-sys-approvals-l', text: 'fill-sys-approvals-l' },
+	4: { fill: 'fill-sys-payments-l', stroke: 'stroke-sys-payments-l', text: 'fill-sys-payments-l' },
+	5: { fill: 'fill-sys-ledger-l', stroke: 'stroke-sys-ledger-l', text: 'fill-sys-ledger-l' },
+};
 const laneY = (i: number) => 58 + i * 62;
 
 // Small deterministic PRNG (mulberry32).
@@ -29,9 +38,9 @@ const rand = () => {
 	return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
 
-type Mark = { x: number; y: number; lost?: boolean };
+type Mark = { x: number; y: number; lane: number; lost?: boolean };
 type Link = { x1: number; y1: number; x2: number; y2: number; lost?: boolean };
-type Span = { x: number; y: number; w: number };
+type Span = { x: number; y: number; w: number; lane: number };
 
 const spans: Span[] = [];
 const marks: Mark[] = [];
@@ -42,16 +51,16 @@ const steps = 9;
 for (let s = 0; s < steps; s++) {
 	const x = left + 30 + (s * (right - left - 90)) / (steps - 1) + (rand() - 0.5) * 24;
 	// The model call that precedes each agent step.
-	spans.push({ x: x - 44, y: laneY(1), w: 30 + rand() * 18 });
-	spans.push({ x, y: laneY(0), w: 22 + rand() * 30 });
-	marks.push({ x, y: laneY(0) });
+	spans.push({ x: x - 44, y: laneY(1), w: 30 + rand() * 18, lane: 1 });
+	spans.push({ x, y: laneY(0), w: 22 + rand() * 30, lane: 0 });
+	marks.push({ x, y: laneY(0), lane: 0 });
 
 	const targets = [2 + Math.floor(rand() * 4)];
 	if (rand() > 0.55) targets.push(2 + ((targets[0] - 1) % 4));
 	targets.forEach((lane, k) => {
 		const tx = x + 18 + rand() * 46;
 		const lost = lostAt.has(s) && k === 0;
-		marks.push({ x: tx, y: laneY(lane), lost });
+		marks.push({ x: tx, y: laneY(lane), lane, lost });
 		links.push({ x1: x, y1: laneY(0), x2: tx, y2: laneY(lane), lost });
 	});
 }
@@ -74,7 +83,7 @@ const ticks = Array.from({ length: 6 }, (_, i) => left + (i * (right - left)) / 
 		{
 			lanes.map((name, i) => (
 				<g>
-					<text x="24" y={laneY(i) + 4} class="fill-haze font-mono text-[15px]">{name}</text>
+					<text x="24" y={laneY(i) + 4} class:list={[hue[i].text, 'font-sans text-[13px] font-semibold tracking-[0.09em] uppercase']}>{name}</text>
 					<line x1={left} x2={right} y1={laneY(i)} y2={laneY(i)} class="stroke-rule" stroke-width="1" />
 				</g>
 			))
@@ -84,7 +93,7 @@ const ticks = Array.from({ length: 6 }, (_, i) => left + (i * (right - left)) / 
 			ticks.map((x, i) => (
 				<g>
 					<line x1={x} x2={x} y1={H - 34} y2={H - 28} class="stroke-rule-strong" stroke-width="1" />
-					<text x={x} y={H - 12} text-anchor="middle" class="fill-haze font-mono text-[13px] opacity-70">
+					<text x={x} y={H - 12} text-anchor="middle" class="fill-haze font-sans text-[12px] tabular-nums opacity-70">
 						t+{i * 2}s
 					</text>
 				</g>
@@ -97,32 +106,32 @@ const ticks = Array.from({ length: 6 }, (_, i) => left + (i * (right - left)) / 
 					d={curve(l)}
 					fill="none"
 					stroke-width="1"
-					class:list={['te', l.lost ? 'stroke-silver opacity-60' : 'stroke-rule-strong']}
+					class:list={['te', l.lost ? 'stroke-ember-light opacity-80' : 'stroke-rule-strong']}
 					stroke-dasharray={l.lost ? '3 4' : undefined}
 					style={`--d:${delay(l.x1)}`}
 				/>
 			))
 		}
 
-		{spans.map((s) => <rect x={s.x} y={s.y - 3} width={s.w} height="6" rx="3" class="te fill-haze opacity-60" style={`--d:${delay(s.x)}`} />)}
+		{spans.map((s) => <rect x={s.x} y={s.y - 3} width={s.w} height="6" rx="3" class:list={['te opacity-45', hue[s.lane].fill]} style={`--d:${delay(s.x)}`} />)}
 
 		{
 			marks.map((m) =>
 				m.lost ? (
-					<circle cx={m.x} cy={m.y} r="5" fill="none" stroke-width="1.25" stroke-dasharray="2.5 2.5" class="te stroke-silver" style={`--d:${delay(m.x)}`} />
+					<circle cx={m.x} cy={m.y} r="5" fill="none" stroke-width="1.25" stroke-dasharray="2.5 2.5" class="te stroke-ember-light" style={`--d:${delay(m.x)}`} />
 				) : (
-					<circle cx={m.x} cy={m.y} r="4.5" class="te fill-white" style={`--d:${delay(m.x)}`} />
+					<circle cx={m.x} cy={m.y} r="4.5" class:list={['te', hue[m.lane].fill]} style={`--d:${delay(m.x)}`} />
 				),
 			)
 		}
 
-		<line class="cursor stroke-white" x1={left} x2={left} y1="30" y2={H - 40} stroke-width="1" opacity="0" />
+		<line class="cursor stroke-ember-light" x1={left} x2={left} y1="30" y2={H - 40} stroke-width="1" opacity="0" />
 	</svg>
 	<figcaption class="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-rule pt-4">
 		<span class="meta text-haze">Fig. 1 — One agent task, six systems, six partial logs.</span>
 		<span class="meta flex items-center gap-5 text-haze" aria-hidden="true">
 			<span class="inline-flex items-center gap-2"><span class="size-2 rounded-full bg-white"></span>Reported</span>
-			<span class="inline-flex items-center gap-2"><span class="size-2.5 rounded-full border border-dashed border-silver"></span>Never reported</span>
+			<span class="inline-flex items-center gap-2"><span class="size-2.5 rounded-full border border-dashed border-ember-light"></span>Never reported</span>
 		</span>
 	</figcaption>
 </figure>

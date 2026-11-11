@@ -9,7 +9,9 @@
  * (that "not yet known" is a real answer) needs no interaction and reads the
  * same with or without JavaScript or a screen reader.
  */
-type Event = { time: string; name: string; flagged?: boolean };
+type Event = { time: string; name: 'Approval' | 'Refund'; flagged?: boolean };
+// System hues, shared with the site's other diagrams.
+const dot = { Approval: 'bg-sys-approvals-d', Refund: 'bg-sys-payments-d' };
 
 const records: { events: Event[]; missing?: string; answer: string }[] = [
 	{
@@ -34,7 +36,7 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 ];
 ---
 
-<figure class="rounded-sm border border-line bg-paper">
+<figure class="rounded-md border border-line bg-card">
 	<figcaption class="flex items-baseline justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
 		<span>
 			<span class="block text-label text-dusk">Rule</span>
@@ -57,11 +59,11 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 						<ol class="relative flex gap-8 before:absolute before:top-[4.5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
 							{events.map(({ time, name, flagged }) => (
 								<li class="relative min-w-16">
-									<span aria-hidden="true" class="block size-2.5 rounded-full bg-ink" />
+									<span aria-hidden="true" class:list={['block size-2.5 rounded-full', flagged ? 'bg-ember' : dot[name]]} />
 									<span class="meta mt-2 block text-dusk">{time}</span>
 									<span class="block text-small text-ink">
 										{flagged ? (
-											<mark class="-mx-1 rounded-sm bg-ink px-1 text-white">
+											<mark class="-mx-1 rounded-sm bg-ember px-1 text-white">
 												{name}
 												<span class="sr-only"> (before any approval)</span>
 											</mark>
@@ -74,8 +76,8 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 						</ol>
 						{missing && (
 							<p class="min-w-0">
-								<span aria-hidden="true" class="block size-2.5 rounded-full border border-dashed border-dusk" />
-								<span class="mt-2 block text-small text-dusk italic">{missing}</span>
+								<span aria-hidden="true" class="block size-2.5 rounded-full border border-dashed border-ember" />
+								<span class="mt-2 block text-small text-ember italic">{missing}</span>
 							</p>
 						)}
 					</div>
