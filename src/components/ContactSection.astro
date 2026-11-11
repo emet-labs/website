@@ -3,34 +3,41 @@ import { links, site } from '../config/site';
 import Section from './Section.astro';
 
 interface Props {
-	/** One sentence of context for why someone would get in touch from this page. */
+	/** The question this page puts to the reader, set large. */
 	lead?: string;
+	/** The quieter continuation of the lead. */
+	follow?: string;
 	/** Also list LinkedIn and GitHub. */
 	channels?: boolean;
 }
 
 const {
-	lead = 'If you are building agents that take consequential actions, we would like to hear from you.',
+	lead = 'Building agents that take consequential actions?',
+	follow = 'We would like to hear from you.',
 	channels = false,
 } = Astro.props;
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
-<Section label="Contact">
-	<p class="measure text-lede text-slate">{lead}</p>
-	<a href={links.email} class="link mt-4 inline-block py-2 font-display text-headline text-ink">{site.email}</a>
-	{
-		channels && (
-			<p class="mt-8 text-small text-slate">
-				Also on{' '}
-				<a href={links.linkedin} class="link text-ink" target="_blank" rel="noopener noreferrer">
-					LinkedIn<span class="sr-only"> (opens in a new tab)</span>
-				</a>{' '}
-				and{' '}
-				<a href={links.github} class="link text-ink" target="_blank" rel="noopener noreferrer">
-					GitHub<span class="sr-only"> (opens in a new tab)</span>
-				</a>
-				.
-			</p>
-		)
-	}
+<Section tone="panel" label="Contact">
+	<div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
+		<p class="statement lg:col-span-7">
+			{lead} <span class="quiet">{follow}</span>
+		</p>
+		<div class="lg:col-span-4 lg:col-start-9">
+			<a href={links.email} class="link inline-flex min-h-11 items-center font-display text-subhead text-white">{site.email}</a>
+			{
+				channels && (
+					<p class="meta mt-3 flex gap-5 text-haze">
+						<a href={links.linkedin} class="link inline-flex min-h-11 items-center" {...ext}>
+							LinkedIn ↗<span class="sr-only"> (opens in a new tab)</span>
+						</a>
+						<a href={links.github} class="link inline-flex min-h-11 items-center" {...ext}>
+							GitHub ↗<span class="sr-only"> (opens in a new tab)</span>
+						</a>
+					</p>
+				)
+			}
+		</div>
+	</div>
 </Section>

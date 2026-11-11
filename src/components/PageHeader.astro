@@ -1,24 +1,24 @@
 ---
 /**
- * Opening block for interior pages: title and optional lede (default slot).
- * The current page is already marked in the navigation, so there is no eyebrow.
+ * Opening block for interior pages: an optional eyebrow in the instrument voice,
+ * the title, and an optional lede (default slot).
  */
 interface Props {
 	title: string;
+	eyebrow?: string;
 }
 
-const { title } = Astro.props;
+const { title, eyebrow } = Astro.props;
 ---
 
-<header class="wrap grid gap-8 pt-16 pb-16 sm:pt-24 sm:pb-20 lg:grid-cols-12 lg:pt-28">
-	<div class="lg:col-span-9">
-		<h1 class="text-title text-ink">{title}</h1>
-		{
-			Astro.slots.has('default') && (
-				<div class="measure mt-6 text-lede text-slate">
-					<slot />
-				</div>
-			)
-		}
-	</div>
+<header class="wrap pt-14 pb-12 sm:pt-20 sm:pb-16 lg:pt-24">
+	{eyebrow && <p class="meta mb-6 text-dusk">{eyebrow}</p>}
+	<h1 class="max-w-4xl text-display text-ink">{title}</h1>
+	{
+		Astro.slots.has('default') && (
+			<div class="mt-8 max-w-2xl text-lede text-slate">
+				<slot />
+			</div>
+		)
+	}
 </header>

@@ -29,6 +29,8 @@
 	--color-haze: #c9cad6; /* secondary text on ink, 8.2:1 */
 	--color-line: rgb(38 44 87 / 0.14);
 	--color-line-strong: rgb(38 44 87 / 0.32);
+	--color-rule: rgb(255 255 255 / 0.16); /* hairlines on ink */
+	--color-rule-strong: rgb(255 255 255 / 0.34);
 	--color-white: #ffffff;
 	--color-transparent: transparent;
 	--color-current: currentColor;
@@ -43,8 +45,12 @@
 
 	--font-weight-display: 400;
 
-	/* Type scale. Headings are fluid but capped well short of "monumental";
-	   body sizes are fixed for legibility. */
+	/* Type scale. Display sizes are fluid; body sizes are fixed for legibility.
+	   Three voices: Minerva Modern for statements, Satoshi for reading, and mono
+	   for metadata (indexes, times, status), the site's "instrument" voice. */
+	--text-hero: clamp(2.75rem, 1.35rem + 5.4vw, 6rem);
+	--text-hero--line-height: 1;
+	--text-hero--letter-spacing: -0.022em;
 	--text-display: clamp(2.5rem, 1.75rem + 3vw, 4.25rem);
 	--text-display--line-height: 1.06;
 	--text-display--letter-spacing: -0.015em;
@@ -64,10 +70,13 @@
 	--text-small--line-height: 1.55;
 	--text-label: 0.875rem;
 	--text-label--line-height: 1.4;
+	--text-meta: 0.75rem;
+	--text-meta--line-height: 1.45;
 	--text-code: 0.8125rem; /* code blocks on phones; text-small from 40rem */
 	--text-code--line-height: 1.625;
 
 	--radius-sm: 2px;
+	--radius-md: 6px; /* the brand panel */
 
 	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -86,6 +95,34 @@
 	@media (width >= 64rem) {
 		padding-inline: 2.5rem;
 	}
+}
+
+/* Metadata in the instrument voice: indexes, times, status. */
+@utility meta {
+	font-family: var(--font-mono);
+	font-size: var(--text-meta);
+	line-height: var(--text-meta--line-height);
+	letter-spacing: 0.01em;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Corner ticks: the construction marks of a measured cell. Draws an L at each
+   corner in --tick-color, over whatever border the element has. */
+@utility ticks {
+	--tick: 10px;
+	--tick-color: var(--color-line-strong);
+	background-image:
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color)),
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color)),
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color)),
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color));
+	background-size:
+		var(--tick) 1px, 1px var(--tick), var(--tick) 1px, 1px var(--tick),
+		var(--tick) 1px, 1px var(--tick), var(--tick) 1px, 1px var(--tick);
+	background-position:
+		left top, left top, right top, right top,
+		left bottom, left bottom, right bottom, right bottom;
+	background-repeat: no-repeat;
 }
 
 /* Comfortable reading width for running text. */
@@ -196,6 +233,19 @@
 
 	.tone-ink .statement {
 		color: var(--color-white);
+	}
+
+	/* Two-tone emphasis: the lead phrase in ink, the continuation quieter. */
+	.quiet {
+		color: var(--color-dusk);
+	}
+
+	.tone-ink .quiet {
+		color: var(--color-haze);
+	}
+
+	.tone-ink .meta {
+		color: var(--color-haze);
 	}
 
 	/* Inline text link: underline that strengthens on hover. */
