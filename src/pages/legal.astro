@@ -7,33 +7,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout title="Legal" description="Licensing and legal information for Emet Labs.">
 	<PageHeader title="Legal" />
 
-	<section class="border-t border-line">
-		<div class="wrap grid py-16 sm:py-20 lg:grid-cols-12">
-			<div class="prose-emet measure lg:col-span-9 lg:col-start-4">
-				<h2>Open-source software</h2>
-				<p>Some Emet Labs software is published as open source under its own licence:</p>
-				<ul>
-					<li>
-						<a href={links.traceGrabRepo} target="_blank" rel="noopener noreferrer">trace-grab<span class="sr-only"> (opens in a new tab)</span></a>{' '}
-						is licensed under the Apache License 2.0.
-					</li>
-					<li>
-						The Sentinel instrumentation SDKs published on{' '}
-						<a href={links.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>{' '}
-						are licensed under the Mozilla Public License 2.0.
-					</li>
-				</ul>
-				<p>Each repository’s licence file is authoritative.</p>
+	<div class="wrap pb-20 sm:pb-28">
+		<div class="prose-emet">
+			<h2>Open-source software</h2>
+			<p>Some Emet Labs software is published as open source under its own licence:</p>
+			<ul>
+				<li>
+					<a href={links.traceGrabRepo} target="_blank" rel="noopener noreferrer">trace-grab<span class="sr-only"> (opens in a new tab)</span></a>{' '}
+					is licensed under the Apache License 2.0.
+				</li>
+				<li>
+					The Sentinel instrumentation SDKs published on{' '}
+					<a href={links.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>{' '}
+					are licensed under the Mozilla Public License 2.0.
+				</li>
+			</ul>
+			<p>Each repository’s licence file is authoritative.</p>
 
-				<h2>This website</h2>
-				<p>
-					Content on this website is © {site.name}. The Satoshi typeface is used under the Fontshare
-					Free Font licence{adobeFontsKitId ? '; Minerva Modern is licensed through Adobe Fonts' : ''}.
-				</p>
+			<h2>This website</h2>
+			<p>
+				Content on this website is © {site.name}. The Satoshi typeface is used under the Fontshare
+				Free Font licence{adobeFontsKitId ? '; Minerva Modern is licensed through Adobe Fonts' : ''}.
+			</p>
 
-				<h2>Contact</h2>
-				<p>For legal enquiries, contact <a href={links.email}>{site.email}</a>.</p>
-			</div>
+			<h2>Contact</h2>
+			<p>For legal enquiries, contact <a href={links.email}>{site.email}</a>.</p>
 		</div>
-	</section>
+	</div>
 </BaseLayout>

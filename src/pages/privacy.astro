@@ -9,47 +9,45 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		<p class="text-small text-dusk">Last updated 10 November 2026</p>
 	</PageHeader>
 
-	<section class="border-t border-line">
-		<div class="wrap grid py-16 sm:py-20 lg:grid-cols-12">
-			<div class="prose-emet measure lg:col-span-9 lg:col-start-4">
-				<h2>This website</h2>
-				<p>
-					We do not use advertising cookies, tracking pixels or third-party analytics on this website,
-					and we do not sell or share visitor data. The site is hosted on GitHub Pages, which processes
-					standard request information, such as IP addresses, to serve it.
-				</p>
-				{
-					adobeFontsKitId && (
-						<p>
-							Some typefaces on this site are served by Adobe Fonts. When your browser requests them,
-							Adobe receives standard request information, such as your IP address, and counts page
-							views for font licensing. That processing is governed by Adobe’s privacy policy.
-						</p>
-					)
-				}
+	<div class="wrap pb-20 sm:pb-28">
+		<div class="prose-emet">
+			<h2>This website</h2>
+			<p>
+				We do not use advertising cookies, tracking pixels or third-party analytics on this website,
+				and we do not sell or share visitor data. The site is hosted on GitHub Pages, which processes
+				standard request information, such as IP addresses, to serve it.
+			</p>
+			{
+				adobeFontsKitId && (
+					<p>
+						Some typefaces on this site are served by Adobe Fonts. When your browser requests them,
+						Adobe receives standard request information, such as your IP address, and counts page
+						views for font licensing. That processing is governed by Adobe’s privacy policy.
+					</p>
+				)
+			}
 
-				<h2>trace-grab</h2>
-				<p>
-					<strong>trace-grab</strong> runs on your machine; its only network access is an optional LangSmith API source that you enable yourself. It has no upload command,
-					contains no Emet Labs endpoint, and has no telemetry, analytics or update check. If you choose
-					to share a corpus with us, that transfer happens by a method you control. See{' '}
-					<a href={links.traceGrabTransfer} target="_blank" rel="noopener noreferrer">Sending your corpus<span class="sr-only"> (opens in a new tab)</span></a>{' '}
-					for what happens after a corpus is received.
-				</p>
-				<p>
-					Tokenized output is pseudonymized, not anonymized: someone holding the key that stays on your
-					machine, or the original data, can re-identify it.
-				</p>
+			<h2>trace-grab</h2>
+			<p>
+				<strong>trace-grab</strong> runs on your machine; its only network access is an optional LangSmith API source that you enable yourself. It has no upload command,
+				contains no Emet Labs endpoint, and has no telemetry, analytics or update check. If you choose
+				to share a corpus with us, that transfer happens by a method you control. See{' '}
+				<a href={links.traceGrabTransfer} target="_blank" rel="noopener noreferrer">Sending your corpus<span class="sr-only"> (opens in a new tab)</span></a>{' '}
+				for what happens after a corpus is received.
+			</p>
+			<p>
+				Tokenized output is pseudonymized, not anonymized: someone holding the key that stays on your
+				machine, or the original data, can re-identify it.
+			</p>
 
-				<h2>Sentinel</h2>
-				<p>
-					<strong>Sentinel</strong> is in private development. Before it is generally available, this
-					page will describe what data it processes, where that data is stored and how long it is kept.
-				</p>
+			<h2>Sentinel</h2>
+			<p>
+				<strong>Sentinel</strong> is in private development. Before it is generally available, this
+				page will describe what data it processes, where that data is stored and how long it is kept.
+			</p>
 
-				<h2>Questions</h2>
-				<p>For privacy questions, contact <a href={links.email}>{site.email}</a>.</p>
-			</div>
+			<h2>Questions</h2>
+			<p>For privacy questions, contact <a href={links.email}>{site.email}</a>.</p>
 		</div>
-	</section>
+	</div>
 </BaseLayout>

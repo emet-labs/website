@@ -207,14 +207,43 @@
 		}
 	}
 
-	/* Long-form text (legal, privacy). */
+	/* Long-form text (legal, privacy). From 64rem the headings hang in the left
+	   margin (columns 1-3) and text runs on columns 4-9, the same axis as Section. */
 	.prose-emet {
 		color: var(--color-slate);
 		font-size: var(--text-body);
 		line-height: var(--text-body--line-height);
 
+		& > * {
+			max-width: 40rem;
+		}
+
 		& > * + * {
 			margin-top: 1.25em;
+		}
+
+		@media (width >= 64rem) {
+			display: grid;
+			grid-template-columns: repeat(12, minmax(0, 1fr));
+			column-gap: 2rem;
+			align-items: baseline;
+
+			& > * {
+				grid-column: 4 / span 6;
+			}
+
+			& > h2 {
+				grid-column: 1 / span 3;
+			}
+
+			/* A heading and the text beside it start the same row. */
+			& > h2 + * {
+				margin-top: 2.5em;
+			}
+
+			& > h2:first-child + * {
+				margin-top: 0;
+			}
 		}
 
 		& h2 {
