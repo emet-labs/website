@@ -40,7 +40,7 @@ const work = [
 		</div>
 	</div>
 
-	<section class="wrap py-20 sm:py-28 lg:py-32">
+	<section class="wrap pt-20 pb-8 sm:pt-28 sm:pb-12 lg:pt-32 lg:pb-12">
 		<p class="max-w-4xl font-display text-[length:var(--text-title)] leading-[1.18] tracking-[-0.01em] text-ink text-balance">
 			Agents now act on their own.{' '}
 			<span class="quiet">
@@ -70,12 +70,12 @@ const work = [
 			</div>
 			<div class="relative min-h-64 overflow-hidden pl-6 sm:pl-10 lg:col-span-7 lg:min-h-0 lg:pt-12 lg:pl-0">
 				<picture>
-					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="776" height="572" />
+					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="900" height="1176" />
 					<img
 						src="/product/sentinel-verdicts.webp"
 						width="2200"
 						height="962"
-						alt="The Sentinel dashboard's list of verdicts."
+						alt=""
 						class="absolute top-6 left-6 w-[115%] max-w-none rounded-tl-(--radius-frame) border-t border-l border-line shadow-(--shadow-frame) sm:left-10 sm:w-[190%] lg:top-12 lg:left-0 lg:w-[150%]"
 						loading="lazy"
 						decoding="async"
@@ -90,8 +90,8 @@ const work = [
 					<li class="border-b border-line">
 						<a href={href} class="group grid gap-2 py-7 md:grid-cols-12 md:items-baseline md:gap-8">
 							<span class="font-display text-headline text-ink md:col-span-4">{title}</span>
-							<span class="text-small text-slate md:col-span-5">{body}</span>
-							<span class="meta text-dusk md:col-span-2">{status}</span>
+							<span class="text-small text-slate md:col-span-4">{body}</span>
+							<span class="meta text-dusk md:col-span-3 md:whitespace-nowrap">{status}</span>
 							<span aria-hidden="true" class="hidden text-right text-ink transition-transform duration-200 group-hover:translate-x-1 md:block">
 								→
 							</span>

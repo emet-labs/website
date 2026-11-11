@@ -11,8 +11,7 @@ const callouts = [
 	{ term: 'The evidence', body: 'Each event the answer rests on, with the system it came from.' },
 	{
 		term: 'The gap',
-		body: 'The event the refund depends on was never retained. Coverage shows two of three sources, so the answer is inconclusive instead of a pass.',
-		coverage: true,
+		body: 'The event the refund depends on was never retained. Coverage reaches two of three sources, so the answer is inconclusive instead of a pass.',
 	},
 ];
 
@@ -59,7 +58,7 @@ const status = [
 	<figure class="wrap mt-12 sm:mt-16 lg:mt-20">
 		<div class="stage rounded-md p-3 sm:p-6 lg:p-10">
 			<picture>
-				<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="776" height="572" />
+				<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="900" height="1176" />
 				<img
 					src="/product/sentinel-verdicts.webp"
 					width="2200"
@@ -90,40 +89,38 @@ const status = [
 				<p class="statement">Built for settings where a wrong answer is worse than no&nbsp;answer.</p>
 				<ol class="mt-12 space-y-7">
 					{
-						callouts.map(({ term, body, coverage }) => (
+						callouts.map(({ term, body }) => (
 							<li class="border-t border-rule pt-4">
 								<p class="text-small text-haze">
 									<span class="font-medium text-white">{term}.</span> {body}
 								</p>
-								{coverage && (
-									<img
-										src="/product/sentinel-coverage.webp"
-										width="768"
-										height="106"
-										alt="Evidence coverage in the dashboard: two of three required sources, one gap."
-										class="mt-4 block h-auto w-full rounded-frame"
-										loading="lazy"
-										decoding="async"
-									/>
-								)}
 							</li>
 						))
 					}
 				</ol>
 			</div>
-			<figure class="lg:col-span-8">
+			<figure class="relative lg:col-span-8 lg:pb-10">
 				<picture>
-					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-missing-evidence-mobile.webp" width="1056" height="520" />
+					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-missing-evidence-mobile.webp" width="900" height="882" />
 					<img
 						src="/product/sentinel-missing-evidence.webp"
 						width="1400"
 						height="996"
-						alt="A Sentinel verdict marked Inconclusive: the rule refund-requires-approval, the events it rests on, and an event, evt-2302, that was never retained."
+						alt="The evidence behind an inconclusive Sentinel verdict: the events it rests on, and an event, evt-2302, that was never retained."
 						class="block h-auto w-full rounded-frame shadow-float"
 						loading="lazy"
 						decoding="async"
 					/>
 				</picture>
+				<img
+					src="/product/sentinel-coverage.webp"
+					width="768"
+					height="106"
+					alt="Evidence coverage for the same verdict: two of three required sources, one gap."
+					class="mt-3 block h-auto w-full max-w-sm rounded-frame sm:max-w-md lg:absolute lg:bottom-0 lg:left-8 lg:mt-0 lg:w-[54%] lg:max-w-none lg:shadow-float"
+					loading="lazy"
+					decoding="async"
+				/>
 			</figure>
 		</div>
 	</Section>
