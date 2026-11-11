@@ -8,12 +8,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const work = [
 	{
-		href: '/sentinel/',
-		title: 'Sentinel',
-		status: 'In private development',
-		body: 'Runtime verification for AI agents: rules your team sets, checked against what happened.',
-	},
-	{
 		href: '/research/',
 		title: 'Research',
 		status: 'Ongoing',
@@ -66,14 +60,41 @@ const work = [
 	</Section>
 
 	<Section index="02" label="What we work on">
-		<ul class="ticks grid gap-px bg-line md:grid-cols-3">
+		<a href="/sentinel/" class="group grid overflow-hidden rounded-md bg-mist lg:grid-cols-12">
+			<div class="flex flex-col p-6 sm:p-10 lg:col-span-5 lg:p-12">
+				<span class="meta text-dusk">In private development</span>
+				<span class="mt-8 font-display text-[length:var(--text-title)] leading-none text-ink">Sentinel</span>
+				<span class="mt-5 max-w-sm text-body text-slate">
+					Runtime verification for AI agents: rules your team sets, checked against what happened, with the
+					evidence behind each answer.
+				</span>
+				<span class="mt-8 inline-flex items-center gap-2 text-small font-medium text-ink lg:mt-auto lg:pt-10">
+					See how Sentinel answers
+					<span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+				</span>
+			</div>
+			<div class="relative min-h-64 overflow-hidden pl-6 sm:pl-10 lg:col-span-7 lg:min-h-0 lg:pt-12 lg:pl-0">
+				<img
+					src="/product/sentinel-verdicts.webp"
+					width="2200"
+					height="962"
+					alt="The Sentinel dashboard's list of verdicts, shown with sample data."
+					class="absolute top-6 left-6 w-[190%] max-w-none rounded-tl-[4px] border-t border-l border-line shadow-[0_12px_32px_-12px_rgb(26_28_39/0.25)] sm:left-10 lg:top-12 lg:left-0 lg:w-[150%]"
+					loading="lazy"
+					decoding="async"
+				/>
+			</div>
+		</a>
+		<p class="meta mt-3 text-dusk">Dashboard in development, sample data.</p>
+
+		<ul class="mt-6 grid gap-px overflow-hidden rounded-md bg-line md:grid-cols-2">
 			{
 				work.map(({ href, title, status, body }) => (
-					<li class="bg-paper">
-						<a href={href} class="group flex h-full flex-col p-6 transition-colors hover:bg-mist sm:p-8">
+					<li class="bg-card">
+						<a href={href} class="group flex h-full flex-col p-6 transition-colors hover:bg-paper sm:p-8">
 							<span class="meta text-dusk">{status}</span>
-							<span class="mt-10 font-display text-headline text-ink sm:mt-16">{title}</span>
-							<span class="mt-3 text-small text-slate">{body}</span>
+							<span class="mt-10 font-display text-headline text-ink">{title}</span>
+							<span class="mt-3 max-w-md text-small text-slate">{body}</span>
 							<span aria-hidden="true" class="mt-8 text-ink transition-transform duration-200 group-hover:translate-x-1">
 								→
 							</span>
