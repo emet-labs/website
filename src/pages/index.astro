@@ -11,7 +11,6 @@ const problem = [
 	'A model’s account of what it did is not evidence.',
 ];
 
-
 const work = [
 	{ href: '/sentinel/', title: 'Sentinel', body: 'Runtime verification for AI agents. In private development.' },
 	{ href: '/research/', title: 'Research', body: 'Open problems in verifying systems that act on their own.' },
@@ -24,8 +23,8 @@ const work = [
 		<div class="lg:col-span-5">
 			<h1 class="text-display text-ink">Know what your agents&nbsp;did.</h1>
 			<p class="mt-8 max-w-md text-lede text-slate">
-				Emet Labs builds verification infrastructure for AI agents: a checkable account of what an
-				agent did, whether it was allowed, and how strong the evidence is.
+				Emet Labs builds verification infrastructure for AI agents, so that what they did can be
+				checked against the rules they were given.
 			</p>
 			<div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2">
 				<Button href="/sentinel/">Read about Sentinel</Button>
@@ -40,13 +39,13 @@ const work = [
 		</div>
 	</header>
 
-	<Section label="The problem" tone="ink">
+	<Section label="Why it is hard to know" tone="ink">
 		<ul class="space-y-8 sm:space-y-10">
-			{problem.map((line) => <li class="statement scroll-ink">{line}</li>)}
+			{problem.map((line) => <li class="statement">{line}</li>)}
 		</ul>
 	</Section>
 
-	<Section label="Our work">
+	<Section label="What we work on">
 		<ul class="divide-y divide-line">
 			{
 				work.map(({ href, title, body }) => (
