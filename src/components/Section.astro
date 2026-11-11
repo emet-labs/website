@@ -7,19 +7,23 @@
  * The label is the section's h2, so headings stay one size per level and name
  * each section plainly. Larger statements inside a section are display-set
  * paragraphs (`.statement`), not headings.
+ *
+ * `tone="ink"` is the one full-bleed brand-colour chapter; use it at most once a page.
  */
 interface Props {
 	label?: string;
+	tone?: 'paper' | 'ink';
 	id?: string;
 	class?: string;
 }
 
-const { label, id, class: className } = Astro.props;
+const { label, tone = 'paper', id, class: className } = Astro.props;
+const ink = tone === 'ink';
 ---
 
-<section id={id} class:list={['border-t border-line', className]}>
-	<div class="wrap grid gap-6 py-16 sm:py-24 lg:grid-cols-12 lg:gap-8">
-		{label && <h2 class="label lg:col-span-3 lg:pt-1.5">{label}</h2>}
+<section id={id} class:list={[ink ? 'tone-ink bg-ink text-white' : 'border-t border-line', className]}>
+	<div class:list={['wrap grid gap-6 lg:grid-cols-12 lg:gap-8', ink ? 'py-20 sm:py-32' : 'py-16 sm:py-24']}>
+		{label && <h2 class:list={['label lg:col-span-3 lg:pt-1.5', ink && 'text-haze']}>{label}</h2>}
 		<div class="min-w-0 lg:col-span-9 lg:col-start-4">
 			<slot />
 		</div>

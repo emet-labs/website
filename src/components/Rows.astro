@@ -13,14 +13,16 @@ interface Row {
 interface Props {
 	items: Row[];
 	ordered?: boolean;
+	/** Term above description, for narrow columns. */
+	stacked?: boolean;
 	class?: string;
 }
 
-const { items, ordered = false, class: className } = Astro.props;
+const { items, ordered = false, stacked = false, class: className } = Astro.props;
 const isExternal = (href: string) => href.startsWith('http');
-const rowClass = 'grid gap-2 py-6 md:grid-cols-9 md:gap-8';
-const termClass = 'font-display text-subhead text-ink md:col-span-3';
-const bodyClass = 'text-body text-slate md:col-span-6';
+const rowClass = stacked ? 'py-6' : 'grid gap-2 py-6 md:grid-cols-9 md:gap-8';
+const termClass = stacked ? 'font-display text-subhead text-ink' : 'font-display text-subhead text-ink md:col-span-3';
+const bodyClass = stacked ? 'mt-2 text-body text-slate' : 'text-body text-slate md:col-span-6';
 ---
 
 {

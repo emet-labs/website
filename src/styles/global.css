@@ -25,7 +25,8 @@
 	--color-ink-deep: #1b2044;
 	--color-slate: #4b4f6e; /* body copy on paper, 7.9:1 */
 	--color-dusk: #5d5872; /* owl gradient midpoint, 6.8:1 on paper */
-	--color-silver: #9b9ca1; /* owl head and dot; decorative only, never text */
+	--color-silver: #9b9ca1; /* owl head and dot; decorative only on paper */
+	--color-haze: #c9cad6; /* secondary text on ink, 8.2:1 */
 	--color-line: rgb(38 44 87 / 0.14);
 	--color-line-strong: rgb(38 44 87 / 0.32);
 	--color-white: #ffffff;
@@ -149,6 +150,10 @@
 		border-radius: var(--radius-sm);
 	}
 
+	.tone-ink :focus-visible {
+		outline-color: var(--color-white);
+	}
+
 	::selection {
 		background: var(--color-ink);
 		color: var(--color-white);
@@ -184,6 +189,10 @@
 		letter-spacing: var(--text-headline--letter-spacing);
 		color: var(--color-ink);
 		text-wrap: balance;
+	}
+
+	.tone-ink .statement {
+		color: var(--color-white);
 	}
 
 	/* Inline text link: underline that strengthens on hover. */
@@ -241,5 +250,54 @@
 		& li::marker {
 			color: var(--color-silver);
 		}
+	}
+}
+
+/*
+ * Scroll-driven emphasis: a line inks in as it reaches the reading position.
+ * Progressive enhancement only; without support, or under reduced motion,
+ * text is simply ink.
+ */
+@keyframes ink-in {
+	from {
+		color: var(--color-silver);
+	}
+	to {
+		color: var(--color-ink);
+	}
+}
+
+@keyframes white-in {
+	from {
+		color: var(--color-silver);
+	}
+	to {
+		color: var(--color-white);
+	}
+}
+
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.scroll-ink {
+			animation: ink-in linear both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 40%;
+		}
+
+		.tone-ink .scroll-ink {
+			animation-name: white-in;
+		}
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.fade-in {
+		animation: fade-in 240ms var(--ease-out);
 	}
 }
