@@ -1,0 +1,130 @@
+---
+import ContactBand from '../components/ContactBand.astro';
+import PageHeader from '../components/PageHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const differences = [
+	{
+		title: 'Behaviour is not fixed in advance',
+		body: 'The same agent, given the same task, may take a different path each time. Testing before deployment cannot enumerate every behaviour, so some guarantees have to be established while the system runs.',
+	},
+	{
+		title: 'Work is distributed and concurrent',
+		body: 'Agents hand off to one another, fan out and act in parallel across services whose clocks disagree. The order in which events were logged is not always the order in which they happened.',
+	},
+	{
+		title: 'Observation is incomplete',
+		body: 'Telemetry is sampled, delayed and sometimes lost. A sound conclusion has to account for what was not seen, not only for what was.',
+	},
+	{
+		title: 'Self-report is weak evidence',
+		body: 'An agent’s account of its own actions is a poor witness to them. Records from the systems it acted on carry more weight than its own narration.',
+	},
+];
+
+const questions = [
+	{
+		area: 'Specification',
+		question:
+			'How should people state what an agent may and may not do, precisely enough for a machine to check and plainly enough for a reviewer to approve?',
+	},
+	{
+		area: 'Sound conclusions',
+		question:
+			'When is the available evidence sufficient to reach a verdict, and how should a system say clearly that it is not?',
+	},
+	{
+		area: 'Ordering and causality',
+		question: 'How do you establish what led to what across systems that share no common clock?',
+	},
+	{
+		area: 'Intervention',
+		question:
+			'Which rules can be enforced before an action takes effect without obstructing legitimate work, and which are better observed and reviewed?',
+	},
+	{
+		area: 'Responsible data',
+		question:
+			'How do you learn from real production behaviour without collecting the sensitive content inside it?',
+		href: '/trace-grab',
+		linkLabel: 'See trace-grab',
+	},
+];
+---
+
+<BaseLayout
+	title="Research"
+	description="The research behind Emet Labs: runtime verification for autonomous AI agents, and the open questions in specifying, observing and controlling systems that act on their own."
+>
+	<PageHeader eyebrow="Research" title="Verification for systems that act on their own.">
+		<p>
+			Runtime verification, the practice of checking a system’s actual behaviour against a precise
+			specification as it runs, is a mature field. Autonomous agents strain many of its assumptions.
+			Our research is about closing that gap.
+		</p>
+	</PageHeader>
+
+	<section>
+		<div class="wrap grid gap-10 py-20 sm:py-28 lg:grid-cols-12">
+			<div class="lg:col-span-4">
+				<p class="eyebrow">Why agents are different</p>
+				<h2 class="mt-5 text-headline text-ink">The old assumptions no longer&nbsp;hold.</h2>
+			</div>
+			<dl class="grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:col-span-7 lg:col-start-6">
+				{
+					differences.map(({ title, body }) => (
+						<div class="border-t border-line pt-6">
+							<dt class="text-subhead font-display text-ink">{title}</dt>
+							<dd class="mt-3 text-small text-slate">{body}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</section>
+
+	<section class="border-t border-line bg-mist">
+		<div class="wrap py-20 sm:py-28">
+			<div class="grid gap-8 lg:grid-cols-12">
+				<p class="eyebrow lg:col-span-3 lg:pt-3">Open questions</p>
+				<h2 class="max-w-3xl text-headline text-ink lg:col-span-9">What we are working&nbsp;on.</h2>
+			</div>
+			<dl class="mt-14 divide-y divide-line border-y border-line lg:mt-20">
+				{
+					questions.map(({ area, question, href, linkLabel }) => (
+						<div class="grid gap-3 py-8 lg:grid-cols-12 lg:gap-8">
+							<dt class="eyebrow lg:col-span-3 lg:pt-2">{area}</dt>
+							<dd class="lg:col-span-9">
+								<p class="max-w-3xl text-subhead font-display text-ink">{question}</p>
+								{href && (
+									<a href={href} class="link mt-4 inline-block text-small font-medium">
+										{linkLabel} →
+									</a>
+								)}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</section>
+
+	<section class="border-t border-line">
+		<div class="wrap grid gap-10 py-20 sm:py-28 lg:grid-cols-12">
+			<p class="eyebrow lg:col-span-3 lg:pt-3">Foundations</p>
+			<div class="space-y-6 text-lede text-slate lg:col-span-7">
+				<p>
+					Our approach draws on established work in runtime verification, temporal specification and
+					the monitoring of concurrent and distributed systems.
+				</p>
+				<p>
+					We prefer methods whose guarantees can be stated precisely over heuristics whose failures are
+					hard to see, and we treat an honest “not yet known” as a better outcome than a confident
+					guess.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand title="Working on related problems? We would be glad to compare notes." />
+</BaseLayout>
