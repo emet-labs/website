@@ -11,9 +11,11 @@ interface Props {
 	description?: string;
 	/** Exclude from search indexes (e.g. placeholder pages). */
 	noindex?: boolean;
+	/** Show the email in the footer. Turn off on pages that already set it prominently. */
+	footerEmail?: boolean;
 }
 
-const { title, description = site.description, noindex = false } = Astro.props;
+const { title, description = site.description, noindex = false, footerEmail = true } = Astro.props;
 
 const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — Verification infrastructure for AI agents`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
@@ -61,7 +63,7 @@ const ogImage = new URL('/brand/og-image.png', site.url).href;
 			<main id="main" class="flex flex-1 flex-col">
 				<slot />
 			</main>
-			<Footer />
+			<Footer email={footerEmail} />
 		</div>
 	</body>
 </html>

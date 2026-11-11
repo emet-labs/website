@@ -37,17 +37,22 @@ export const primaryNav: NavItem[] = [
 	{ href: links.docs, label: 'Docs', external: true },
 ];
 
-export const footerNav: NavItem[] = [
-	{ href: '/sentinel/', label: 'Sentinel' },
-	{ href: '/research/', label: 'Research' },
-	{ href: '/trace-grab/', label: 'trace-grab' },
-	{ href: '/about/', label: 'About' },
-	{ href: '/careers/', label: 'Careers' },
-	{ href: links.docs, label: 'Docs', external: true },
-	{ href: links.github, label: 'GitHub', external: true },
-	{ href: links.linkedin, label: 'LinkedIn', external: true },
-	{ href: '/privacy/', label: 'Privacy' },
-	{ href: '/legal/', label: 'Legal' },
+/** Footer links in two groups: the site's own pages, then external and legal links. */
+export const footerNav: NavItem[][] = [
+	[
+		{ href: '/sentinel/', label: 'Sentinel' },
+		{ href: '/research/', label: 'Research' },
+		{ href: '/trace-grab/', label: 'trace-grab' },
+		{ href: '/about/', label: 'About' },
+		{ href: '/careers/', label: 'Careers' },
+	],
+	[
+		{ href: links.docs, label: 'Docs', external: true },
+		{ href: links.github, label: 'GitHub', external: true },
+		{ href: links.linkedin, label: 'LinkedIn', external: true },
+		{ href: '/privacy/', label: 'Privacy' },
+		{ href: '/legal/', label: 'Legal' },
+	],
 ];
 
 /**

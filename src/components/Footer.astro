@@ -2,38 +2,46 @@
 import { footerNav, links, site } from '../config/site';
 import Logo from './Logo.astro';
 
+interface Props {
+	/** Show the email address. Pages that already set it prominently turn this off. */
+	email?: boolean;
+}
+
+const { email = true } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 <footer class="bg-paper">
 	<div class="wrap">
-		<div class="flex flex-col gap-6 border-t border-line pt-10 pb-4 md:flex-row md:items-center md:justify-between">
-			<a href="/" aria-label="Emet Labs home" class="inline-block self-start md:self-auto">
+		<div class="flex flex-col gap-8 border-t border-line pt-10 pb-4 md:flex-row md:justify-between">
+			<a href="/" aria-label="Emet Labs home" class="inline-block self-start">
 				<Logo class="h-9 w-auto" loading="lazy" />
 			</a>
-			<nav aria-label="Footer">
-				<ul class="flex flex-wrap gap-x-6 text-small">
-					{
-						footerNav.map(({ href, label, external }) => (
-							<li>
-								<a
-									href={href}
-									target={external ? '_blank' : undefined}
-									rel={external ? 'noopener noreferrer' : undefined}
-									class="inline-flex min-h-11 items-center text-slate transition-colors hover:text-ink"
-								>
-									{label}
-									{external && <span class="sr-only"> (opens in a new tab)</span>}
-								</a>
-							</li>
-						))
-					}
-				</ul>
+			<nav aria-label="Footer" class="grid grid-cols-2 gap-x-8 text-small sm:block">
+				{
+					footerNav.map((group) => (
+						<ul class="flex flex-col sm:flex-row sm:gap-x-6 md:justify-end">
+							{group.map(({ href, label, external }) => (
+								<li>
+									<a
+										href={href}
+										target={external ? '_blank' : undefined}
+										rel={external ? 'noopener noreferrer' : undefined}
+										class="inline-flex min-h-11 items-center text-slate transition-colors hover:text-ink sm:min-h-9"
+									>
+										{label}
+										{external && <span class="sr-only"> (opens in a new tab)</span>}
+									</a>
+								</li>
+							))}
+						</ul>
+					))
+				}
 			</nav>
 		</div>
 		<div class="flex flex-col pb-8 text-small text-dusk sm:flex-row sm:items-center sm:justify-between">
 			<p class="py-3">© {year} {site.name}</p>
-			<a href={links.email} class="link inline-flex min-h-11 items-center self-start sm:self-auto">{site.email}</a>
+			{email && <a href={links.email} class="link inline-flex min-h-11 items-center self-start sm:self-auto">{site.email}</a>}
 		</div>
 	</div>
 </footer>
