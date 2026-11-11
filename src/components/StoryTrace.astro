@@ -1,0 +1,137 @@
+---
+/**
+ * "Why it is hard to know", told in three steps beside one diagram.
+ *
+ * On wide screens the diagram is sticky and changes state as each step reaches
+ * the middle of the viewport:
+ *   1. one task becomes actions in several systems;
+ *   2. each system keeps its own clock and log, and one event never arrives;
+ *   3. the agent's own account says otherwise.
+ * Without JavaScript, below 64rem, or under reduced motion (states switch
+ * without transitions), the diagram shows its final state and the steps read as
+ * a list. The diagram is abstract: it illustrates the problem, not a product.
+ */
+const steps = [
+	{
+		title: 'Agents now call tools, move money and change records.',
+		note: 'One task becomes actions in several systems.',
+	},
+	{
+		title: 'Each action spans systems that keep separate, partial logs.',
+		note: 'Their clocks disagree, and some events never arrive.',
+	},
+	{
+		title: 'A model’s account of what it did is not evidence.',
+		note: 'What an agent says it did has to be checked against what the systems recorded.',
+	},
+];
+
+const lanes = [
+	{ name: 'agent', y: 70, clock: '10:02:03.120' },
+	{ name: 'crm', y: 175, clock: '10:02:02.870' },
+	{ name: 'payments', y: 280, clock: '10:02:04.015' },
+];
+const curve = (x1: number, y1: number, x2: number, y2: number) =>
+	`M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
+---
+
+<div class="grid gap-12 lg:grid-cols-12 lg:gap-8" data-story>
+	<figure class="story-figure lg:sticky lg:top-28 lg:col-span-6 lg:self-start" data-step="3">
+		<div class="ticks border border-line px-3 py-5 sm:px-8 sm:py-8">
+			<svg viewBox="0 0 440 330" class="block h-auto w-full" role="img" aria-label="Illustration: an agent's actions in two other systems. Their clocks disagree, one write was never recorded, and the agent's own log claims it was.">
+				{
+					lanes.map(({ name, y, clock }) => (
+						<g>
+							<text x="0" y={y + 5} class="fill-dusk font-mono text-[14px]">{name}</text>
+							<line x1="82" x2="440" y1={y} y2={y} class="stroke-line-strong" stroke-width="1" />
+							<text x="440" y={y - 12} text-anchor="end" class="s2 fill-dusk font-mono text-[13px]">{clock}</text>
+						</g>
+					))
+				}
+
+				<!-- Step 1: one task fans out into actions in other systems. -->
+				<g class="s1">
+					<rect x="112" y="67" width="36" height="6" rx="3" class="fill-silver" />
+					<circle cx="130" cy="70" r="5.5" class="fill-ink" />
+					<circle cx="230" cy="70" r="5.5" class="fill-ink" />
+					<circle cx="330" cy="70" r="5.5" class="fill-ink" />
+					<path d={curve(230, 70, 262, 280)} fill="none" class="stroke-line-strong" stroke-width="1" />
+					<circle cx="262" cy="280" r="5.5" class="fill-ink" />
+					<path d={curve(130, 70, 162, 175)} fill="none" class="stroke-line-strong" stroke-width="1" />
+					<circle cx="162" cy="175" r="5.5" class="fill-ink" />
+				</g>
+
+				<!-- The write to the CRM: observed in step 1, missing from step 2. -->
+				<path d={curve(330, 70, 364, 175)} fill="none" class="s1-only stroke-line-strong" stroke-width="1" />
+				<circle cx="364" cy="175" r="5.5" class="s1-only fill-ink" />
+				<g class="s2">
+					<path d={curve(330, 70, 364, 175)} fill="none" class="stroke-silver" stroke-width="1" stroke-dasharray="3 4" />
+					<circle cx="364" cy="175" r="6" fill="none" class="stroke-dusk" stroke-width="1.25" stroke-dasharray="2.5 2.5" />
+				</g>
+
+				<!-- Step 3: the agent's account against the record. -->
+				<g class="s3">
+					<line x1="330" y1="60" x2="330" y2="36" class="stroke-ink" stroke-width="1" />
+					<rect x="178" y="4" width="262" height="32" rx="2" class="fill-ink" />
+					<text x="190" y="25" class="fill-white font-mono text-[13px]">agent log: “record updated”</text>
+					<text x="440" y="206" text-anchor="end" class="fill-dusk font-mono text-[13px]">no write recorded</text>
+				</g>
+			</svg>
+		</div>
+		<figcaption class="meta mt-3 text-dusk">Illustration. Times and systems are examples.</figcaption>
+	</figure>
+
+	<ol class="lg:col-span-5 lg:col-start-8">
+		{
+			steps.map(({ title, note }, i) => (
+				<li class="border-t border-line py-8 first:border-t-0 first:pt-0 lg:flex lg:min-h-[56vh] lg:flex-col lg:justify-center lg:border-t-0 lg:py-0" data-story-step={i + 1}>
+					<p class="meta text-dusk">{String(i + 1).padStart(2, '0')} /</p>
+					<p class="statement mt-4">{title}</p>
+					<p class="mt-4 max-w-md text-body text-slate">{note}</p>
+				</li>
+			))
+		}
+	</ol>
+</div>
+
+<style>
+	.story-figure :is(.s1, .s1-only, .s2, .s3) {
+		transition: opacity 400ms var(--ease-out);
+	}
+
+	.story-figure[data-step='1'] :is(.s2, .s3),
+	.story-figure[data-step='2'] .s3,
+	.story-figure:not([data-step='1']) .s1-only {
+		opacity: 0;
+	}
+</style>
+
+<script>
+	const wide = window.matchMedia('(min-width: 64rem)');
+	for (const root of document.querySelectorAll<HTMLElement>('[data-story]')) {
+		const figure = root.querySelector<HTMLElement>('.story-figure');
+		const steps = [...root.querySelectorAll<HTMLElement>('[data-story-step]')];
+		if (!figure || !steps.length) continue;
+
+		let observer: IntersectionObserver | undefined;
+		const setup = () => {
+			observer?.disconnect();
+			if (!wide.matches) {
+				figure.dataset.step = '3';
+				return;
+			}
+			// Start from the step already scrolled past, if the page loads mid-way.
+			const mid = window.innerHeight / 2;
+			figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < mid).pop()?.dataset.storyStep ?? '1';
+			observer = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) if (e.isIntersecting) figure.dataset.step = (e.target as HTMLElement).dataset.storyStep;
+				},
+				{ rootMargin: '-45% 0px -45% 0px' },
+			);
+			for (const s of steps) observer.observe(s);
+		};
+		setup();
+		wide.addEventListener('change', setup);
+	}
+</script>

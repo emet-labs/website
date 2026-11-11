@@ -2,62 +2,79 @@
 import Button from '../components/Button.astro';
 import ContactSection from '../components/ContactSection.astro';
 import Section from '../components/Section.astro';
+import StoryTrace from '../components/StoryTrace.astro';
+import TraceField from '../components/TraceField.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const problem = [
-	'Agents now call tools, move money and change records.',
-	'Each action spans systems that keep separate, partial logs.',
-	'A model’s account of what it did is not evidence.',
-];
-
 const work = [
-	{ href: '/sentinel/', title: 'Sentinel', body: 'Runtime verification for AI agents. In private development.' },
-	{ href: '/research/', title: 'Research', body: 'Open problems in verifying systems that act on their own.' },
-	{ href: '/trace-grab/', title: 'trace-grab', body: 'Open-source tool for contributing tokenized traces.' },
+	{
+		href: '/sentinel/',
+		title: 'Sentinel',
+		status: 'In private development',
+		body: 'Runtime verification for AI agents: rules your team sets, checked against what happened.',
+	},
+	{
+		href: '/research/',
+		title: 'Research',
+		status: 'Ongoing',
+		body: 'Open problems in specifying, observing and checking systems that act on their own.',
+	},
+	{
+		href: '/trace-grab/',
+		title: 'trace-grab',
+		status: 'Open source · Apache-2.0',
+		body: 'A tool for contributing agent traces without sharing the sensitive values inside them.',
+	},
 ];
 ---
 
 <BaseLayout footerEmail={false}>
-	<header class="wrap pt-16 pb-20 sm:pt-24 lg:pt-32 lg:pb-32">
-		<h1 class="text-display text-ink">Know what your agents&nbsp;did.</h1>
-		<div class="mt-8 grid gap-8 sm:mt-12 lg:grid-cols-12">
-			<div class="lg:col-span-6 lg:col-start-4">
-				<p class="max-w-xl text-lede text-slate">
+	<header class="wrap pt-14 sm:pt-20 lg:pt-24">
+		<div class="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-8">
+			<h1 class="text-hero text-ink lg:col-span-8">Know what your agents&nbsp;did.</h1>
+			<div class="lg:col-span-4 lg:pb-2">
+				<p class="text-lede text-slate">
 					Emet Labs builds verification infrastructure for AI agents, so that what they did can be
 					checked against the rules they were given.
 				</p>
-				<div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2">
+				<div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2">
 					<Button href="/sentinel/">See how Sentinel answers</Button>
-					<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">See our research</a>
+					<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">Our research</a>
 				</div>
 			</div>
-			<p class="max-w-xs text-small text-dusk lg:col-span-3 lg:row-start-1 lg:pt-1.5">
-				Sentinel is in private development. <span class="whitespace-nowrap">trace-grab</span> is open source under Apache-2.0.
-			</p>
 		</div>
 	</header>
 
-	<Section label="Why it is hard to know" tone="ink">
-		<ul class="space-y-8 sm:space-y-10">
-			{problem.map((line) => <li class="statement">{line}</li>)}
-		</ul>
+	<div class="wrap mt-12 sm:mt-16">
+		<div class="tone-ink overflow-hidden rounded-md bg-ink px-5 pt-6 pb-5 text-white sm:px-8 sm:pt-8 lg:px-10">
+			<TraceField />
+		</div>
+	</div>
+
+	<section class="wrap py-20 sm:py-28 lg:py-32">
+		<p class="max-w-5xl font-display text-[length:var(--text-title)] leading-[1.12] tracking-[-0.015em] text-ink text-balance">
+			Agents now act on their own.{' '}
+			<span class="quiet">
+				We build the means to check what they did against the rules people set, and to say plainly
+				when the evidence is not enough.
+			</span>
+		</p>
+	</section>
+
+	<Section index="01" label="Why it is hard to know">
+		<StoryTrace />
 	</Section>
 
-	<Section label="What we work on">
-		<ul class="divide-y divide-line">
+	<Section index="02" label="What we work on">
+		<ul class="ticks grid gap-px bg-line md:grid-cols-3">
 			{
-				work.map(({ href, title, body }) => (
-					<li>
-						<a
-							href={href}
-							class="group grid gap-1 py-7 md:grid-cols-9 md:items-baseline md:gap-8"
-						>
-							<span class="font-display text-headline text-ink underline decoration-transparent underline-offset-[0.2em] transition-colors group-hover:decoration-current md:col-span-3">{title}</span>
-							<span class="text-body text-slate md:col-span-5">{body}</span>
-							<span
-								aria-hidden="true"
-								class="hidden text-right text-ink transition-transform duration-200 group-hover:translate-x-1 md:block"
-							>
+				work.map(({ href, title, status, body }) => (
+					<li class="bg-paper">
+						<a href={href} class="group flex h-full flex-col p-6 transition-colors hover:bg-mist sm:p-8">
+							<span class="meta text-dusk">{status}</span>
+							<span class="mt-10 font-display text-headline text-ink sm:mt-16">{title}</span>
+							<span class="mt-3 text-small text-slate">{body}</span>
+							<span aria-hidden="true" class="mt-8 text-ink transition-transform duration-200 group-hover:translate-x-1">
 								→
 							</span>
 						</a>
@@ -67,5 +84,5 @@ const work = [
 		</ul>
 	</Section>
 
-	<ContactSection lead="Building agents that take consequential actions? We would like to hear from you." />
+	<ContactSection />
 </BaseLayout>

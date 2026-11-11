@@ -1,0 +1,161 @@
+---
+/**
+ * The homepage's signature graphic: one agent task traced across six systems.
+ *
+ * Each system is a lane; each event is a mark. A connector shows which agent
+ * step caused it, and hollow, dashed marks are events that were never reported.
+ * It depicts the problem Emet Labs works on (one action, scattered across
+ * partial logs). It is abstract on purpose: it is not product UI and shows no
+ * product behaviour or data.
+ *
+ * The figure is generated from a fixed seed, so it is identical on every build.
+ * A time cursor sweeps across once and the marks appear as it passes. Under
+ * reduced motion everything is shown at once, and nothing loops.
+ */
+const W = 1200;
+const H = 430;
+const left = 132;
+const right = W - 40;
+const lanes = ['agent', 'model', 'tools', 'approvals', 'payments', 'ledger'];
+const laneY = (i: number) => 58 + i * 62;
+
+// Small deterministic PRNG (mulberry32).
+let seed = 0x2c57a1;
+const rand = () => {
+	seed |= 0;
+	seed = (seed + 0x6d2b79f5) | 0;
+	let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+	t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+	return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+type Mark = { x: number; y: number; lost?: boolean };
+type Link = { x1: number; y1: number; x2: number; y2: number; lost?: boolean };
+type Span = { x: number; y: number; w: number };
+
+const spans: Span[] = [];
+const marks: Mark[] = [];
+const links: Link[] = [];
+const lostAt = new Set([2, 5, 7]); // steps whose downstream event never arrives
+
+const steps = 9;
+for (let s = 0; s < steps; s++) {
+	const x = left + 30 + (s * (right - left - 90)) / (steps - 1) + (rand() - 0.5) * 24;
+	// The model call that precedes each agent step.
+	spans.push({ x: x - 44, y: laneY(1), w: 30 + rand() * 18 });
+	spans.push({ x, y: laneY(0), w: 22 + rand() * 30 });
+	marks.push({ x, y: laneY(0) });
+
+	const targets = [2 + Math.floor(rand() * 4)];
+	if (rand() > 0.55) targets.push(2 + ((targets[0] - 1) % 4));
+	targets.forEach((lane, k) => {
+		const tx = x + 18 + rand() * 46;
+		const lost = lostAt.has(s) && k === 0;
+		marks.push({ x: tx, y: laneY(lane), lost });
+		links.push({ x1: x, y1: laneY(0), x2: tx, y2: laneY(lane), lost });
+	});
+}
+
+// Animation delay for an element at x: the cursor reaches it at this time.
+const sweep = 3.2;
+const delay = (x: number) => `${(((x - left) / (right - left)) * sweep).toFixed(2)}s`;
+const curve = ({ x1, y1, x2, y2 }: Link) => `M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
+const ticks = Array.from({ length: 6 }, (_, i) => left + (i * (right - left)) / 5);
+---
+
+<figure class="trace-field">
+	<svg
+		viewBox={`0 0 ${W} ${H}`}
+		preserveAspectRatio="xMinYMid slice"
+		class="block h-72 w-full sm:h-auto sm:aspect-[1200/430]"
+		role="img"
+		aria-label="Illustration: one agent task traced across six systems. Most events are connected; three were never reported."
+	>
+		{
+			lanes.map((name, i) => (
+				<g>
+					<text x="24" y={laneY(i) + 4} class="fill-haze font-mono text-[15px]">{name}</text>
+					<line x1={left} x2={right} y1={laneY(i)} y2={laneY(i)} class="stroke-rule" stroke-width="1" />
+				</g>
+			))
+		}
+
+		{
+			ticks.map((x, i) => (
+				<g>
+					<line x1={x} x2={x} y1={H - 34} y2={H - 28} class="stroke-rule-strong" stroke-width="1" />
+					<text x={x} y={H - 12} text-anchor="middle" class="fill-haze font-mono text-[13px] opacity-70">
+						t+{i * 2}s
+					</text>
+				</g>
+			))
+		}
+
+		{
+			links.map((l) => (
+				<path
+					d={curve(l)}
+					fill="none"
+					stroke-width="1"
+					class:list={['te', l.lost ? 'stroke-silver opacity-60' : 'stroke-rule-strong']}
+					stroke-dasharray={l.lost ? '3 4' : undefined}
+					style={`--d:${delay(l.x1)}`}
+				/>
+			))
+		}
+
+		{spans.map((s) => <rect x={s.x} y={s.y - 3} width={s.w} height="6" rx="3" class="te fill-haze opacity-60" style={`--d:${delay(s.x)}`} />)}
+
+		{
+			marks.map((m) =>
+				m.lost ? (
+					<circle cx={m.x} cy={m.y} r="5" fill="none" stroke-width="1.25" stroke-dasharray="2.5 2.5" class="te stroke-silver" style={`--d:${delay(m.x)}`} />
+				) : (
+					<circle cx={m.x} cy={m.y} r="4.5" class="te fill-white" style={`--d:${delay(m.x)}`} />
+				),
+			)
+		}
+
+		<line class="cursor stroke-white" x1={left} x2={left} y1="30" y2={H - 40} stroke-width="1" opacity="0" />
+	</svg>
+	<figcaption class="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-rule pt-4">
+		<span class="meta text-haze">Fig. 1 — One agent task, six systems, six partial logs.</span>
+		<span class="meta flex items-center gap-5 text-haze" aria-hidden="true">
+			<span class="inline-flex items-center gap-2"><span class="size-2 rounded-full bg-white"></span>Reported</span>
+			<span class="inline-flex items-center gap-2"><span class="size-2.5 rounded-full border border-dashed border-silver"></span>Never reported</span>
+		</span>
+	</figcaption>
+</figure>
+
+<style>
+	@media (prefers-reduced-motion: no-preference) {
+		.trace-field .te {
+			animation: te-in 500ms var(--ease-out) both;
+			animation-delay: var(--d);
+		}
+
+		.trace-field .cursor {
+			animation: sweep 3.2s linear both;
+		}
+	}
+
+	@keyframes te-in {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes sweep {
+		0% {
+			opacity: 0.7;
+			transform: translateX(0);
+		}
+		92% {
+			opacity: 0.7;
+		}
+		100% {
+			opacity: 0;
+			transform: translateX(1028px);
+		}
+	}
+</style>
