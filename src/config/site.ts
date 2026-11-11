@@ -54,27 +54,3 @@ export const footerNav: NavItem[][] = [
 		{ href: '/legal/', label: 'Legal' },
 	],
 ];
-
-/**
- * Adobe Fonts web project ID for Minerva Modern (the brand display face).
- *
- * Minerva Modern is licensed through Adobe Fonts and must be served from Adobe's
- * CDN; font files must not be committed to this repository. To enable it:
- *   1. In Adobe Fonts, add Minerva Modern (Regular 400, plus Italic) to a web project.
- *   2. Add emetlabs.ai and localhost to the project's allowed domains.
- *   3. Paste the project ID (the `xxxxxxx` in use.typekit.net/xxxxxxx.css) into
- *      ADOBE_FONTS_KIT_ID below. PUBLIC_ADOBE_FONTS_KIT_ID overrides it for a local build.
- *
- * The ID is public by design (it appears in page source); it is not a secret.
- * Until it is set, display type renders in the fallback stack defined in global.css.
- */
-const ADOBE_FONTS_KIT_ID = '';
-
-export const adobeFontsKitId: string =
-	import.meta.env.PUBLIC_ADOBE_FONTS_KIT_ID || ADOBE_FONTS_KIT_ID;
-
-if (!adobeFontsKitId && import.meta.env.PROD) {
-	console.warn(
-		'[fonts] No Adobe Fonts project ID is set (src/config/site.ts). Minerva Modern will not load; headings use the fallback serif.',
-	);
-}

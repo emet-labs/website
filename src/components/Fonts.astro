@@ -1,29 +1,14 @@
 ---
 /**
- * Font loading.
+ * Font loading. Both families are self-hosted under the SIL Open Font License
+ * (an OFL.txt beside each font in public/fonts), so pages make no third-party font requests.
  *
- * - Satoshi (body/UI) is self-hosted under its Fontshare licence and preloaded.
- * - Minerva Modern (display) is loaded from the Adobe Fonts web project, when one
- *   is configured. Preconnecting to both Typekit hosts lets the stylesheet and
- *   font files start downloading early; the kit's own font-display setting
- *   (use "fallback" in the Adobe Fonts project) controls fallback behaviour.
+ * - Forum: display (headings, hero statements, page titles).
+ * - Public Sans: text and interface. A variable font, one file per style.
+ *
+ * The two upright files are preloaded because every page uses them above the fold.
  */
-import { adobeFontsKitId } from '../config/site';
 ---
 
-<link
-	rel="preload"
-	as="font"
-	type="font/woff2"
-	href="/fonts/satoshi/Satoshi-Variable.woff2"
-	crossorigin
-/>
-{
-	adobeFontsKitId && (
-		<>
-			<link rel="preconnect" href="https://use.typekit.net" crossorigin />
-			<link rel="preconnect" href="https://p.typekit.net" />
-			<link rel="stylesheet" href={`https://use.typekit.net/${adobeFontsKitId}.css`} />
-		</>
-	)
-}
+<link rel="preload" as="font" type="font/woff2" href="/fonts/forum/Forum-Regular.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="/fonts/public-sans/PublicSans-Variable.woff2" crossorigin />

@@ -1,6 +1,6 @@
 ---
 import PageHeader from '../components/PageHeader.astro';
-import { adobeFontsKitId, links, site } from '../config/site';
+import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -15,17 +15,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			<p>
 				We do not use advertising cookies, tracking pixels or third-party analytics on this website,
 				and we do not sell or share visitor data. The site is hosted on GitHub Pages, which processes
-				standard request information, such as IP addresses, to serve it.
+				standard request information, such as IP addresses, to serve it. Fonts are served from this site, not from a third party.
 			</p>
-			{
-				adobeFontsKitId && (
-					<p>
-						Some typefaces on this site are served by Adobe Fonts. When your browser requests them,
-						Adobe receives standard request information, such as your IP address, and counts page
-						views for font licensing. That processing is governed by Adobe’s privacy policy.
-					</p>
-				)
-			}
 
 			<h2>trace-grab</h2>
 			<p>

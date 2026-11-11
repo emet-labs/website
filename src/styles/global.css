@@ -3,65 +3,101 @@
 /*
  * Emet Labs design tokens.
  *
- * Colour is derived from the logo: the owl's navy body and wordmark (#262c57),
- * the violet-grey midpoint of its gradient, and the silver of its head and the
- * dot at its base. The default Tailwind palette is cleared so every colour in
- * the codebase comes from this list.
+ * Palette, "ink and bone": a warm bone paper, a near-black ink with the blue
+ * cast of the logo's navy, and one accent, ember, the complement of that navy.
+ * Ember carries meaning: it marks what is violated or missing, never decoration.
+ * The logo is used unchanged; its transparent artwork sits on bone and cards.
+ * The default Tailwind palette is cleared, so every colour comes from this list.
+ *
+ * Contrast (WCAG): ink 15:1, slate 7.9:1, dusk 5.7:1, ember 4.9:1 on bone;
+ * on the ink panel, white 15:1, haze 8.9:1, ember-light 6.2:1. Silver is for
+ * marks only, never text.
  */
 
 @font-face {
-	font-family: "Satoshi";
-	src: url("/fonts/satoshi/Satoshi-Variable.woff2") format("woff2");
+	font-family: "Forum";
+	src: url("/fonts/forum/Forum-Regular.woff2") format("woff2");
 	font-style: normal;
-	font-weight: 300 900;
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Public Sans";
+	src: url("/fonts/public-sans/PublicSans-Variable.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 300 700;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Public Sans";
+	src: url("/fonts/public-sans/PublicSans-Italic-Variable.woff2") format("woff2");
+	font-style: italic;
+	font-weight: 300 700;
 	font-display: swap;
 }
 
 @theme {
 	--color-*: initial;
-	--color-paper: #ffffff;
-	--color-mist: #f4f4f7;
-	--color-ink: #262c57; /* logo navy */
-	--color-ink-deep: #1b2044;
-	--color-slate: #4b4f6e; /* body copy on paper, 7.9:1 */
-	--color-dusk: #5d5872; /* owl gradient midpoint, 6.8:1 on paper */
-	--color-silver: #9b9ca1; /* owl head and dot; decorative only on paper */
-	--color-haze: #c9cad6; /* secondary text on ink, 8.2:1 */
-	--color-line: rgb(38 44 87 / 0.14);
-	--color-line-strong: rgb(38 44 87 / 0.32);
-	--color-rule: rgb(255 255 255 / 0.16); /* hairlines on ink */
-	--color-rule-strong: rgb(255 255 255 / 0.34);
-	--color-white: #ffffff;
+	--color-paper: #f3f1ec; /* bone: the page */
+	--color-card: #faf9f6; /* a lifted surface on bone */
+	--color-mist: #e8e4dc; /* sand: code, hover, quiet fills */
+	--color-ink: #1a1c27; /* text, and the brand panel */
+	--color-ink-deep: #0f1017;
+	--color-navy: #262c57; /* the logo's navy, for small accents only */
+	--color-slate: #474957; /* body text */
+	--color-dusk: #615c6b; /* secondary text and labels */
+	--color-silver: #9b9ca1; /* the logo's silver: marks only */
+	--color-haze: #b9b7c2; /* secondary text on ink */
+	--color-ember: #b0462a; /* violated or missing */
+	--color-ember-light: #e0805e; /* ember on ink */
+	--color-line: rgb(26 28 39 / 0.12);
+	--color-line-strong: rgb(26 28 39 / 0.28);
+	--color-rule: rgb(246 244 239 / 0.14); /* hairlines on ink */
+	--color-rule-strong: rgb(246 244 239 / 0.32);
+	--color-white: #f6f4ef; /* warm white, for text on ink */
+
+	/* Diagram colours: one muted hue per system, the same in every diagram.
+	   "-d" is the deep version for bone, "-l" the light version for the ink panel.
+	   Ember stays reserved for what is violated or missing. */
+	--color-sys-model-d: #6a55b8;
+	--color-sys-model-l: #b3a6e6;
+	--color-sys-tools-d: #2a7550;
+	--color-sys-tools-l: #7ccfa6;
+	--color-sys-approvals-d: #96640f;
+	--color-sys-approvals-l: #e7b85e;
+	--color-sys-payments-d: #2f63a8;
+	--color-sys-payments-l: #84b4ec;
+	--color-sys-ledger-d: #a8477a;
+	--color-sys-ledger-l: #e293b4;
+	--color-sys-crm-d: #1f7a74;
+	--color-sys-crm-l: #6fd0c6;
 	--color-transparent: transparent;
 	--color-current: currentColor;
 
-	/* Minerva Modern is served by Adobe Fonts (see src/config/site.ts). Until the
-	   kit is configured, Georgia (installed on Windows and macOS alike) renders
-	   headings, so every visitor sees the same interim face; no third-party font
-	   is substituted. Retune heading tracking once Minerva is live. */
-	--font-display: "minerva-modern", Georgia, "Times New Roman", serif;
-	--font-sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-display: "Forum", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+	--font-sans: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 	--font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
 
 	--font-weight-display: 400;
 
-	/* Type scale. Display sizes are fluid; body sizes are fixed for legibility.
-	   Three voices: Minerva Modern for statements, Satoshi for reading, and mono
-	   for metadata (indexes, times, status), the site's "instrument" voice. */
-	--text-hero: clamp(2.75rem, 1.35rem + 5.4vw, 6rem);
-	--text-hero--line-height: 1;
-	--text-hero--letter-spacing: -0.022em;
-	--text-display: clamp(2.5rem, 1.75rem + 3vw, 4.25rem);
-	--text-display--line-height: 1.06;
+	/* Type scale. Forum (display) has a small x-height and one weight, so display
+	   sizes run large with slight negative tracking; Public Sans carries text. */
+	--text-hero: clamp(3rem, 1.4rem + 6vw, 6.75rem);
+	--text-hero--line-height: 0.98;
+	--text-hero--letter-spacing: -0.02em;
+	--text-display: clamp(2.75rem, 1.9rem + 3.4vw, 4.75rem);
+	--text-display--line-height: 1.02;
 	--text-display--letter-spacing: -0.015em;
-	--text-title: clamp(2.25rem, 1.8rem + 1.8vw, 3.25rem);
-	--text-title--line-height: 1.08;
-	--text-title--letter-spacing: -0.015em;
-	--text-headline: clamp(1.625rem, 1.4rem + 0.9vw, 2.125rem);
-	--text-headline--line-height: 1.18;
-	--text-headline--letter-spacing: -0.01em;
-	--text-subhead: clamp(1.25rem, 1.17rem + 0.3vw, 1.4375rem);
-	--text-subhead--line-height: 1.32;
+	--text-title: clamp(2.375rem, 1.85rem + 2.1vw, 3.625rem);
+	--text-title--line-height: 1.06;
+	--text-title--letter-spacing: -0.012em;
+	--text-headline: clamp(1.875rem, 1.6rem + 1.1vw, 2.5rem);
+	--text-headline--line-height: 1.12;
+	--text-headline--letter-spacing: -0.008em;
+	--text-subhead: clamp(1.375rem, 1.28rem + 0.4vw, 1.625rem);
+	--text-subhead--line-height: 1.25;
 	--text-lede: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
 	--text-lede--line-height: 1.6;
 	--text-body: 1.0625rem;
@@ -70,13 +106,13 @@
 	--text-small--line-height: 1.55;
 	--text-label: 0.875rem;
 	--text-label--line-height: 1.4;
-	--text-meta: 0.75rem;
-	--text-meta--line-height: 1.45;
+	--text-meta: 0.6875rem;
+	--text-meta--line-height: 1.5;
 	--text-code: 0.8125rem; /* code blocks on phones; text-small from 40rem */
 	--text-code--line-height: 1.625;
 
 	--radius-sm: 2px;
-	--radius-md: 6px; /* the brand panel */
+	--radius-md: 6px; /* the brand panel and product frames */
 
 	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -97,12 +133,14 @@
 	}
 }
 
-/* Metadata in the instrument voice: indexes, times, status. */
+/* Labels and metadata: indexes, times, status. Small, tracked Public Sans caps. */
 @utility meta {
-	font-family: var(--font-mono);
+	font-family: var(--font-sans);
 	font-size: var(--text-meta);
 	line-height: var(--text-meta--line-height);
-	letter-spacing: 0.01em;
+	font-weight: 600;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
 	font-variant-numeric: tabular-nums;
 }
 
@@ -163,6 +201,7 @@
 		font-family: var(--font-display);
 		font-weight: var(--font-weight-display);
 		text-wrap: balance;
+		font-kerning: normal;
 	}
 
 	p {
