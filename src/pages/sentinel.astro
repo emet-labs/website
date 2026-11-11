@@ -1,15 +1,13 @@
 ---
 import ContactSection from '../components/ContactSection.astro';
-import Rows from '../components/Rows.astro';
 import RuleExample from '../components/RuleExample.astro';
 import Section from '../components/Section.astro';
 import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// An illustration of a public design commitment (each answer carries its rule,
-// its evidence and its gaps), opening up the violated record from the rule
-// example in the header. It is not
-// product output and shows no internal format.
+// An illustration of Sentinel's stated design principles (each answer carries
+// its rule, its evidence and its gaps), opening up the violated record from the
+// rule example above. It is not product output and shows no internal format.
 const evidence = [
 	{ time: '10:02', event: 'Refund issued', system: 'Payments' },
 	{ time: '10:05', event: 'Request approved', system: 'Approvals' },
@@ -19,15 +17,33 @@ const notes = {
 	rule: { term: 'Rules you own', body: 'Written down and reviewed by your team.' },
 	evidence: {
 		term: 'Retraceable',
-		body: 'Each answer cites the observations behind it, across every system you instrument.',
+		body: 'Each answer cites the observations behind it, across the systems you instrument.',
 	},
-	gaps: { term: 'Explicit about gaps', body: 'Incomplete evidence is never reported as a pass.' },
+	gaps: { term: 'Explicit about gaps', body: 'Designed so that incomplete evidence is not reported as a pass.' },
 };
 
+// Where things stand. Each item says what exists today, or that it is in development.
 const status = [
-	{ term: 'Instrumentation SDKs', body: 'Source published under MPL-2.0.', href: links.github, linkLabel: 'GitHub' },
-	{ term: 'Documentation', body: 'Early and in progress.', href: `${links.docs}/sentinel`, linkLabel: 'Docs' },
-	{ term: 'Real-world data', body: 'Contribute traces from your own agents.', href: '/trace-grab/', linkLabel: 'trace-grab' },
+	{
+		label: 'Instrumentation SDKs',
+		state: 'Published',
+		body: 'Open source under MPL-2.0: TypeScript, Python, Go, JVM, .NET and Elixir.',
+		href: links.github,
+		linkLabel: 'GitHub',
+	},
+	{ label: 'Documentation', state: 'Early', body: 'In progress, alongside the product.', href: `${links.docs}/sentinel`, linkLabel: 'Docs' },
+	{
+		label: 'Prevention',
+		state: 'In development',
+		body: 'For a narrow class of rules, stopping an action before it takes effect.',
+	},
+	{
+		label: 'Real-world data',
+		state: 'Open to contributors',
+		body: 'Teams can contribute traces from their own agents.',
+		href: '/trace-grab/',
+		linkLabel: 'trace-grab',
+	},
 ];
 
 const cell = 'bg-paper px-5 py-4 sm:px-6 md:col-span-5';
@@ -40,21 +56,33 @@ const note =
 	description="Sentinel checks what AI agents did against rules your team sets, and reports each answer with its evidence. In private development."
 	footerEmail={false}
 >
-	<header class="wrap grid gap-14 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-24 lg:pb-28">
-		<div class="lg:col-span-5">
-			<p class="text-small text-dusk">In private development</p>
-			<h1 class="mt-4 text-display text-ink">Sentinel</h1>
-			<p class="mt-8 max-w-md text-lede text-slate">
-				Runtime verification for AI agents. Set the rules; Sentinel tells you whether your agents kept
-				them, and on what evidence.
+	<header class="wrap pt-14 sm:pt-20 lg:pt-24">
+		<p class="meta inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-dusk">
+			<span class="size-1.5 rounded-full bg-dusk" aria-hidden="true"></span>In private development
+		</p>
+		<div class="mt-8 grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-8">
+			<h1 class="text-hero text-ink lg:col-span-6">Sentinel</h1>
+			<p class="text-lede text-slate lg:col-span-5 lg:col-start-8 lg:pb-3">
+				Runtime verification for AI agents. Your team sets the rules; Sentinel checks what your agents
+				did against them, and shows the evidence behind each answer.
 			</p>
-		</div>
-		<div class="lg:col-span-6 lg:col-start-7">
-			<RuleExample />
 		</div>
 	</header>
 
-	<Section label="An answer, with its evidence" tone="ink">
+	<!-- DASHBOARD PREVIEW: added once the capture is reviewed. -->
+
+	<Section index="01" label="One rule, three answers">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				The same rule, checked against three records. <span class="quiet">“Not yet known” is an answer too.</span>
+			</p>
+			<div class="lg:col-span-7 lg:col-start-6">
+				<RuleExample />
+			</div>
+		</div>
+	</Section>
+
+	<Section index="02" label="An answer, with its evidence" tone="panel">
 		<p class="statement measure">Built for settings where a wrong answer is worse than no&nbsp;answer.</p>
 
 		<figure class="mt-12 sm:mt-16">
@@ -116,14 +144,32 @@ const note =
 			</figcaption>
 		</figure>
 
-		<p class="measure mt-12 text-small text-haze">
-			For a narrow class of rules, Sentinel is designed to stop an action before it takes effect.
-		</p>
 	</Section>
 
-	<Section label="Status">
-		<Rows items={status} />
+	<Section index="03" label="Where it stands">
+		<ul class="ticks grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
+			{
+				status.map(({ label, state, body, href, linkLabel }) => (
+					<li class="flex flex-col bg-paper p-6">
+						<p class="meta text-dusk">{state}</p>
+						<p class="mt-8 font-display text-subhead text-ink">{label}</p>
+						<p class="mt-2 text-small text-slate">{body}</p>
+						{href && (
+							<a
+								href={href}
+								class="link mt-auto inline-flex min-h-11 items-center self-start pt-4 text-small font-medium text-ink"
+								target={href.startsWith('http') ? '_blank' : undefined}
+								rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+							>
+								{linkLabel} {href.startsWith('http') ? '↗' : '→'}
+								{href.startsWith('http') && <span class="sr-only"> (opens in a new tab)</span>}
+							</a>
+						)}
+					</li>
+				))
+			}
+		</ul>
 	</Section>
 
-	<ContactSection lead="Do your agents take consequential actions? Tell us about it." />
+	<ContactSection lead="Do your agents take consequential actions?" follow="Tell us about them." />
 </BaseLayout>
