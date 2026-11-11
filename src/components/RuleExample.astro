@@ -1,139 +1,90 @@
 ---
 /**
  * A worked example of the idea behind Emet Labs' work, deliberately generic:
- * one rule, a short record of events from three systems, and the three answers
- * a verifier can honestly give. It illustrates the problem, not any product's
- * internals, and is labelled as an example.
+ * one rule, three short records, and the three answers a verifier can honestly
+ * give. It illustrates the problem, not any product's internals, and is
+ * labelled as an example.
  *
- * Progressive enhancement: without JavaScript every scenario is listed in turn.
- * With it, the buttons switch between them and the answer is announced politely.
+ * Static on purpose: every record and answer is visible at once, so the point
+ * (that "not yet known" is a real answer) needs no interaction and reads the
+ * same with or without JavaScript or a screen reader.
  */
-type EventId = 'approval' | 'refund' | 'ledger';
+type Event = { time: string; name: string; flagged?: boolean };
 
-const events: Record<EventId, { system: string; event: string }> = {
-	approval: { system: 'Approvals', event: 'Request approved' },
-	refund: { system: 'Payments', event: 'Refund issued' },
-	ledger: { system: 'Ledger', event: 'Entry recorded' },
-};
-
-const scenarios: {
-	id: string;
-	label: string;
-	order: EventId[];
-	missing?: EventId;
-	verdict: string;
-	note: string;
-}[] = [
+const records: { events: Event[]; missing?: string; answer: string }[] = [
 	{
-		id: 'holds',
-		label: 'Approved first',
-		order: ['approval', 'refund', 'ledger'],
-		verdict: 'Holds.',
-		note: 'The approval is recorded before the refund.',
+		events: [
+			{ time: '10:02', name: 'Approval' },
+			{ time: '10:04', name: 'Refund' },
+		],
+		answer: 'Holds.',
 	},
 	{
-		id: 'violated',
-		label: 'Refunded first',
-		order: ['refund', 'approval', 'ledger'],
-		verdict: 'Violated.',
-		note: 'The refund went out before any approval.',
+		events: [
+			{ time: '10:02', name: 'Refund', flagged: true },
+			{ time: '10:05', name: 'Approval' },
+		],
+		answer: 'Violated.',
 	},
 	{
-		id: 'unknown',
-		label: 'Approvals silent',
-		order: ['approval', 'refund', 'ledger'],
-		missing: 'approval',
-		verdict: 'Not yet known.',
-		note: 'The approvals system sent nothing, so neither answer is supported.',
+		events: [{ time: '10:04', name: 'Refund' }],
+		missing: 'No report from approvals',
+		answer: 'Not yet known.',
 	},
 ];
 ---
 
-<figure class="rounded-sm border border-line bg-paper" data-rule-example aria-label="Example: checking one rule against a record">
-	<div class="flex items-baseline justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
-		<div>
-			<p class="text-label text-dusk">Rule</p>
-			<p class="mt-1 text-body text-ink">A refund is issued only after an approval.</p>
-		</div>
-		<p class="shrink-0 text-label text-dusk">Example</p>
+<figure class="rounded-sm border border-line bg-paper">
+	<figcaption class="flex items-baseline justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
+		<span>
+			<span class="block text-label text-dusk">Rule</span>
+			<span class="mt-1 block text-body text-ink">A refund is issued only after an approval.</span>
+		</span>
+		<span class="shrink-0 text-label text-dusk">Example</span>
+	</figcaption>
+
+	<div class="hidden grid-cols-[minmax(0,1fr)_10rem] gap-6 px-5 pt-4 text-label text-dusk sm:grid sm:px-6" aria-hidden="true">
+		<span>Record</span>
+		<span>Answer</span>
 	</div>
 
-	<div class="border-b border-line px-5 py-3 sm:px-6" data-controls hidden>
-		<div class="flex flex-wrap gap-2" role="group" aria-label="What the record shows">
-			{
-				scenarios.map((s, i) => (
-					<button
-						type="button"
-						data-scenario={s.id}
-						aria-pressed={i === 0 ? 'true' : 'false'}
-						class="min-h-10 rounded-sm px-3 text-small text-slate transition-colors hover:bg-mist hover:text-ink aria-pressed:bg-ink aria-pressed:text-white"
-					>
-						{s.label}
-					</button>
-				))
-			}
-		</div>
-	</div>
-
-	<div aria-live="polite" data-panels>
+	<ol class="divide-y divide-line">
 		{
-			scenarios.map((s) => (
-				<div data-panel={s.id} class="grid gap-8 px-5 py-6 sm:grid-cols-2 sm:px-6 [&+&]:border-t [&+&]:border-line">
-					<div>
-						<p class="text-label text-dusk">
-							Record<span data-nojs-title>: {s.label.toLowerCase()}</span>
-						</p>
-						<ol class="mt-3 ml-1.5 border-l border-line">
-							{s.order.map((id) => {
-								const missing = s.missing === id;
-								return (
-									<li class="relative py-2.5 pl-5">
-										<span
-											aria-hidden="true"
-											class:list={[
-												'absolute top-[1.05rem] -left-[5.5px] size-2.5 rounded-full',
-												missing ? 'border border-dashed border-dusk bg-paper' : 'bg-ink',
-											]}
-										/>
-										<span class="block text-label text-dusk">{events[id].system}</span>
-										<span class:list={['block text-small', missing ? 'text-dusk italic' : 'text-ink']}>
-											{missing ? 'Nothing reported' : events[id].event}
-										</span>
-									</li>
-								);
-							})}
+			records.map(({ events, missing, answer }, i) => (
+				<li class="grid gap-4 px-5 py-4 sm:py-5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center sm:gap-6 sm:px-6">
+					<div class="flex flex-wrap items-start gap-x-8 gap-y-3">
+						<span class="sr-only">Record {i + 1}:</span>
+						<ol class="relative flex gap-8 before:absolute before:top-[4.5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
+							{events.map(({ time, name, flagged }) => (
+								<li class="relative min-w-16">
+									<span aria-hidden="true" class="block size-2.5 rounded-full bg-ink" />
+									<span class="mt-2 block text-label text-dusk tabular-nums">{time}</span>
+									<span class="block text-small text-ink">
+										{flagged ? (
+											<mark class="-mx-1 rounded-sm bg-ink px-1 text-white">
+												{name}
+												<span class="sr-only"> (before any approval)</span>
+											</mark>
+										) : (
+											name
+										)}
+									</span>
+								</li>
+							))}
 						</ol>
+						{missing && (
+							<p class="min-w-0">
+								<span aria-hidden="true" class="block size-2.5 rounded-full border border-dashed border-dusk" />
+								<span class="mt-2 block text-small text-dusk italic">{missing}</span>
+							</p>
+						)}
 					</div>
-					<div class="sm:border-l sm:border-line sm:pl-6">
-						<p class="text-label text-dusk">Answer</p>
-						<p class="mt-2 font-display text-headline text-ink">{s.verdict}</p>
-						<p class="mt-3 text-small text-slate">{s.note}</p>
-					</div>
-				</div>
+					<p class="font-display text-subhead text-ink">
+						<span class="sr-only">Answer: </span>
+						{answer}
+					</p>
+				</li>
 			))
 		}
-	</div>
+	</ol>
 </figure>
-
-<script>
-	for (const root of document.querySelectorAll<HTMLElement>('[data-rule-example]')) {
-		const controls = root.querySelector<HTMLElement>('[data-controls]');
-		const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-scenario]')];
-		const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
-		if (!controls || !buttons.length) continue;
-
-		const show = (id: string, animate: boolean) => {
-			for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.scenario === id));
-			for (const p of panels) {
-				const active = p.dataset.panel === id;
-				p.hidden = !active;
-				p.classList.toggle('fade-in', active && animate);
-			}
-		};
-
-		controls.hidden = false;
-		for (const t of root.querySelectorAll<HTMLElement>('[data-nojs-title]')) t.hidden = true;
-		show(buttons[0].dataset.scenario!, false);
-		for (const b of buttons) b.addEventListener('click', () => show(b.dataset.scenario!, true));
-	}
-</script>
