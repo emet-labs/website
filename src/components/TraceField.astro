@@ -8,9 +8,10 @@
  * the problem Emet Labs works on (one action, scattered across partial logs).
  * It is an abstract illustration, labelled as one, and shows no product output.
  *
- * Two layouts come from one generator: a wide figure from 40rem, and a portrait
- * figure with fewer steps and larger labels for phones, so the point (missing
- * events) stays visible and legible. Both are deterministic, so every build is
+ * Three layouts come from one generator (wide from 64rem, medium from 40rem,
+ * and a portrait figure for phones), each with fewer steps and larger labels as
+ * the screen narrows, so the point (missing events) stays visible and the text
+ * stays legible. Both are deterministic, so every build is
  * identical. A cursor sweeps once and the marks appear as it passes; under
  * reduced motion everything is shown at once, and nothing loops.
  */
@@ -73,13 +74,15 @@ function build(l: Layout) {
 
 const sweep = 3.2; // seconds for the cursor to cross
 const wide = build({ W: 1200, H: 430, left: 132, right: 1160, top: 58, gap: 62, steps: 9, lost: [2, 5, 7], label: 13, tick: 12, r: 4.5, seed: 0x2c57a1 });
-const narrow = build({ W: 640, H: 520, left: 168, right: 620, top: 64, gap: 74, steps: 5, lost: [1, 3], label: 22, tick: 19, r: 7, seed: 0x51e7 });
+const medium = build({ W: 900, H: 430, left: 160, right: 860, top: 56, gap: 60, steps: 7, lost: [2, 5], label: 18, tick: 16, r: 6, seed: 0x3b9d });
+const narrow = build({ W: 640, H: 560, left: 210, right: 590, top: 70, gap: 80, steps: 5, lost: [1, 3], label: 27, tick: 23, r: 8, seed: 0x51e7 });
 
 const delay = (f: typeof wide, x: number) => `${(((x - f.left) / (f.right - f.left)) * sweep).toFixed(2)}s`;
 const curve = ({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }) =>
 	`M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
 const figures = [
-	{ f: wide, cls: 'hidden sm:block' },
+	{ f: wide, cls: 'hidden lg:block' },
+	{ f: medium, cls: 'hidden sm:block lg:hidden' },
 	{ f: narrow, cls: 'block sm:hidden' },
 ];
 ---

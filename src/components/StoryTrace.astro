@@ -7,9 +7,9 @@
  *   1. one task becomes actions in several systems;
  *   2. each system keeps its own clock and log, and one event never arrives;
  *   3. the agent's own account says otherwise.
- * Without JavaScript, below 64rem, or under reduced motion (states switch
- * without transitions), the diagram shows its final state and the steps read as
- * a list. The diagram is abstract: it illustrates the problem, not a product.
+ * Without JavaScript, or below 64rem, the diagram shows its final state and the
+ * steps read as a list. Under reduced motion the states still follow the scroll,
+ * but switch without transitions. The diagram is abstract: it illustrates the problem, not a product.
  */
 const steps = [
 	{
@@ -42,8 +42,8 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 				{
 					lanes.map(({ name, y, clock, text }) => (
 						<g>
-							<text x="0" y={y + 5} class:list={[text, 'font-sans text-[12px] font-semibold tracking-[0.09em] uppercase']}>{name}</text>
-							<line x1="82" x2="440" y1={y} y2={y} class="stroke-line-strong" stroke-width="1" />
+							<text x="0" y={y - 12} class:list={[text, 'font-sans text-[12px] font-semibold tracking-[0.09em] uppercase']}>{name}</text>
+							<line x1="0" x2="440" y1={y} y2={y} class="stroke-line-strong" stroke-width="1" />
 							<text x="440" y={y - 12} text-anchor="end" class="s2 fill-dusk font-sans text-[13px] tabular-nums">{clock}</text>
 						</g>
 					))
@@ -73,7 +73,7 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 				<g class="s3">
 					<line x1="268" y1="60" x2="268" y2="36" class="stroke-ink" stroke-width="1" />
 					<rect x="150" y="4" width="262" height="32" rx="2" class="fill-ink" />
-					<text x="162" y="25" class="fill-white font-sans text-[13px]">agent log: “record updated”</text>
+					<text x="162" y="25" class="callout fill-white font-sans text-[13px]">agent log: “record updated”</text>
 					<text x="300" y="206" text-anchor="middle" class="fill-ember font-sans text-[13px] font-medium">no write recorded</text>
 				</g>
 			</svg>
@@ -99,6 +99,17 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 		transition: opacity 400ms var(--ease-out);
 	}
 
+	/* Larger diagram text on phones, where the figure is drawn smaller. */
+	@media (width < 40rem) {
+		.story-figure text {
+			font-size: 17px;
+		}
+
+		.story-figure .callout {
+			font-size: 15px;
+		}
+	}
+
 	.story-figure[data-step='1'] :is(.s2, .s3),
 	.story-figure[data-step='2'] .s3,
 	.story-figure:not([data-step='1']) .s1-only {
@@ -113,26 +124,28 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 		const steps = [...root.querySelectorAll<HTMLElement>('[data-story-step]')];
 		if (!figure || !steps.length) continue;
 
-		let observer: IntersectionObserver | undefined;
+		// The step is whichever one has passed the middle of the viewport. It is
+		// recomputed on every scroll (throttled to one update per frame), so jumps
+		// (End key, anchors, find-in-page) land on the right step too.
+		const update = () => {
+			const middle = window.innerHeight / 2;
+			figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < middle).pop()?.dataset.storyStep ?? '1';
+		};
+		let frame = 0;
+		const onScroll = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(update);
+		};
 		const setup = () => {
-			observer?.disconnect();
+			window.removeEventListener('scroll', onScroll);
+			window.removeEventListener('resize', onScroll);
 			if (!wide.matches) {
 				figure.dataset.step = '3';
 				return;
 			}
-			// Start from the step already scrolled past, if the page loads mid-way.
-			const mid = window.innerHeight / 2;
-			figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < mid).pop()?.dataset.storyStep ?? '1';
-			observer = new IntersectionObserver(
-				// Recompute from positions on every change, so a jump (End key, an anchor,
-				// find-in-page) that skips the middle band still lands on the right step.
-				() => {
-					const middle = window.innerHeight / 2;
-					figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < middle).pop()?.dataset.storyStep ?? '1';
-				},
-				{ rootMargin: '-50% 0px -50% 0px' },
-			);
-			for (const s of steps) observer.observe(s);
+			update();
+			window.addEventListener('scroll', onScroll, { passive: true });
+			window.addEventListener('resize', onScroll);
 		};
 		setup();
 		wide.addEventListener('change', setup);
