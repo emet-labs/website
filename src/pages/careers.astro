@@ -1,28 +1,21 @@
 ---
 import ContactLink from '../components/ContactLink';
+import PageHeader from '../components/PageHeader.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Careers" description="Careers at Emet Labs.">
-	<section class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-		<div class="grid gap-12 lg:grid-cols-12">
-			<p class="text-xs font-medium uppercase tracking-[0.16em] text-black/50 lg:col-span-3">
-				Careers
-			</p>
-			<div class="max-w-3xl lg:col-span-8">
-				<h1 class="font-serif text-4xl font-light tracking-[-0.045em] sm:text-5xl">
-					Careers
-				</h1>
-
-				<p class="mt-8 text-lg leading-snug text-black/70">
-					No listed positions right now. If you're interested in runtime verification,
-					security tooling for agentic AI, or the research behind it, reach out.
-				</p>
-
-				<div class="mt-10">
-					<ContactLink class="inline-flex text-sm font-medium underline hover:no-underline" />
-				</div>
-			</div>
+	<PageHeader eyebrow="Careers" title="No open positions right now.">
+		<p>
+			We are always glad to hear from people who care about runtime verification, formal methods,
+			distributed systems, or making autonomous software accountable. If that describes you, write to
+			us and tell us what you have been working on.
+		</p>
+		<div class="mt-10">
+			<ContactLink
+				class="inline-flex min-h-11 items-center rounded-sm bg-ink px-5 text-small font-medium text-white transition-colors hover:bg-ink-deep"
+				label="Get in touch"
+			/>
 		</div>
-	</section>
+	</PageHeader>
 </BaseLayout>

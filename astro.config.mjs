@@ -5,7 +5,12 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://emetlabs.ai',
 	integrations: [solid()],
+	redirects: {
+		// Retired placeholder; trace-grab replaced it.
+		'/trace-bounty': '/trace-grab',
+	},
 	vite: {
 		plugins: [tailwindcss()],
 	},
