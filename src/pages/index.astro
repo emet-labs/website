@@ -1,7 +1,6 @@
 ---
 import Button from '../components/Button.astro';
 import ContactSection from '../components/ContactSection.astro';
-import RuleExample from '../components/RuleExample.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -19,23 +18,22 @@ const work = [
 ---
 
 <BaseLayout footerEmail={false}>
-	<header class="wrap grid gap-14 pt-14 pb-20 sm:pt-20 lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-24 lg:pb-28">
-		<div class="lg:col-span-5">
-			<h1 class="text-display text-ink">Know what your agents&nbsp;did.</h1>
-			<p class="mt-8 max-w-md text-lede text-slate">
-				Emet Labs builds verification infrastructure for AI agents, so that what they did can be
-				checked against the rules they were given.
-			</p>
-			<div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2">
-				<Button href="/sentinel/">Read about Sentinel</Button>
-				<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">See our research</a>
+	<header class="wrap pt-16 pb-20 sm:pt-24 lg:pt-32 lg:pb-32">
+		<h1 class="text-display text-ink">Know what your agents&nbsp;did.</h1>
+		<div class="mt-8 grid gap-8 sm:mt-12 lg:grid-cols-12">
+			<div class="lg:col-span-6 lg:col-start-4">
+				<p class="max-w-xl text-lede text-slate">
+					Emet Labs builds verification infrastructure for AI agents, so that what they did can be
+					checked against the rules they were given.
+				</p>
+				<div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2">
+					<Button href="/sentinel/">See how Sentinel answers</Button>
+					<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">See our research</a>
+				</div>
 			</div>
-			<p class="mt-10 text-small text-dusk">
-				Sentinel is in private development. trace-grab is open source under Apache-2.0.
+			<p class="max-w-xs text-small text-dusk lg:col-span-3 lg:row-start-1 lg:pt-1.5">
+				Sentinel is in private development. <span class="whitespace-nowrap">trace-grab</span> is open source under Apache-2.0.
 			</p>
-		</div>
-		<div class="lg:col-span-6 lg:col-start-7">
-			<RuleExample />
 		</div>
 	</header>
 

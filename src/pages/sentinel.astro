@@ -1,14 +1,14 @@
 ---
 import ContactSection from '../components/ContactSection.astro';
 import Rows from '../components/Rows.astro';
+import RuleExample from '../components/RuleExample.astro';
 import Section from '../components/Section.astro';
 import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const questions = ['What did it do?', 'Was it allowed?', 'How sure can we be?'];
-
 // An illustration of a public design commitment (each answer carries its rule,
-// its evidence and its gaps), continuing the homepage example. It is not
+// its evidence and its gaps), opening up the violated record from the rule
+// example in the header. It is not
 // product output and shows no internal format.
 const evidence = [
 	{ time: '10:02', event: 'Refund issued', system: 'Payments' },
@@ -40,8 +40,8 @@ const note =
 	description="Sentinel checks what AI agents did against rules your team sets, and reports each answer with its evidence. In private development."
 	footerEmail={false}
 >
-	<header class="wrap grid gap-12 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-28">
-		<div class="lg:col-span-6">
+	<header class="wrap grid gap-14 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-24 lg:pb-28">
+		<div class="lg:col-span-5">
 			<p class="text-small text-dusk">In private development</p>
 			<h1 class="mt-4 text-display text-ink">Sentinel</h1>
 			<p class="mt-8 max-w-md text-lede text-slate">
@@ -49,14 +49,8 @@ const note =
 				them, and on what evidence.
 			</p>
 		</div>
-		<div class="lg:col-span-5 lg:col-start-8 lg:self-end">
-			<ol class="space-y-3" aria-label="The questions Sentinel answers">
-				{
-					questions.map((q, i) => (
-						<li class:list={['font-display text-headline', i === 0 ? 'text-ink' : 'text-dusk']}>{q}</li>
-					))
-				}
-			</ol>
+		<div class="lg:col-span-6 lg:col-start-7">
+			<RuleExample />
 		</div>
 	</header>
 
@@ -118,7 +112,7 @@ const note =
 				</div>
 			</div>
 			<figcaption class="sr-only">
-				An illustration of an answer from the homepage example: the refund came before the approval.
+				An illustration of the violated record from the example above: the refund came before the approval.
 			</figcaption>
 		</figure>
 
