@@ -20,6 +20,8 @@ const { title, description = site.description, noindex = false, footerEmail = tr
 const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — Verification infrastructure for AI agents`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImage = new URL('/brand/og-image.png', site.url).href;
+// Bump when the favicon files change.
+const iconVersion = '2';
 ---
 
 <!doctype html>
@@ -35,9 +37,14 @@ const ogImage = new URL('/brand/og-image.png', site.url).href;
 
 		<Fonts />
 
-		<link rel="icon" href="/favicon.ico" sizes="any" />
-		<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<!-- Favicons: the owl from the supplied logo, unmodified, on a light tile. The
+		     version query makes browsers fetch these instead of a cached icon. -->
+		<link rel="icon" href={`/favicon.ico?v=${iconVersion}`} sizes="any" />
+		<link rel="icon" href={`/favicon.svg?v=${iconVersion}`} type="image/svg+xml" />
+		<link rel="icon" href={`/favicon-32.png?v=${iconVersion}`} type="image/png" sizes="32x32" />
+		<link rel="icon" href={`/favicon-16.png?v=${iconVersion}`} type="image/png" sizes="16x16" />
+		<link rel="apple-touch-icon" href={`/apple-touch-icon.png?v=${iconVersion}`} />
+		<link rel="manifest" href="/site.webmanifest" />
 		<meta name="theme-color" content="#f3f1ec" />
 
 		<meta property="og:type" content="website" />
