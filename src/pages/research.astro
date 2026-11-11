@@ -1,27 +1,31 @@
 ---
-import PageHeader from '../components/PageHeader.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Each open question, with the property of agents that makes it hard.
 const questions = [
 	{
+		topic: 'Specify',
 		question: 'How should people state what an agent may do, precisely and readably?',
 		why: 'The same task can take a different path each time, so rules cannot list every path in advance.',
 	},
 	{
+		topic: 'Evidence',
 		question: 'When is evidence enough for a verdict, and how do you say it is not?',
 		why: 'Telemetry is sampled, delayed and sometimes lost, and an agent’s own log is a weak witness.',
 	},
 	{
+		topic: 'Order',
 		question: 'What led to what, across systems with no common clock?',
 		why: 'One task fans out across services whose clocks disagree.',
 	},
 	{
+		topic: 'Prevent',
 		question: 'Which rules can be enforced before an action without blocking legitimate work?',
 		why: 'Some actions cannot be undone.',
 	},
 	{
+		topic: 'Data',
 		question: 'How do you learn from production traces without collecting the sensitive values inside them?',
 		why: 'Real traces are what a verifier has to handle, and they carry customer data.',
 		href: '/trace-grab/',
@@ -34,24 +38,46 @@ const questions = [
 	title="Research"
 	description="The research behind Emet Labs: runtime verification for autonomous AI agents, and the open questions in specifying, observing and controlling systems that act on their own."
 >
-	<PageHeader title="Verification for systems that act on their own.">
-		<p>
+	<header class="wrap pt-14 sm:pt-20 lg:pt-24">
+		<p class="meta text-dusk">Research</p>
+		<h1 class="mt-6 max-w-5xl text-display text-ink">
+			Verification for systems that act on their own.
+		</h1>
+		<p class="mt-8 max-w-2xl text-lede text-slate">
 			Runtime verification checks a running system against a precise specification. Autonomous agents
-			strain its assumptions. These are the questions we are working on.
+			strain its assumptions. <span class="text-ink">These are the questions we are working on.</span>
 		</p>
-	</PageHeader>
 
-	<div class="wrap">
-		<ol aria-label="Open questions" class="divide-y divide-line border-y border-line">
+		<nav aria-label="Open questions" class="mt-14 sm:mt-20">
+			<ol class="relative grid grid-cols-5 before:absolute before:top-[5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
+				{
+					questions.map(({ topic }, i) => (
+						<li class="relative">
+							<a href={`#q${i + 1}`} class="group flex flex-col items-start gap-3 pr-2">
+								<span aria-hidden="true" class="size-2.5 rounded-full border border-ink bg-paper transition-colors group-hover:bg-ink" />
+								<span class="meta text-dusk">{String(i + 1).padStart(2, '0')}</span>
+								<span class="text-small font-medium text-ink underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-current">
+									{topic}
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ol>
+		</nav>
+	</header>
+
+	<div class="wrap mt-16 sm:mt-24">
+		<ol class="border-t border-line">
 			{
-				questions.map(({ question, why, href, linkLabel }, i) => (
-					<li class="grid gap-3 py-10 sm:py-12 lg:grid-cols-12 lg:gap-8">
-						<p aria-hidden="true" class="font-display text-headline text-dusk tabular-nums lg:col-span-3">
-							{String(i + 1).padStart(2, '0')}
+				questions.map(({ topic, question, why, href, linkLabel }, i) => (
+					<li id={`q${i + 1}`} class="grid gap-4 border-b border-line py-10 sm:py-14 lg:grid-cols-12 lg:gap-8">
+						<p class="meta text-dusk lg:col-span-3 lg:pt-3">
+							{String(i + 1).padStart(2, '0')} / {topic}
 						</p>
-						<div class="measure lg:col-span-7 lg:col-start-4">
-							<h2 class="text-headline text-ink">{question}</h2>
-							<p class="mt-4 text-body text-slate">{why}</p>
+						<div class="lg:col-span-8 lg:col-start-4">
+							<h2 class="max-w-3xl text-headline text-ink">{question}</h2>
+							<p class="mt-4 max-w-2xl text-body text-slate">{why}</p>
 							{href && (
 								<a href={href} class="link mt-4 inline-flex min-h-11 items-center text-small font-medium text-ink">
 									{linkLabel} →
@@ -64,8 +90,9 @@ const questions = [
 		</ol>
 	</div>
 
-	<Section label="Foundations">
-		<p class="statement measure">
+	<Section tone="panel">
+		<p class="meta text-haze">Foundations</p>
+		<p class="statement mt-6 max-w-4xl">
 			We build on runtime verification and the monitoring of distributed systems, and prefer guarantees
 			that can be stated&nbsp;precisely.
 		</p>
