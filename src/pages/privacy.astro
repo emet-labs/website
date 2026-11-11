@@ -5,11 +5,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Privacy" description="How Emet Labs handles data on this website and in trace-grab.">
-	<PageHeader eyebrow="Privacy" title="Privacy" />
+	<PageHeader title="Privacy" />
 
-	<section>
+	<section class="border-t border-line">
 		<div class="wrap grid py-16 sm:py-20 lg:grid-cols-12">
-			<div class="prose-emet measure lg:col-span-8 lg:col-start-4">
+			<div class="prose-emet measure lg:col-span-9 lg:col-start-4">
 				<h2>This website</h2>
 				<p>
 					We do not use advertising cookies, tracking pixels or third-party analytics on this website,
@@ -29,8 +29,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<p>
 					<strong>trace-grab</strong> runs entirely on your machine. It has no upload command,
 					contains no Emet Labs endpoint, and has no telemetry, analytics or update check. If you choose
-					to share a corpus with us, that transfer happens by a method you control. See
-					<a href={links.traceGrabTransfer} target="_blank" rel="noopener noreferrer">Sending your corpus<span class="sr-only"> (opens in a new tab)</span></a>
+					to share a corpus with us, that transfer happens by a method you control. See{' '}
+					<a href={links.traceGrabTransfer} target="_blank" rel="noopener noreferrer">Sending your corpus<span class="sr-only"> (opens in a new tab)</span></a>{' '}
 					for what happens after a corpus is received.
 				</p>
 				<p>

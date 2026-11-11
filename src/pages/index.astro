@@ -1,201 +1,107 @@
 ---
 import Button from '../components/Button.astro';
-import ContactBand from '../components/ContactBand.astro';
-import Motif from '../components/Motif.astro';
+import ContactSection from '../components/ContactSection.astro';
+import Rows from '../components/Rows.astro';
+import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const questions = [
-	{
-		title: 'What did it do?',
-		body: 'An account of an agent’s actions assembled across the systems it touched, not only from its own logs.',
-	},
-	{
-		title: 'Was it allowed to?',
-		body: 'Each action checked against explicit rules that your team defines, owns, and can review.',
-	},
-	{
-		title: 'How sure can we be?',
-		body: 'Every conclusion carries the evidence behind it. When that evidence is incomplete, the answer says so.',
-	},
-];
-
-const pressures = [
-	{
-		title: 'Actions cross boundaries',
-		body: 'A single task can pass through an orchestrator, several tools, external APIs and other agents. No one log sees all of it.',
-	},
-	{
-		title: 'Evidence is partial',
-		body: 'Telemetry arrives late, out of order or not at all, and some of it comes from the very system being assessed.',
-	},
-	{
-		title: '“Probably fine” is not an answer',
-		body: 'Operators, auditors and regulators need conclusions they can check, not a plausible story or a confidence score.',
-	},
-];
 
 const principles = [
 	{
-		title: 'Evidence before assurance',
-		body: 'A conclusion is only as good as what supports it, so every conclusion should link back to the observations it rests on.',
+		term: 'Evidence before assurance',
+		body: 'A conclusion is only as good as what supports it, so every conclusion should point back to the observations it rests on.',
 	},
 	{
-		title: 'Unknown is a valid answer',
-		body: 'When the record is incomplete, the honest result is “not yet known.” Missing evidence is never counted as a pass.',
+		term: 'Unknown is a valid answer',
+		body: 'When the record is incomplete, the correct result is “not yet known.” Missing evidence is never counted as a pass.',
 	},
 	{
-		title: 'Rules people can read',
+		term: 'Rules people can read',
 		body: 'Requirements should be precise enough for a machine to check and plain enough for a reviewer to sign off on.',
 	},
 	{
-		title: 'Control where it is sound',
+		term: 'Control where it is sound',
 		body: 'Some rules are worth enforcing before an action takes effect; others are better observed and reviewed. That line should be drawn deliberately.',
+	},
+];
+
+const work = [
+	{ href: '/sentinel', title: 'Sentinel', body: 'Runtime verification for AI agents. In private development.' },
+	{ href: '/research', title: 'Research', body: 'The open problems in verifying systems that act on their own.' },
+	{
+		href: '/trace-grab',
+		title: 'trace-grab',
+		body: 'An open-source tool for contributing tokenized agent traces to that research.',
 	},
 ];
 ---
 
 <BaseLayout>
-	<!-- Hero -->
-	<section class="relative overflow-hidden">
-		<div class="wrap pt-16 pb-16 sm:pt-24 lg:pt-32 lg:pb-24">
-			<h1 class="max-w-5xl animate-rise text-display text-ink">
-				Autonomy you can&nbsp;verify.
-			</h1>
-			<div class="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12">
-				<p class="measure animate-rise text-lede text-slate [animation-delay:80ms] lg:col-span-7">
-					Emet Labs builds verification infrastructure for AI agents: systems that establish what an
-					agent actually did, check it against the rules you set, and show the evidence behind every
-					conclusion.
-				</p>
-				<div class="flex animate-rise flex-wrap items-start gap-3 [animation-delay:140ms] lg:col-span-5 lg:justify-end">
-					<Button href="/sentinel">Meet Sentinel</Button>
-					<Button href="/research" variant="secondary">Our research</Button>
-				</div>
+	<header class="wrap grid pt-16 pb-16 sm:pt-24 sm:pb-24 lg:grid-cols-12 lg:pt-32">
+		<div class="lg:col-span-10">
+			<h1 class="text-display text-ink">Know what your agents&nbsp;did.</h1>
+		</div>
+		<div class="mt-8 lg:col-span-6">
+			<p class="text-lede text-slate">
+				Emet Labs builds verification infrastructure for AI agents: systems that check what an agent
+				did against the rules you set, establish whether it was allowed to, and show the evidence
+				behind every conclusion, including when that evidence is not enough.
+			</p>
+			<div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2">
+				<Button href="/sentinel">Read about Sentinel</Button>
+				<a href="/research" class="link inline-flex min-h-11 items-center text-small font-medium">See our research</a>
 			</div>
+			<p class="mt-10 text-small text-dusk">
+				Sentinel is in private development. trace-grab is open source under Apache-2.0.
+			</p>
 		</div>
+	</header>
 
-		<div class="wrap pb-20 lg:pb-28">
-			<ul class="grid border-t border-line sm:grid-cols-3">
-				{
-					questions.map(({ title, body }, i) => (
-						<li
-							class:list={[
-								'border-b border-line py-8 sm:border-b-0 sm:py-10',
-								i > 0 && 'sm:border-l sm:pl-8',
-								i < questions.length - 1 && 'sm:pr-8',
-							]}
-						>
-							<h2 class="text-subhead text-ink">{title}</h2>
-							<p class="mt-3 text-small text-slate">{body}</p>
-						</li>
-					))
-				}
-			</ul>
+	<Section label="The problem">
+		<p class="statement max-w-3xl">
+			Agents now act on our behalf. The means of holding them to account have not caught&nbsp;up.
+		</p>
+		<div class="measure mt-10 space-y-5 text-body text-slate">
+			<p>
+				AI agents increasingly do more than answer questions. They call tools, change records, move
+				money and hand work to other agents, often across many systems and with no person reviewing
+				each step.
+			</p>
+			<p>
+				When something goes wrong, or has to be shown to have gone right, the record is usually
+				scattered across services, incomplete, and ordered by clocks that disagree. Part of it comes
+				from the very system being assessed. A model’s explanation of what it did is not evidence of
+				what it did, and a confidence score is not something an auditor can check.
+			</p>
 		</div>
-	</section>
+	</Section>
 
-	<!-- The problem -->
-	<section class="border-t border-line bg-mist">
-		<div class="wrap grid gap-12 py-20 sm:py-28 lg:grid-cols-12">
-			<div class="lg:col-span-5">
-				<p class="eyebrow">The problem</p>
-				<h2 class="mt-5 text-headline text-ink">Agents now act. Accountability has not caught&nbsp;up.</h2>
-			</div>
-			<div class="space-y-6 text-body text-slate lg:col-span-6 lg:col-start-7">
-				<p>
-					AI agents increasingly do more than answer questions. They call tools, change records, move
-					money and hand work to other agents, often across many systems, at machine speed, with no
-					person reviewing each step.
-				</p>
-				<p>
-					When something goes wrong, or simply needs to be shown to have gone right, the record is
-					usually scattered across services, incomplete, and ordered by clocks that disagree. A
-					model’s explanation of what it did is not evidence of what it did.
-				</p>
-				<dl class="mt-10 divide-y divide-line border-y border-line">
-					{
-						pressures.map(({ title, body }) => (
-							<div class="grid gap-2 py-6 sm:grid-cols-[13rem_1fr] sm:gap-8">
-								<dt class="font-medium text-ink">{title}</dt>
-								<dd class="text-small">{body}</dd>
-							</div>
-						))
-					}
-				</dl>
-			</div>
-		</div>
-	</section>
+	<Section label="Our position">
+		<p class="statement max-w-3xl">
+			Trust in an autonomous system should be earned with evidence, not assumed from its&nbsp;design.
+		</p>
+		<Rows items={principles} class="mt-12" />
+	</Section>
 
-	<!-- Principles -->
-	<section class="border-t border-line">
-		<div class="wrap py-20 sm:py-28">
-			<div class="grid gap-8 lg:grid-cols-12">
-				<p class="eyebrow lg:col-span-3 lg:pt-3">Our position</p>
-				<h2 class="max-w-3xl text-headline text-ink lg:col-span-9">
-					Trust in an autonomous system should be earned with evidence, not assumed from its&nbsp;design.
-				</h2>
-			</div>
-			<ul class="mt-14 grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
-				{
-					principles.map(({ title, body }) => (
-						<li class="border-t border-ink pt-6">
-							<h3 class="text-subhead text-ink">{title}</h3>
-							<p class="mt-3 text-small text-slate">{body}</p>
-						</li>
-					))
-				}
-			</ul>
-		</div>
-	</section>
+	<Section label="Our work">
+		<ul class="divide-y divide-line border-y border-line">
+			{
+				work.map(({ href, title, body }) => (
+					<li>
+						<a href={href} class="group -mx-3 grid gap-1 rounded-sm px-3 py-7 transition-colors hover:bg-mist focus-visible:bg-mist md:grid-cols-9 md:items-baseline md:gap-8">
+							<span class="font-display text-headline text-ink md:col-span-3">{title}</span>
+							<span class="text-body text-slate md:col-span-5">{body}</span>
+							<span
+								aria-hidden="true"
+								class="hidden text-right text-ink transition-transform duration-200 group-hover:translate-x-1 md:block"
+							>
+								→
+							</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</Section>
 
-	<!-- Sentinel -->
-	<section class="on-ink relative overflow-hidden bg-ink text-white">
-		<Motif class="pointer-events-none absolute top-16 right-10 hidden h-44 text-white/30 lg:block" />
-		<div class="wrap relative grid gap-12 py-20 sm:py-28 lg:grid-cols-12">
-			<div class="lg:col-span-7">
-				<p class="eyebrow text-haze">Sentinel · In private development</p>
-				<h2 class="mt-5 text-title">Runtime verification for AI&nbsp;agents.</h2>
-				<p class="measure mt-8 text-lede text-haze">
-					Sentinel checks what a deployment actually did against the rules you define, and returns an
-					answer an auditor can follow, with the evidence attached, or a clear statement of why the
-					evidence is not yet sufficient.
-				</p>
-				<div class="mt-10 flex flex-wrap gap-3">
-					<Button href="/sentinel" variant="inverse">About Sentinel</Button>
-				</div>
-			</div>
-			<blockquote class="self-end border-l border-white/30 pl-6 lg:col-span-4 lg:col-start-9">
-				<p class="font-display text-subhead">
-					What did the system actually do, and is the evidence strong enough to say&nbsp;so?
-				</p>
-				<footer class="mt-4 text-small text-haze">The question Sentinel is built to answer</footer>
-			</blockquote>
-		</div>
-	</section>
-
-	<!-- Research and open source -->
-	<section>
-		<div class="wrap grid gap-px py-20 sm:py-28 md:grid-cols-2 md:gap-16">
-			<article class="border-t border-line pt-8">
-				<p class="eyebrow">Research</p>
-				<h2 class="mt-5 text-headline text-ink">Grounded in runtime verification.</h2>
-				<p class="measure mt-6 text-body text-slate">
-					Our work builds on decades of research in runtime verification and formal methods, extended
-					to systems that are distributed, concurrent and partly autonomous.
-				</p>
-				<a href="/research" class="link mt-6 inline-block text-small font-medium">Read about our research →</a>
-			</article>
-			<article class="mt-12 border-t border-line pt-8 md:mt-0">
-				<p class="eyebrow">Open source</p>
-				<h2 class="mt-5 text-headline text-ink">Studying real agents, responsibly.</h2>
-				<p class="measure mt-6 text-body text-slate">
-					trace-grab lets teams tokenize their own trace exports locally, review the result, and decide
-					for themselves whether to contribute it to our research. Its claims are checkable in the source.
-				</p>
-				<a href="/trace-grab" class="link mt-6 inline-block text-small font-medium">About trace-grab →</a>
-			</article>
-		</div>
-	</section>
-
-	<ContactBand />
+	<ContactSection />
 </BaseLayout>
