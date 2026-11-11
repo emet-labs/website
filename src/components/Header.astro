@@ -1,6 +1,5 @@
 ---
-import { primaryNav } from '../config/site';
-import ContactLink from './ContactLink';
+import { links, primaryNav } from '../config/site';
 import Logo from './Logo.astro';
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -39,10 +38,7 @@ const isCurrent = (href: string) => {
 					))
 				}
 			</ul>
-			<ContactLink
-				class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition-colors hover:border-ink"
-				label="Contact us"
-			/>
+			<a href={links.email} class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition-colors hover:border-ink">Contact us</a>
 		</nav>
 
 		<button
@@ -88,10 +84,7 @@ const isCurrent = (href: string) => {
 				))
 			}
 			<li class="pt-5 pb-3">
-				<ContactLink
-					class="inline-flex min-h-11 items-center rounded-sm bg-ink px-5 text-small font-medium text-white"
-					label="Contact us"
-				/>
+				<a href={links.email} class="inline-flex min-h-11 items-center rounded-sm bg-ink px-5 text-small font-medium text-white">Contact us</a>
 			</li>
 		</ul>
 	</nav>
