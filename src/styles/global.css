@@ -64,6 +64,8 @@
 	--text-small--line-height: 1.55;
 	--text-label: 0.875rem;
 	--text-label--line-height: 1.4;
+	--text-code: 0.8125rem; /* code blocks on phones; text-small from 40rem */
+	--text-code--line-height: 1.625;
 
 	--radius-sm: 2px;
 

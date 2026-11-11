@@ -22,6 +22,7 @@ const claims = [
 	'Published to npm with signed build provenance.',
 ];
 
+// Steps 1-3 happen on the contributor's machine; step 4 is their decision.
 const steps = [
 	{ label: 'Export', title: 'Start from a trace export', note: 'LangSmith, OTLP JSON or span-shaped JSONL.' },
 	{ label: 'Run', title: 'Tokenize locally', note: 'The key back to your values stays on your machine.' },
@@ -35,7 +36,7 @@ const resources = [
 	{ href: links.traceGrabNpm, label: 'npm' },
 ];
 
-const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py-4 text-[0.8125rem] leading-relaxed text-ink sm:px-5 sm:text-small';
+const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py-4 text-code text-ink sm:px-5 sm:text-small sm:leading-relaxed';
 ---
 
 <BaseLayout
@@ -89,19 +90,29 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 	</Section>
 
 	<Section label="How to contribute">
-		<ol class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+		<div class="grid gap-12 lg:grid-cols-4 lg:gap-8">
 			{
-				steps.map(({ label, title, note }, i) => (
-					<li>
-						<p class="font-display text-headline text-silver" aria-hidden="true">{i + 1}</p>
-						<h3 class="mt-3 text-subhead text-ink">
-							<span class="sr-only">{label}: </span>{title}
-						</h3>
-						<p class="mt-2 text-small text-slate">{note}</p>
-					</li>
+				[
+					{ name: 'On your machine', items: steps.slice(0, 3), start: 1, span: 'lg:col-span-3', list: 'sm:grid-cols-3', rule: 'border-ink' },
+					{ name: 'Your decision', items: steps.slice(3), start: 4, span: '', list: '', rule: 'border-dashed border-line-strong' },
+				].map(({ name, items, start, span, list, rule }) => (
+					<div class={span}>
+						<p class:list={['label border-t pt-3', rule]}>{name}</p>
+						<ol start={start} class:list={['mt-6 grid gap-10 lg:gap-8', list]}>
+							{items.map(({ label, title, note }, i) => (
+								<li>
+									<p class="font-display text-headline text-dusk" aria-hidden="true">{start + i}</p>
+									<h3 class="mt-3 text-subhead text-ink">
+										<span class="sr-only">{label}: </span>{title}
+									</h3>
+									<p class="mt-2 text-small text-slate">{note}</p>
+								</li>
+							))}
+						</ol>
+					</div>
 				))
 			}
-		</ol>
+		</div>
 		<p class="mt-12 text-small text-slate">
 			To contribute, write to <a href={links.email} class="link text-ink">{site.email}</a>. Read{' '}
 			<a href={links.traceGrabTransfer} class="link text-ink" target="_blank" rel="noopener noreferrer">how transfer works<span class="sr-only"> (opens in a new tab)</span></a>{' '}
@@ -110,8 +121,8 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 	</Section>
 
 	<Section label="Claims you can check">
-		<ul class="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-			{claims.map((claim) => <li class="text-lede text-ink">{claim}</li>)}
+		<ul class="divide-y divide-line border-y border-line">
+			{claims.map((claim) => <li class="py-4 text-lede text-ink">{claim}</li>)}
 		</ul>
 		<p class="mt-6 text-small text-slate">
 			Each comes with a verifying command in the{' '}
