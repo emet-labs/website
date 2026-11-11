@@ -32,10 +32,20 @@ const iconVersion = '2';
 		<meta name="generator" content={Astro.generator} />
 		<title>{pageTitle}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={canonical} />
-		{noindex && <meta name="robots" content="noindex" />}
+		{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 
 		<Fonts />
+
+		<!-- Without JavaScript the mobile menu cannot open: show its links, hide the
+		     toggle, and let the header scroll away so the links do not cover the page. -->
+		<noscript>
+			<style>
+				#mobile-nav { display: block; }
+				[data-menu-toggle] { display: none; }
+				@media (max-width: 47.99rem) { [data-header] { position: static; } }
+				@media (min-width: 48rem) { #mobile-nav { display: none; } }
+			</style>
+		</noscript>
 
 		<!-- Favicons: the owl from the supplied logo, unmodified, on a light tile. The
 		     version query makes browsers fetch these instead of a cached icon. -->

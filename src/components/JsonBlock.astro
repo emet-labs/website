@@ -51,7 +51,8 @@ const colour = {
 	literal: 'text-code-literal',
 	punct: 'text-code-punct',
 };
-const markClass = tone === 'after' ? 'rounded-sm bg-ink px-0.5 text-white' : 'rounded-sm bg-line px-0.5 text-code-string';
+const markClass =
+	tone === 'after' ? 'rounded-sm bg-ink px-0.5 text-white' : 'rounded-sm bg-card px-0.5 text-code-string ring-1 ring-line-strong';
 ---
 
 <pre class={className}><code>{out.map(({ t, c }) => (!c ? t : c === 'mark' ? <mark class={markClass}>{t}</mark> : <span class={colour[c]}>{t}</span>))}</code></pre>

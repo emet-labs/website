@@ -90,15 +90,6 @@ const isCurrent = (href: string) => {
 	</nav>
 </header>
 
-<!-- Without JavaScript, the menu cannot open, so show the links and hide the toggle. -->
-<noscript>
-	<style>
-		#mobile-nav { display: block; }
-		[data-menu-toggle] { display: none; }
-		@media (min-width: 48rem) { #mobile-nav { display: none; } }
-	</style>
-</noscript>
-
 <script>
 	const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
 	const menu = document.querySelector<HTMLElement>('[data-menu]');

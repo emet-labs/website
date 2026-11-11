@@ -15,28 +15,39 @@
 interface Props {
 	command: string;
 	class?: string;
-	label?: string;
 }
 
-const { command: raw, class: className, label = 'Copy command' } = Astro.props;
+const { command: raw, class: className } = Astro.props;
 // Normalise line endings, so a CRLF checkout cannot leak into the copied text.
 const command = raw.replace(/\r\n?/g, '\n');
 
 type Kind = 'cmd' | 'flag' | 'value' | 'string' | 'var' | 'op' | 'arg' | 'space';
 const tokens: { t: string; k: Kind }[] = [];
-const operators = new Set(['|', '||', '&&', ';', '>', '>>', '<', '\\']);
+const operators = new Set(['|', '||', '&&', ';', '\\']);
+const redirects = new Set(['>', '>>', '<']);
 let expectCommand = true;
 let afterFlag = false;
 
 // Words, quoted strings and whitespace (including newlines), in order.
-for (const m of command.matchAll(/("(?:[^"\\]|\\.)*"|'[^']*'|\s+|[^\s"']+)/g)) {
+// The last alternative keeps any stray character (an unbalanced quote) as text.
+for (const m of command.matchAll(/("(?:[^"\\]|\\.)*"|'[^']*'|\s+|[^\s"']+|.)/g)) {
 	const t = m[0];
 	if (/^\s+$/.test(t)) {
 		tokens.push({ t, k: 'space' });
 		continue;
 	}
 	let k: Kind;
-	if (operators.has(t)) {
+	if (redirects.has(t)) {
+		// A redirect is followed by a file name, not a command.
+		k = 'op';
+		afterFlag = true;
+	} else if (expectCommand && /^[A-Za-z_]\w*=/.test(t)) {
+		// An environment assignment before the command (NAME=value npx ...).
+		const i = t.indexOf('=');
+		tokens.push({ t: t.slice(0, i), k: 'var' }, { t: '=', k: 'op' });
+		if (t.length > i + 1) tokens.push({ t: t.slice(i + 1), k: 'value' });
+		continue;
+	} else if (operators.has(t)) {
 		k = 'op';
 		if (t !== '\\') expectCommand = true;
 		afterFlag = false;
@@ -83,12 +94,12 @@ const colour: Record<Exclude<Kind, 'space'>, string> = {
 	<pre class={className}><code><span class="text-code-punct select-none" aria-hidden="true">$ </span>{tokens.map(({ t, k }) => (k === 'space' ? t : <span class={colour[k]}>{t}</span>))}</code></pre>
 	<button
 		type="button"
-		class="mt-2 ml-auto flex min-h-11 items-center rounded-sm border border-line-strong bg-card px-3 text-label font-medium text-ink transition-colors hover:border-ink sm:absolute sm:top-2 sm:right-2 sm:mt-0 sm:min-h-9"
+		class="mt-2 ml-auto flex min-h-11 min-w-[4.75rem] items-center justify-center rounded-sm border border-line-strong bg-card px-3 text-label font-medium text-ink transition-colors hover:border-ink sm:absolute sm:top-2 sm:right-2 sm:mt-0 sm:min-h-9"
 		data-copy={command}
 		hidden
 	>
 		<span data-copy-label>Copy</span>
-		<span class="sr-only"> {label}</span>
+		<span class="sr-only"> command</span>
 	</button>
 	<span class="sr-only" aria-live="polite" data-copy-status></span>
 </div>

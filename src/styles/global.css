@@ -69,7 +69,7 @@
 	--color-sys-ledger-l: #e293b4;
 	--color-sys-crm-d: #1f7a74;
 
-	/* JSON syntax colours, on the sand code surface (all 5:1 or more). */
+	/* Code syntax colours (JSON and shell), on the sand code surface (all 5:1 or more). */
 	--color-code-key: #2b5594;
 	--color-code-string: #2c6a45;
 	--color-code-number: #8a4a12;
@@ -171,13 +171,19 @@
 	background-repeat: no-repeat;
 }
 
+/* Outside any layer, so it beats transition utilities (which would otherwise
+   fade the focus ring in from the element's text colour). */
+:focus-visible {
+	transition-property: none;
+}
+
 /* The backdrop for product screenshots: sand crossed by faint horizontal lanes,
    the trace motif of the site's diagrams, fading out towards the bottom. */
 @utility stage {
 	background-color: var(--color-mist);
 	background-image:
 		linear-gradient(to bottom, transparent 55%, var(--color-mist)),
-		repeating-linear-gradient(to bottom, transparent 0 39px, rgb(26 28 39 / 0.07) 39px 40px);
+		repeating-linear-gradient(to bottom, transparent 0 39px, var(--color-line) 39px 40px);
 }
 
 /* Comfortable reading width for running text. */
@@ -232,8 +238,6 @@
 	}
 
 	:focus-visible {
-		/* No transition, so the ring appears at once in its final colour. */
-		transition: none;
 		outline: 2px solid var(--color-ink);
 		outline-offset: 3px;
 		border-radius: var(--radius-sm);
