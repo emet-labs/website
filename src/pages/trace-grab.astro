@@ -1,5 +1,6 @@
 ---
 import JsonBlock from '../components/JsonBlock.astro';
+import ShellBlock from '../components/ShellBlock.astro';
 import Section from '../components/Section.astro';
 import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -61,7 +62,7 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 			</p>
 		</div>
 		<div class="min-w-0 lg:col-span-6 lg:self-end">
-			<pre class={codeClass}><code><span class="text-dusk select-none" aria-hidden="true">$ </span>{command}</code></pre>
+			<ShellBlock command={command} class={`${codeClass} sm:pr-24`} />
 			<ul class="mt-4 flex flex-wrap gap-x-8 text-small font-medium">
 				{
 					resources.map(({ href, label }) => (

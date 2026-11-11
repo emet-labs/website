@@ -1,0 +1,120 @@
+---
+/**
+ * A shell command rendered with syntax highlighting, tokenized at build time
+ * (no runtime highlighter, no dependency), plus a copy button.
+ *
+ * Token classes: command (the first word, or the first after |, &&, ;), flag
+ * (-x, --long, and the flag half of --flag=value), value (the word after a
+ * flag, or a path), string (quoted), variable ($NAME, ${NAME}), operator
+ * (|, &&, ;, >, and the line-continuation backslash) and plain argument.
+ *
+ * The prompt ($) is not selectable, so a manual selection copies only the
+ * command. The copy button copies the exact command text; it appears only when
+ * JavaScript and the Clipboard API are available, and announces "Copied".
+ */
+interface Props {
+	command: string;
+	class?: string;
+	label?: string;
+}
+
+const { command: raw, class: className, label = 'Copy command' } = Astro.props;
+// Normalise line endings, so a CRLF checkout cannot leak into the copied text.
+const command = raw.replace(/\r\n?/g, '\n');
+
+type Kind = 'cmd' | 'flag' | 'value' | 'string' | 'var' | 'op' | 'arg' | 'space';
+const tokens: { t: string; k: Kind }[] = [];
+const operators = new Set(['|', '||', '&&', ';', '>', '>>', '<', '\\']);
+let expectCommand = true;
+let afterFlag = false;
+
+// Words, quoted strings and whitespace (including newlines), in order.
+for (const m of command.matchAll(/("(?:[^"\\]|\\.)*"|'[^']*'|\s+|[^\s"']+)/g)) {
+	const t = m[0];
+	if (/^\s+$/.test(t)) {
+		tokens.push({ t, k: 'space' });
+		continue;
+	}
+	let k: Kind;
+	if (operators.has(t)) {
+		k = 'op';
+		if (t !== '\\') expectCommand = true;
+		afterFlag = false;
+	} else if (/^["']/.test(t)) {
+		k = 'string';
+		afterFlag = false;
+	} else if (/^\$\{?\w+\}?$/.test(t)) {
+		k = 'var';
+		afterFlag = false;
+	} else if (expectCommand) {
+		k = 'cmd';
+		expectCommand = false;
+	} else if (/^--?[\w-]+=/.test(t)) {
+		const i = t.indexOf('=');
+		tokens.push({ t: t.slice(0, i), k: 'flag' }, { t: '=', k: 'op' }, { t: t.slice(i + 1), k: 'value' });
+		afterFlag = false;
+		continue;
+	} else if (/^--?[\w-]+$/.test(t)) {
+		k = 'flag';
+		afterFlag = true;
+		tokens.push({ t, k });
+		continue;
+	} else if (afterFlag || /^(\.{1,2}\/|\/|~)/.test(t)) {
+		k = 'value';
+		afterFlag = false;
+	} else {
+		k = 'arg';
+	}
+	tokens.push({ t, k });
+}
+
+const colour: Record<Exclude<Kind, 'space'>, string> = {
+	cmd: 'text-code-literal font-medium',
+	flag: 'text-code-key',
+	value: 'text-code-string',
+	string: 'text-code-string',
+	var: 'text-code-number',
+	op: 'text-code-punct',
+	arg: 'text-ink',
+};
+---
+
+<div class="relative flex flex-col" data-shell>
+	<pre class={className}><code><span class="text-code-punct select-none" aria-hidden="true">$ </span>{tokens.map(({ t, k }) => (k === 'space' ? t : <span class={colour[k]}>{t}</span>))}</code></pre>
+	<button
+		type="button"
+		class="mt-2 ml-auto flex min-h-11 items-center rounded-sm border border-line-strong bg-card px-3 text-label font-medium text-ink transition-colors hover:border-ink sm:absolute sm:top-2 sm:right-2 sm:mt-0 sm:min-h-9"
+		data-copy={command}
+		hidden
+	>
+		<span data-copy-label>Copy</span>
+		<span class="sr-only"> {label}</span>
+	</button>
+	<span class="sr-only" aria-live="polite" data-copy-status></span>
+</div>
+
+<script>
+	for (const root of document.querySelectorAll<HTMLElement>('[data-shell]')) {
+		const button = root.querySelector<HTMLButtonElement>('[data-copy]');
+		const label = root.querySelector<HTMLElement>('[data-copy-label]');
+		const status = root.querySelector<HTMLElement>('[data-copy-status]');
+		if (!button || !label || !status || !navigator.clipboard) continue;
+		button.hidden = false;
+		let timer: number | undefined;
+		button.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(button.dataset.copy ?? '');
+				label.textContent = 'Copied';
+				status.textContent = 'Command copied to the clipboard.';
+			} catch {
+				label.textContent = 'Copy failed';
+				status.textContent = 'The command could not be copied. Select it to copy it manually.';
+			}
+			clearTimeout(timer);
+			timer = window.setTimeout(() => {
+				label.textContent = 'Copy';
+				status.textContent = '';
+			}, 2000);
+		});
+	}
+</script>
