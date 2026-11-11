@@ -25,7 +25,8 @@ bunx astro build    # static output in dist/
   - `Section`: a named header row on a hairline, then free composition. `tone="panel"` is
     the inset ink brand panel; use it for a page's signature moment and its close.
   - `ContactSection`: the closing ink panel.
-  - `JsonBlock`: build-time JSON syntax highlighting (used on trace-grab).
+  - `JsonBlock` and `ShellBlock`: build-time JSON and shell syntax highlighting, used on
+    trace-grab. `ShellBlock` adds a copy button when JavaScript is available.
   - `TraceField`: the homepage's Fig. 1, one agent task traced across six systems.
   - `StoryTrace`: the homepage's sticky three-step diagram.
   - `RuleExample`: "one rule, three answers". It is used on Sentinel only, by design: the
@@ -35,8 +36,9 @@ bunx astro build    # static output in dist/
   - Fig. 1 sweeps once on load.
   - The story diagram changes state with scroll on wide screens.
   - The header gains a hairline once the page scrolls.
-  - Under `prefers-reduced-motion`, everything appears in its final state. Without JavaScript,
-    the diagrams show their final state and all text is visible.
+  - Under `prefers-reduced-motion`, Fig. 1 appears complete and the story diagram switches
+    states without transitions. Without JavaScript, the diagrams show their final state and
+    all text is visible.
 - `public/brand/`: the logo lockup, owl mark and share image, derived from the supplied artwork
   without redrawing or recolouring it. The logo's owl face is negative space, so place it on a light surface (bone or card).
 

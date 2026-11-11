@@ -7,8 +7,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Example taken from the public trace-grab README and documentation.
 const command = `npx @emetlabs/trace-grab grab \\
-    ./langsmith-export --out ./corpus \\
-    --from langsmith`;
+  ./langsmith-export --out ./corpus \\
+  --from langsmith`;
 
 // One tool call before and after trace-grab. String values become stable
 // tokens; the tool name, field names, numbers and booleans pass through, as
@@ -58,7 +58,7 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 			<h1 class="mt-6 text-hero text-ink">trace-grab</h1>
 			<p class="mt-8 max-w-md text-lede text-slate sm:mt-10">
 				Contribute the structure of your agent traces while their string values stay with you. It runs on
-				your machine and replaces each value with a stable token.
+				your machine and replaces each string value with a stable token.
 			</p>
 		</div>
 		<div class="min-w-0 lg:col-span-6 lg:self-end">
