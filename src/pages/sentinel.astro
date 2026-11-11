@@ -91,9 +91,9 @@ const status = [
 				<p class="statement">Built for settings where a wrong answer is worse than no&nbsp;answer.</p>
 				<ol class="mt-12 space-y-7">
 					{
-						callouts.map(({ term, body }, i) => (
-							<li class="grid grid-cols-[1.75rem_1fr] gap-3 border-t border-rule pt-4">
-								<span class="meta pt-0.5 text-ember-light">{String(i + 1).padStart(2, '0')}</span>
+						callouts.map(({ term, body }) => (
+							<li class="grid grid-cols-[1.25rem_1fr] gap-3 border-t border-rule pt-4">
+								<span aria-hidden="true" class="mt-[0.7em] h-px w-3 bg-ember-light" />
 								<p class="text-small text-haze">
 									<span class="font-medium text-white">{term}.</span> {body}
 								</p>
