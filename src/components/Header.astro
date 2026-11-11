@@ -60,7 +60,12 @@ const isCurrent = (href: string) => {
 		</button>
 	</div>
 
-	<nav id="mobile-nav" aria-label="Primary" class="hidden border-t border-line bg-paper md:hidden" data-menu>
+	<nav
+		id="mobile-nav"
+		aria-label="Primary"
+		class="hidden max-h-[calc(100svh-4.5rem)] overflow-y-auto overscroll-contain border-t border-line bg-paper md:hidden"
+		data-menu
+	>
 		<ul class="wrap flex flex-col py-3">
 			{
 				primaryNav.map(({ href, label, external }) => (
@@ -105,6 +110,14 @@ const isCurrent = (href: string) => {
 		};
 
 		toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+
+		// Close on a tap or click outside the header (the menu and its toggle).
+		const header = toggle.closest('header');
+		document.addEventListener('click', (event) => {
+			if (toggle.getAttribute('aria-expanded') === 'true' && header && !header.contains(event.target as Node)) {
+				setOpen(false);
+			}
+		});
 
 		document.addEventListener('keydown', (event) => {
 			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
