@@ -20,14 +20,14 @@ interface Props {
 
 const { items, ordered = false, stacked = false, class: className } = Astro.props;
 const isExternal = (href: string) => href.startsWith('http');
-const rowClass = stacked ? 'py-6' : 'grid gap-2 py-6 md:grid-cols-9 md:gap-8';
+const rowClass = stacked ? 'py-6 first:pt-0' : 'grid gap-2 py-6 first:pt-0 md:grid-cols-9 md:items-baseline md:gap-8';
 const termClass = stacked ? 'font-display text-subhead text-ink' : 'font-display text-subhead text-ink md:col-span-3';
 const bodyClass = stacked ? 'mt-2 text-body text-slate' : 'text-body text-slate md:col-span-6';
 ---
 
 {
 	ordered ? (
-		<ol class:list={['divide-y divide-line border-y border-line', className]}>
+		<ol class:list={['divide-y divide-line', className]}>
 			{items.map(({ term, body }, i) => (
 				<li class={rowClass}>
 					<h3 class={termClass}>
@@ -39,7 +39,7 @@ const bodyClass = stacked ? 'mt-2 text-body text-slate' : 'text-body text-slate 
 			))}
 		</ol>
 	) : (
-		<dl class:list={['divide-y divide-line border-y border-line', className]}>
+		<dl class:list={['divide-y divide-line', className]}>
 			{items.map(({ term, body, href, linkLabel }) => (
 				<div class={rowClass}>
 					<dt class={termClass}>{term}</dt>

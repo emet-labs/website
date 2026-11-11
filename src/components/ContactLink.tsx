@@ -7,7 +7,7 @@ interface ContactLinkProps {
 
 export default function ContactLink(props: ContactLinkProps) {
 	return (
-		<a class={props.class} href={links.email} aria-label="Contact Emet Labs by email">
+		<a class={props.class} href={links.email}>
 			{props.label ?? 'Contact us'}
 		</a>
 	);

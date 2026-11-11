@@ -6,7 +6,7 @@
  * - Minerva Modern (display) is loaded from the Adobe Fonts web project, when one
  *   is configured. Preconnecting to both Typekit hosts lets the stylesheet and
  *   font files start downloading early; the kit's own font-display setting
- *   (set it to "swap" in the Adobe Fonts project) controls fallback behaviour.
+ *   (use "fallback" in the Adobe Fonts project) controls fallback behaviour.
  */
 import { adobeFontsKitId } from '../config/site';
 ---
@@ -22,7 +22,7 @@ import { adobeFontsKitId } from '../config/site';
 	adobeFontsKitId && (
 		<>
 			<link rel="preconnect" href="https://use.typekit.net" crossorigin />
-			<link rel="preconnect" href="https://p.typekit.net" crossorigin />
+			<link rel="preconnect" href="https://p.typekit.net" />
 			<link rel="stylesheet" href={`https://use.typekit.net/${adobeFontsKitId}.css`} />
 		</>
 	)

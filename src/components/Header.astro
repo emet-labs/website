@@ -4,7 +4,10 @@ import ContactLink from './ContactLink';
 import Logo from './Logo.astro';
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
-const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+const isCurrent = (href: string) => {
+	const h = href.replace(/\/$/, '');
+	return pathname === h || pathname.startsWith(`${h}/`);
+};
 ---
 
 <header class="sticky top-0 z-40 border-b border-line bg-paper">
@@ -13,8 +16,8 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
 			<Logo class="h-10 w-auto lg:h-12" />
 		</a>
 
-		<nav aria-label="Primary" class="hidden items-center gap-8 lg:flex">
-			<ul class="flex items-center gap-7 text-small">
+		<nav aria-label="Primary" class="hidden items-center gap-6 md:flex lg:gap-8">
+			<ul class="flex items-center gap-5 text-small lg:gap-7">
 				{
 					primaryNav.map(({ href, label, external }) => (
 						<li>
@@ -29,6 +32,7 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
 								]}
 							>
 								{label}
+								{external && <span aria-hidden="true"> ↗</span>}
 								{external && <span class="sr-only">(opens in a new tab)</span>}
 							</a>
 						</li>
@@ -37,13 +41,13 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
 			</ul>
 			<ContactLink
 				class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition-colors hover:border-ink"
-				label="Contact"
+				label="Contact us"
 			/>
 		</nav>
 
 		<button
 			type="button"
-			class="-mr-2 inline-flex size-11 items-center justify-center rounded-sm lg:hidden"
+			class="-mr-2 inline-flex size-11 items-center justify-center rounded-sm md:hidden"
 			aria-controls="mobile-nav"
 			aria-expanded="false"
 			data-menu-toggle
@@ -56,7 +60,7 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
 		</button>
 	</div>
 
-	<nav id="mobile-nav" aria-label="Primary" class="hidden border-t border-line bg-paper lg:hidden" data-menu>
+	<nav id="mobile-nav" aria-label="Primary" class="hidden border-t border-line bg-paper md:hidden" data-menu>
 		<ul class="wrap flex flex-col py-3">
 			{
 				primaryNav.map(({ href, label, external }) => (
@@ -68,7 +72,7 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
 							aria-current={isCurrent(href) ? 'page' : undefined}
 							class:list={[
 								'flex min-h-12 items-center border-b border-line font-display text-subhead',
-								isCurrent(href) ? 'text-ink' : 'text-slate',
+								isCurrent(href) ? 'text-ink underline decoration-silver underline-offset-[0.3em]' : 'text-slate',
 							]}
 						>
 							{label}
@@ -110,6 +114,6 @@ const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${
 		});
 
 		// Close if the viewport grows past the mobile breakpoint.
-		window.matchMedia('(min-width: 64rem)').addEventListener('change', (e) => e.matches && setOpen(false));
+		window.matchMedia('(min-width: 48rem)').addEventListener('change', (e) => e.matches && setOpen(false));
 	}
 </script>

@@ -30,41 +30,24 @@ export interface NavItem {
 }
 
 export const primaryNav: NavItem[] = [
-	{ href: '/sentinel', label: 'Sentinel' },
-	{ href: '/research', label: 'Research' },
-	{ href: '/trace-grab', label: 'trace-grab' },
-	{ href: '/about', label: 'About' },
+	{ href: '/sentinel/', label: 'Sentinel' },
+	{ href: '/research/', label: 'Research' },
+	{ href: '/trace-grab/', label: 'trace-grab' },
+	{ href: '/about/', label: 'About' },
 	{ href: links.docs, label: 'Docs', external: true },
 ];
 
-export const footerNav: { heading: string; items: NavItem[] }[] = [
-	{
-		heading: 'Work',
-		items: [
-			{ href: '/sentinel', label: 'Sentinel' },
-			{ href: '/research', label: 'Research' },
-			{ href: '/trace-grab', label: 'trace-grab' },
-			{ href: links.docs, label: 'Documentation', external: true },
-		],
-	},
-	{
-		heading: 'Company',
-		items: [
-			{ href: '/about', label: 'About' },
-			{ href: '/careers', label: 'Careers' },
-			{ href: '/blog', label: 'Blog' },
-			{ href: links.email, label: 'Contact' },
-		],
-	},
-	{
-		heading: 'Elsewhere',
-		items: [
-			{ href: links.github, label: 'GitHub', external: true },
-			{ href: links.linkedin, label: 'LinkedIn', external: true },
-			{ href: '/privacy', label: 'Privacy' },
-			{ href: '/legal', label: 'Legal' },
-		],
-	},
+export const footerNav: NavItem[] = [
+	{ href: '/sentinel/', label: 'Sentinel' },
+	{ href: '/research/', label: 'Research' },
+	{ href: '/trace-grab/', label: 'trace-grab' },
+	{ href: '/about/', label: 'About' },
+	{ href: '/careers/', label: 'Careers' },
+	{ href: links.docs, label: 'Docs', external: true },
+	{ href: links.github, label: 'GitHub', external: true },
+	{ href: links.linkedin, label: 'LinkedIn', external: true },
+	{ href: '/privacy/', label: 'Privacy' },
+	{ href: '/legal/', label: 'Legal' },
 ];
 
 /**
@@ -84,3 +67,9 @@ const ADOBE_FONTS_KIT_ID = '';
 
 export const adobeFontsKitId: string =
 	import.meta.env.PUBLIC_ADOBE_FONTS_KIT_ID || ADOBE_FONTS_KIT_ID;
+
+if (!adobeFontsKitId && import.meta.env.PROD) {
+	console.warn(
+		'[fonts] No Adobe Fonts project ID is set (src/config/site.ts). Minerva Modern will not load; headings use the fallback serif.',
+	);
+}

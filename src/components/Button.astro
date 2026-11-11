@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
-type Variant = 'primary' | 'secondary';
+type Variant = 'primary';
 
 interface Props extends HTMLAttributes<'a'> {
 	href: string;
@@ -13,7 +13,6 @@ const { href, variant = 'primary', external = false, class: className, ...rest }
 
 const variants: Record<Variant, string> = {
 	primary: 'bg-ink text-white hover:bg-ink-deep',
-	secondary: 'border border-line-strong text-ink hover:border-ink',
 };
 ---
 

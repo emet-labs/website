@@ -33,10 +33,11 @@
 	--color-transparent: transparent;
 	--color-current: currentColor;
 
-	/* Minerva Modern is served by Adobe Fonts (see src/config/site.ts). The
-	   fallbacks are locally installed serifs with a similar inscriptional,
-	   moderate-contrast character, so no third-party font is substituted. */
-	--font-display: "minerva-modern", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+	/* Minerva Modern is served by Adobe Fonts (see src/config/site.ts). Until the
+	   kit is configured, Georgia (installed on Windows and macOS alike) renders
+	   headings, so every visitor sees the same interim face; no third-party font
+	   is substituted. Retune heading tracking once Minerva is live. */
+	--font-display: "minerva-modern", Georgia, "Times New Roman", serif;
 	--font-sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 	--font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
 
@@ -46,7 +47,7 @@
 	   body sizes are fixed for legibility. */
 	--text-display: clamp(2.5rem, 1.75rem + 3vw, 4.25rem);
 	--text-display--line-height: 1.06;
-	--text-display--letter-spacing: -0.02em;
+	--text-display--letter-spacing: -0.015em;
 	--text-title: clamp(2.25rem, 1.8rem + 1.8vw, 3.25rem);
 	--text-title--line-height: 1.08;
 	--text-title--letter-spacing: -0.015em;
@@ -218,14 +219,18 @@
 
 		& h2 {
 			margin-top: 2.5em;
+
+			&:first-child {
+				margin-top: 0;
+			}
+
 			color: var(--color-ink);
 			font-size: var(--text-subhead);
 			line-height: var(--text-subhead--line-height);
 		}
 
 		& strong {
-			font-weight: 500;
-			color: var(--color-ink);
+			font-weight: 600;
 		}
 
 		& a {
