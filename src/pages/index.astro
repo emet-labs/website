@@ -1,7 +1,6 @@
 ---
 import Button from '../components/Button.astro';
 import ContactSection from '../components/ContactSection.astro';
-import Rows from '../components/Rows.astro';
 import RuleExample from '../components/RuleExample.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -12,17 +11,11 @@ const problem = [
 	'A model’s account of what it did is not evidence.',
 ];
 
-const principles = [
-	{ term: 'Evidence before assurance', body: 'Every conclusion points to what supports it.' },
-	{ term: 'Unknown is an answer', body: 'Missing evidence is never counted as a pass.' },
-	{ term: 'Rules people can read', body: 'Precise enough to check, plain enough to approve.' },
-	{ term: 'Control where it is sound', body: 'Block an action in advance only where that is safe.' },
-];
 
 const work = [
-	{ href: '/sentinel', title: 'Sentinel', body: 'Runtime verification for AI agents. In private development.' },
-	{ href: '/research', title: 'Research', body: 'Open problems in verifying systems that act on their own.' },
-	{ href: '/trace-grab', title: 'trace-grab', body: 'Open-source tool for contributing tokenized traces.' },
+	{ href: '/sentinel/', title: 'Sentinel', body: 'Runtime verification for AI agents. In private development.' },
+	{ href: '/research/', title: 'Research', body: 'Open problems in verifying systems that act on their own.' },
+	{ href: '/trace-grab/', title: 'trace-grab', body: 'Open-source tool for contributing tokenized traces.' },
 ];
 ---
 
@@ -35,8 +28,8 @@ const work = [
 				agent did, whether it was allowed, and how strong the evidence is.
 			</p>
 			<div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2">
-				<Button href="/sentinel">Read about Sentinel</Button>
-				<a href="/research" class="link inline-flex min-h-11 items-center text-small font-medium">See our research</a>
+				<Button href="/sentinel/">Read about Sentinel</Button>
+				<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">See our research</a>
 			</div>
 			<p class="mt-10 text-small text-dusk">
 				Sentinel is in private development. trace-grab is open source under Apache-2.0.
@@ -49,29 +42,20 @@ const work = [
 
 	<Section label="The problem" tone="ink">
 		<ul class="space-y-8 sm:space-y-10">
-			{problem.map((line) => <li class="statement scroll-ink max-w-3xl">{line}</li>)}
+			{problem.map((line) => <li class="statement scroll-ink">{line}</li>)}
 		</ul>
 	</Section>
 
-	<Section label="Our position">
-		<div class="grid gap-10 md:grid-cols-9 md:gap-8">
-			<p class="statement md:sticky md:top-32 md:col-span-4 md:self-start">
-				Trust in an autonomous system should be earned with&nbsp;evidence.
-			</p>
-			<Rows items={principles} stacked class="md:col-span-5" />
-		</div>
-	</Section>
-
 	<Section label="Our work">
-		<ul class="divide-y divide-line border-y border-line">
+		<ul class="divide-y divide-line">
 			{
 				work.map(({ href, title, body }) => (
 					<li>
 						<a
 							href={href}
-							class="group -mx-3 grid gap-1 rounded-sm px-3 py-7 transition-colors hover:bg-mist focus-visible:bg-mist md:grid-cols-9 md:items-baseline md:gap-8"
+							class="group grid gap-1 py-7 md:grid-cols-9 md:items-baseline md:gap-8"
 						>
-							<span class="font-display text-headline text-ink md:col-span-3">{title}</span>
+							<span class="font-display text-headline text-ink underline decoration-transparent underline-offset-[0.2em] transition-colors group-hover:decoration-current md:col-span-3">{title}</span>
 							<span class="text-body text-slate md:col-span-5">{body}</span>
 							<span
 								aria-hidden="true"

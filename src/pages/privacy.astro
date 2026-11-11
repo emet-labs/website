@@ -5,7 +5,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Privacy" description="How Emet Labs handles data on this website and in trace-grab.">
-	<PageHeader title="Privacy" />
+	<PageHeader title="Privacy">
+		<p class="text-small text-dusk">Last updated 10 November 2026</p>
+	</PageHeader>
 
 	<section class="border-t border-line">
 		<div class="wrap grid py-16 sm:py-20 lg:grid-cols-12">
@@ -13,7 +15,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<h2>This website</h2>
 				<p>
 					We do not use advertising cookies, tracking pixels or third-party analytics on this website,
-					and we do not sell or share visitor data.
+					and we do not sell or share visitor data. The site is hosted on GitHub Pages, which processes
+					standard request information, such as IP addresses, to serve it.
 				</p>
 				{
 					adobeFontsKitId && (
@@ -27,7 +30,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 				<h2>trace-grab</h2>
 				<p>
-					<strong>trace-grab</strong> runs entirely on your machine. It has no upload command,
+					<strong>trace-grab</strong> runs on your machine; its only network access is an optional LangSmith API source that you enable yourself. It has no upload command,
 					contains no Emet Labs endpoint, and has no telemetry, analytics or update check. If you choose
 					to share a corpus with us, that transfer happens by a method you control. See{' '}
 					<a href={links.traceGrabTransfer} target="_blank" rel="noopener noreferrer">Sending your corpus<span class="sr-only"> (opens in a new tab)</span></a>{' '}

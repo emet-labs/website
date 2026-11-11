@@ -13,7 +13,7 @@ const principles = [
 	{ term: 'Explicit about uncertainty', body: 'We report a gap rather than paper over it, in software and in prose.' },
 	{
 		term: 'Open where trust requires it',
-		body: 'Software that runs in your environment should be open to inspection, so trace-grab and our SDKs are.',
+		body: 'Code that runs inside your applications, or touches your data before it leaves, should be open to inspection. trace-grab and our instrumentation SDKs are.',
 	},
 ];
 ---
@@ -27,10 +27,10 @@ const principles = [
 	</PageHeader>
 
 	<Section label="Why this work">
-		<p class="statement max-w-3xl">A mistaken answer can be ignored. A mistaken payment&nbsp;cannot.</p>
+		<p class="statement">A mistaken answer can be ignored. A mistaken payment&nbsp;cannot.</p>
 		<p class="measure mt-6 text-body text-slate">
 			As agents take actions, organisations need to show what happened and whether it was allowed. We
-			think that belongs in the infrastructure, not in a reconstruction after the fact.
+			think that belongs in the infrastructure.
 		</p>
 	</Section>
 

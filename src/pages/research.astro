@@ -1,5 +1,4 @@
 ---
-import ContactSection from '../components/ContactSection.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -12,14 +11,13 @@ const differences = [
 ];
 
 const questions = [
-	{ area: 'Specification', question: 'How should people state what an agent may do, precisely and readably?' },
-	{ area: 'Sound conclusions', question: 'When is evidence enough for a verdict, and how do you say it is not?' },
-	{ area: 'Causality', question: 'What led to what, across systems with no common clock?' },
-	{ area: 'Intervention', question: 'Which rules can be enforced before an action without blocking legitimate work?' },
+	{ question: 'How should people state what an agent may do, precisely and readably?' },
+	{ question: 'When is evidence enough for a verdict, and how do you say it is not?' },
+	{ question: 'What led to what, across systems with no common clock?' },
+	{ question: 'Which rules can be enforced before an action without blocking legitimate work?' },
 	{
-		area: 'Responsible data',
-		question: 'How do you learn from production traces without collecting their contents?',
-		href: '/trace-grab',
+		question: 'How do you learn from production traces without collecting the sensitive values inside them?',
+		href: '/trace-grab/',
 		linkLabel: 'See trace-grab',
 	},
 ];
@@ -50,15 +48,11 @@ const questions = [
 	</Section>
 
 	<Section label="Open questions">
-		<ol class="divide-y divide-line border-y border-line">
+		<ol class="max-w-3xl divide-y divide-line">
 			{
-				questions.map(({ area, question, href, linkLabel }, i) => (
-					<li class="grid gap-2 py-7 md:grid-cols-9 md:gap-8">
-						<p class="label md:col-span-2 md:pt-1.5">
-							<span class="mr-2 tabular-nums" aria-hidden="true">{i + 1}</span>
-							{area}
-						</p>
-						<div class="md:col-span-7">
+				questions.map(({ question, href, linkLabel }) => (
+					<li class="py-7 first:pt-0">
+						<div>
 							<h3 class="text-subhead text-ink">{question}</h3>
 							{href && (
 								<a href={href} class="link mt-3 inline-block text-small font-medium">
@@ -73,11 +67,10 @@ const questions = [
 	</Section>
 
 	<Section label="Foundations">
-		<p class="statement max-w-3xl">
+		<p class="statement">
 			We build on runtime verification and the monitoring of distributed systems, and prefer guarantees
 			that can be stated&nbsp;precisely.
 		</p>
 	</Section>
 
-	<ContactSection lead="Working on related problems? We would be glad to compare notes." />
 </BaseLayout>

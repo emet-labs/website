@@ -1,13 +1,12 @@
 ---
-import ContactSection from '../components/ContactSection.astro';
 import Section from '../components/Section.astro';
-import Sequence from '../components/Sequence.astro';
-import { links } from '../config/site';
+import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Example taken from the public trace-grab README and documentation.
-const command = 'npx @emetlabs/trace-grab grab ./langsmith-export \
-    --out ./corpus --from langsmith';
+const command = `npx @emetlabs/trace-grab grab \\
+    ./langsmith-export --out ./corpus \\
+    --from langsmith`;
 
 // The two string values that change; everything else passes through.
 const fields = [
@@ -36,24 +35,24 @@ const resources = [
 	{ href: links.traceGrabNpm, label: 'npm' },
 ];
 
-const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-5 py-4 text-small leading-relaxed text-ink';
+const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py-4 text-[0.8125rem] leading-relaxed text-ink sm:px-5 sm:text-small';
 ---
 
 <BaseLayout
 	title="trace-grab"
-	description="trace-grab is an open-source tool for contributing agent traces to Emet Labs research without sharing their contents. It tokenizes trace exports on your own machine."
+	description="trace-grab is an open-source tool for contributing agent traces to Emet Labs research without sharing their string values. It tokenizes trace exports on your own machine."
 >
 	<header class="wrap grid gap-12 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-28">
 		<div class="lg:col-span-6">
 			<p class="text-small text-dusk">Open source · Apache-2.0 · Node 20+</p>
 			<h1 class="mt-4 text-display text-ink">trace-grab</h1>
 			<p class="mt-8 max-w-md text-lede text-slate">
-				Share the shape of your agent traces, not their contents. It runs on your machine and replaces
-				every string with a stable token.
+				Contribute the structure of your agent traces while their string values stay with you. It runs on
+				your machine and replaces each value with a stable token.
 			</p>
 		</div>
 		<div class="min-w-0 lg:col-span-6 lg:self-end">
-			<pre class={codeClass} aria-label="Example command"><code><span class="text-dusk select-none" aria-hidden="true">$ </span>{command}</code></pre>
+			<pre class={codeClass}><code><span class="text-dusk select-none" aria-hidden="true">$ </span>{command}</code></pre>
 			<ul class="mt-4 flex flex-wrap gap-x-8 text-small font-medium">
 				{
 					resources.map(({ href, label }) => (
@@ -90,17 +89,29 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-5 py
 	</Section>
 
 	<Section label="How to contribute">
-		<Sequence steps={steps} />
-		<p class="mt-10 text-small text-slate">
-			Read{' '}
+		<ol class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+			{
+				steps.map(({ label, title, note }, i) => (
+					<li>
+						<p class="font-display text-headline text-silver" aria-hidden="true">{i + 1}</p>
+						<h3 class="mt-3 text-subhead text-ink">
+							<span class="sr-only">{label}: </span>{title}
+						</h3>
+						<p class="mt-2 text-small text-slate">{note}</p>
+					</li>
+				))
+			}
+		</ol>
+		<p class="mt-12 text-small text-slate">
+			To contribute, write to <a href={links.email} class="link text-ink">{site.email}</a>. Read{' '}
 			<a href={links.traceGrabTransfer} class="link text-ink" target="_blank" rel="noopener noreferrer">how transfer works<span class="sr-only"> (opens in a new tab)</span></a>{' '}
 			before sending anything.
 		</p>
 	</Section>
 
 	<Section label="Claims you can check">
-		<ul class="grid gap-x-8 sm:grid-cols-2">
-			{claims.map((claim) => <li class="border-t border-line py-5 text-body text-ink">{claim}</li>)}
+		<ul class="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+			{claims.map((claim) => <li class="text-lede text-ink">{claim}</li>)}
 		</ul>
 		<p class="mt-6 text-small text-slate">
 			Each comes with a verifying command in the{' '}
@@ -108,5 +119,4 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-5 py
 		</p>
 	</Section>
 
-	<ContactSection lead="Run agents with tracing enabled? Write to us to contribute." />
 </BaseLayout>

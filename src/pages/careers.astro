@@ -1,21 +1,19 @@
 ---
-import ContactLink from '../components/ContactLink';
+import Button from '../components/Button.astro';
 import PageHeader from '../components/PageHeader.astro';
+import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Careers" description="Careers at Emet Labs.">
 	<PageHeader title="No open positions right now.">
 		<p>
-			We are always glad to hear from people who care about runtime verification, formal methods,
+			We are glad to hear from people who care about runtime verification, formal methods,
 			distributed systems, or making autonomous software accountable. If that describes you, write to
 			us and tell us what you have been working on.
 		</p>
 		<div class="mt-10">
-			<ContactLink
-				class="inline-flex min-h-11 items-center rounded-sm bg-ink px-5 text-small font-medium text-white transition-colors hover:bg-ink-deep"
-				label="Get in touch"
-			/>
+			<Button href={links.email}>Contact us</Button>
 		</div>
 	</PageHeader>
 </BaseLayout>

@@ -2,20 +2,15 @@
 import ContactSection from '../components/ContactSection.astro';
 import Rows from '../components/Rows.astro';
 import Section from '../components/Section.astro';
-import Sequence from '../components/Sequence.astro';
 import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const steps = [
-	{ label: 'Observe', title: 'What did it do?', note: 'Open-source instrumentation records events across your systems.' },
-	{ label: 'Check', title: 'Was it allowed?', note: 'Each event is checked against rules your team defines.' },
-	{ label: 'Conclude', title: 'How sure are we?', note: 'Every answer carries its evidence, or names what is missing.' },
-];
+const questions = ['What did it do?', 'Was it allowed?', 'How sure can we be?'];
 
 const commitments = [
 	{ term: 'Retraceable', body: 'Each answer links to its rule and the observations behind it.' },
 	{ term: 'Explicit about gaps', body: 'Incomplete evidence is reported as inconclusive, never as a pass.' },
-	{ term: 'Across systems', body: 'It reasons about the whole chain of actions, end to end.' },
+	{ term: 'Across systems', body: 'It follows a chain of actions across every system you instrument.' },
 	{ term: 'Rules you own', body: 'Requirements are written down and reviewed by your team.' },
 	{
 		term: 'Prevention where sound',
@@ -24,10 +19,10 @@ const commitments = [
 ];
 
 const status = [
-	{ term: 'Sentinel', body: 'In private development. Not yet generally available.' },
+	{ term: 'Availability', body: 'Not yet generally available.' },
 	{ term: 'Instrumentation SDKs', body: 'Source published under MPL-2.0.', href: links.github, linkLabel: 'GitHub' },
 	{ term: 'Documentation', body: 'Early and in progress.', href: `${links.docs}/sentinel`, linkLabel: 'Docs' },
-	{ term: 'Test data', body: 'Real traces contributed through trace-grab.', href: '/trace-grab', linkLabel: 'trace-grab' },
+	{ term: 'Real-world data', body: 'Teams can contribute traces to this work through trace-grab.', href: '/trace-grab/', linkLabel: 'trace-grab' },
 ];
 ---
 
@@ -40,12 +35,22 @@ const status = [
 			<p class="text-small text-dusk">In private development</p>
 			<h1 class="mt-4 text-display text-ink">Sentinel</h1>
 			<p class="mt-8 max-w-md text-lede text-slate">
-				Runtime verification for AI agents. It checks what a deployment did against your rules and
-				shows the evidence for every answer.
+				Runtime verification for AI agents. Set the rules; Sentinel tells you whether your agents kept
+				them, and on what evidence.
 			</p>
 		</div>
 		<div class="lg:col-span-5 lg:col-start-8 lg:self-end">
-			<Sequence steps={steps} vertical />
+			<ol class="space-y-3" aria-label="The questions Sentinel answers">
+				{
+					questions.map((q, i) => (
+						<li class:list={['font-display text-headline', i === 0 ? 'text-ink' : 'text-dusk']}>{q}</li>
+					))
+				}
+			</ol>
+			<p class="mt-6 max-w-sm text-small text-slate">
+				Open-source instrumentation reports what your systems do; Sentinel checks it against the rules
+				your team writes and answers with the evidence attached.
+			</p>
 		</div>
 	</header>
 
@@ -54,10 +59,10 @@ const status = [
 			<p class="statement md:sticky md:top-32 md:col-span-4 md:self-start">
 				Built for settings where a wrong answer is worse than no&nbsp;answer.
 			</p>
-			<dl class="divide-y divide-white/15 border-y border-white/15 md:col-span-5">
+			<dl class="divide-y divide-white/15 md:col-span-5">
 				{
 					commitments.map(({ term, body }) => (
-						<div class="py-6">
+						<div class="py-6 first:pt-0">
 							<dt class="font-display text-subhead text-white">{term}</dt>
 							<dd class="mt-2 text-body text-haze">{body}</dd>
 						</div>

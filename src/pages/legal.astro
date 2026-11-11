@@ -1,6 +1,6 @@
 ---
 import PageHeader from '../components/PageHeader.astro';
-import { links, site } from '../config/site';
+import { adobeFontsKitId, links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -28,7 +28,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<h2>This website</h2>
 				<p>
 					Content on this website is © {site.name}. The Satoshi typeface is used under the Fontshare
-					Free Font licence; Minerva Modern is licensed through Adobe Fonts.
+					Free Font licence{adobeFontsKitId ? '; Minerva Modern is licensed through Adobe Fonts' : ''}.
 				</p>
 
 				<h2>Contact</h2>
