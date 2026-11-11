@@ -21,9 +21,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
 <Section tone="panel" label="Contact">
 	<div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
-		<p class="statement lg:col-span-7">
-			{lead} <span class="quiet">{follow}</span>
-		</p>
+		<div class="lg:col-span-7">
+			<p class="statement">{lead}</p>
+			<p class="mt-5 text-lede text-haze">{follow}</p>
+		</div>
 		<div class="lg:col-span-4 lg:col-start-9">
 			<a href={links.email} class="link inline-flex min-h-11 items-center font-display text-subhead text-white">{site.email}</a>
 			{

@@ -10,7 +10,7 @@
  * The default Tailwind palette is cleared, so every colour comes from this list.
  *
  * Contrast (WCAG): ink 15:1, slate 7.9:1, dusk 5.7:1, ember 4.9:1 on bone;
- * on the ink panel, white 15:1, haze 8.9:1, ember-light 6.2:1. Silver is for
+ * on the ink panel, white 15:1, haze 8.6:1, ember-light 6.0:1. Silver is for
  * marks only, never text.
  */
 
@@ -45,7 +45,6 @@
 	--color-mist: #e8e4dc; /* sand: code, hover, quiet fills */
 	--color-ink: #1a1c27; /* text, and the brand panel */
 	--color-ink-deep: #0f1017;
-	--color-navy: #262c57; /* the logo's navy, for small accents only */
 	--color-slate: #474957; /* body text */
 	--color-dusk: #615c6b; /* secondary text and labels */
 	--color-silver: #9b9ca1; /* the logo's silver: marks only */
@@ -61,18 +60,21 @@
 	/* Diagram colours: one muted hue per system, the same in every diagram.
 	   "-d" is the deep version for bone, "-l" the light version for the ink panel.
 	   Ember stays reserved for what is violated or missing. */
-	--color-sys-model-d: #6a55b8;
 	--color-sys-model-l: #b3a6e6;
-	--color-sys-tools-d: #2a7550;
 	--color-sys-tools-l: #7ccfa6;
 	--color-sys-approvals-d: #96640f;
 	--color-sys-approvals-l: #e7b85e;
 	--color-sys-payments-d: #2f63a8;
 	--color-sys-payments-l: #84b4ec;
-	--color-sys-ledger-d: #a8477a;
 	--color-sys-ledger-l: #e293b4;
 	--color-sys-crm-d: #1f7a74;
-	--color-sys-crm-l: #6fd0c6;
+
+	/* JSON syntax colours, on the sand code surface (all 5:1 or more). */
+	--color-code-key: #2b5594;
+	--color-code-string: #2c6a45;
+	--color-code-number: #8a4a12;
+	--color-code-literal: #6b3fa0;
+	--color-code-punct: #615c6b;
 	--color-transparent: transparent;
 	--color-current: currentColor;
 
@@ -113,7 +115,12 @@
 	--text-code--line-height: 1.625;
 
 	--radius-sm: 2px;
-	--radius-md: 6px; /* the brand panel and product frames */
+	--radius-md: 6px; /* the brand panel */
+	--radius-frame: 4px; /* product screenshots */
+
+	/* Product screenshots sit on the page with one soft, consistent shadow. */
+	--shadow-frame: 0 1px 2px rgb(26 28 39 / 0.06), 0 14px 34px -14px rgb(26 28 39 / 0.22);
+	--shadow-float: 0 18px 40px -12px rgb(0 0 0 / 0.55);
 
 	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -162,6 +169,15 @@
 		left top, left top, right top, right top,
 		left bottom, left bottom, right bottom, right bottom;
 	background-repeat: no-repeat;
+}
+
+/* The backdrop for product screenshots: sand crossed by faint horizontal lanes,
+   the trace motif of the site's diagrams, fading out towards the bottom. */
+@utility stage {
+	background-color: var(--color-mist);
+	background-image:
+		linear-gradient(to bottom, transparent 55%, var(--color-mist)),
+		repeating-linear-gradient(to bottom, transparent 0 39px, rgb(26 28 39 / 0.07) 39px 40px);
 }
 
 /* Comfortable reading width for running text. */
@@ -216,6 +232,8 @@
 	}
 
 	:focus-visible {
+		/* No transition, so the ring appears at once in its final colour. */
+		transition: none;
 		outline: 2px solid var(--color-ink);
 		outline-offset: 3px;
 		border-radius: var(--radius-sm);
