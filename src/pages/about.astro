@@ -1,42 +1,57 @@
 ---
-import ContactSection from '../components/ContactSection.astro';
-import PageHeader from '../components/PageHeader.astro';
-import Rows from '../components/Rows.astro';
-import Section from '../components/Section.astro';
+import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const principles = [
-	{
-		term: 'Claims you can check',
-		body: 'We state what our tools do in a form you can verify, as trace-grab does for each of its privacy claims.',
-	},
-	{ term: 'Explicit about uncertainty', body: 'We report a gap rather than paper over it, in software and in prose.' },
-	{
-		term: 'Open where trust requires it',
-		body: 'Code that runs inside your applications, or touches your data before it leaves, should be open to inspection. trace-grab and our instrumentation SDKs are.',
-	},
-];
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <BaseLayout
 	title="About"
 	description="Emet Labs is a research and engineering company building verification infrastructure for AI agents."
+	footerEmail={false}
 >
-	<PageHeader title="We build the means to check what autonomous systems do.">
-		<p>Emet Labs is a research and engineering company working on verification for AI agents.</p>
-	</PageHeader>
+	<header class="wrap pt-16 pb-14 sm:pt-24 sm:pb-20 lg:pt-28">
+		<h1 class="max-w-4xl text-display text-ink">
+			A mistaken answer can be ignored. A mistaken payment&nbsp;cannot.
+		</h1>
+	</header>
 
-	<Section label="Why this work">
-		<p class="statement">A mistaken answer can be ignored. A mistaken payment&nbsp;cannot.</p>
-		<p class="measure mt-6 text-body text-slate">
-			As agents take actions, organisations need to show what happened and whether it was allowed. We
-			think that belongs in the infrastructure.
-		</p>
-	</Section>
+	<div class="wrap grid gap-12 pb-20 sm:pb-28 lg:grid-cols-12 lg:gap-8">
+		<div class="measure text-lede text-slate lg:order-last lg:col-span-6 lg:col-start-4">
+			<p>
+				Emet Labs is a research and engineering company building verification infrastructure for AI
+				agents.
+			</p>
+			<p class="mt-6">
+				As agents start to take actions with consequences, the people responsible for them need a record
+				they can check. We think that record belongs in the infrastructure, not in the agent’s own
+				account.
+			</p>
+		</div>
 
-	<Section label="How we work">
-		<Rows items={principles} />
-	</Section>
-
-	<ContactSection lead="We are glad to talk with engineers, researchers and teams deploying agents." channels />
+		<dl class="grid gap-6 text-small sm:grid-cols-2 lg:col-span-3 lg:grid-cols-1 lg:border-t lg:border-line lg:pt-6">
+			<div>
+				<dt class="label">Work</dt>
+				<dd class="mt-1 text-ink">
+					<a href="/sentinel/" class="link">Sentinel</a>, <a href="/research/" class="link">research</a>{' '}
+					and <a href="/trace-grab/" class="link">trace-grab</a>
+				</dd>
+			</div>
+			<div>
+				<dt class="label">Open source</dt>
+				<dd class="mt-1 text-slate">Code that runs inside your systems: trace-grab and our instrumentation SDKs.</dd>
+			</div>
+			<div>
+				<dt class="label">Contact</dt>
+				<dd class="mt-1"><a href={links.email} class="link text-ink">{site.email}</a></dd>
+			</div>
+			<div>
+				<dt class="label">Elsewhere</dt>
+				<dd class="mt-1 text-ink">
+					<a href={links.linkedin} class="link" {...ext}>LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>{' '}
+					and <a href={links.github} class="link" {...ext}>GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+				</dd>
+			</div>
+		</dl>
+	</div>
 </BaseLayout>
