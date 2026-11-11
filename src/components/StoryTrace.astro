@@ -51,30 +51,30 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 
 				<!-- Step 1: one task fans out into actions in other systems. -->
 				<g class="s1">
-					<rect x="112" y="67" width="36" height="6" rx="3" class="fill-silver" />
-					<circle cx="130" cy="70" r="5.5" class="fill-ink" />
-					<circle cx="230" cy="70" r="5.5" class="fill-ink" />
-					<circle cx="330" cy="70" r="5.5" class="fill-ink" />
-					<path d={curve(230, 70, 262, 280)} fill="none" class="stroke-line-strong" stroke-width="1" />
-					<circle cx="262" cy="280" r="5.5" class="fill-sys-payments-d" />
-					<path d={curve(130, 70, 162, 175)} fill="none" class="stroke-line-strong" stroke-width="1" />
-					<circle cx="162" cy="175" r="5.5" class="fill-sys-crm-d" />
+					<rect x="102" y="67" width="36" height="6" rx="3" class="fill-silver" />
+					<circle cx="120" cy="70" r="5.5" class="fill-ink" />
+					<circle cx="196" cy="70" r="5.5" class="fill-ink" />
+					<circle cx="268" cy="70" r="5.5" class="fill-ink" />
+					<path d={curve(196, 70, 226, 280)} fill="none" class="stroke-line-strong" stroke-width="1" />
+					<circle cx="226" cy="280" r="5.5" class="fill-sys-payments-d" />
+					<path d={curve(120, 70, 150, 175)} fill="none" class="stroke-line-strong" stroke-width="1" />
+					<circle cx="150" cy="175" r="5.5" class="fill-sys-crm-d" />
 				</g>
 
 				<!-- The write to the CRM: observed in step 1, missing from step 2. -->
-				<path d={curve(330, 70, 364, 175)} fill="none" class="s1-only stroke-line-strong" stroke-width="1" />
-				<circle cx="364" cy="175" r="5.5" class="s1-only fill-sys-crm-d" />
+				<path d={curve(268, 70, 300, 175)} fill="none" class="s1-only stroke-line-strong" stroke-width="1" />
+				<circle cx="300" cy="175" r="5.5" class="s1-only fill-sys-crm-d" />
 				<g class="s2">
-					<path d={curve(330, 70, 364, 175)} fill="none" class="stroke-ember" stroke-width="1" stroke-dasharray="3 4" />
-					<circle cx="364" cy="175" r="6" fill="none" class="stroke-ember" stroke-width="1.25" stroke-dasharray="2.5 2.5" />
+					<path d={curve(268, 70, 300, 175)} fill="none" class="stroke-ember" stroke-width="1" stroke-dasharray="3 4" />
+					<circle cx="300" cy="175" r="6" fill="none" class="stroke-ember" stroke-width="1.25" stroke-dasharray="2.5 2.5" />
 				</g>
 
 				<!-- Step 3: the agent's account against the record. -->
 				<g class="s3">
-					<line x1="330" y1="60" x2="330" y2="36" class="stroke-ink" stroke-width="1" />
-					<rect x="178" y="4" width="262" height="32" rx="2" class="fill-ink" />
-					<text x="190" y="25" class="fill-white font-sans text-[13px]">agent log: “record updated”</text>
-					<text x="440" y="206" text-anchor="end" class="fill-ember font-sans text-[13px] font-medium">no write recorded</text>
+					<line x1="268" y1="60" x2="268" y2="36" class="stroke-ink" stroke-width="1" />
+					<rect x="150" y="4" width="262" height="32" rx="2" class="fill-ink" />
+					<text x="162" y="25" class="fill-white font-sans text-[13px]">agent log: “record updated”</text>
+					<text x="300" y="206" text-anchor="middle" class="fill-ember font-sans text-[13px] font-medium">no write recorded</text>
 				</g>
 			</svg>
 		</div>
@@ -84,7 +84,7 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 	<ol class="lg:col-span-5 lg:col-start-8">
 		{
 			steps.map(({ title, note }, i) => (
-				<li class="border-t border-line py-8 first:border-t-0 first:pt-0 lg:flex lg:min-h-[56vh] lg:flex-col lg:justify-center lg:border-t-0 lg:py-0" data-story-step={i + 1}>
+				<li class="border-t border-line py-8 first:border-t-0 first:pt-0 lg:flex lg:min-h-[42vh] lg:flex-col lg:justify-center lg:border-t-0 lg:py-0" data-story-step={i + 1}>
 					<p class="meta text-dusk">{String(i + 1).padStart(2, '0')} /</p>
 					<p class="statement mt-4">{title}</p>
 					<p class="mt-4 max-w-md text-body text-slate">{note}</p>
@@ -124,10 +124,13 @@ const curve = (x1: number, y1: number, x2: number, y2: number) =>
 			const mid = window.innerHeight / 2;
 			figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < mid).pop()?.dataset.storyStep ?? '1';
 			observer = new IntersectionObserver(
-				(entries) => {
-					for (const e of entries) if (e.isIntersecting) figure.dataset.step = (e.target as HTMLElement).dataset.storyStep;
+				// Recompute from positions on every change, so a jump (End key, an anchor,
+				// find-in-page) that skips the middle band still lands on the right step.
+				() => {
+					const middle = window.innerHeight / 2;
+					figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < middle).pop()?.dataset.storyStep ?? '1';
 				},
-				{ rootMargin: '-45% 0px -45% 0px' },
+				{ rootMargin: '-50% 0px -50% 0px' },
 			);
 			for (const s of steps) observer.observe(s);
 		};

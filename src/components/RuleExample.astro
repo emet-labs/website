@@ -6,20 +6,22 @@
  * labelled as an example.
  *
  * Static on purpose: every record and answer is visible at once, so the point
- * (that "not yet known" is a real answer) needs no interaction and reads the
- * same with or without JavaScript or a screen reader.
+ * (that "inconclusive" is a real answer) needs no interaction and reads the
+ * same with or without JavaScript or a screen reader. The answers use the
+ * product's own words, as the dashboard on the same page does.
  */
 type Event = { time: string; name: 'Approval' | 'Refund'; flagged?: boolean };
 // System hues, shared with the site's other diagrams.
 const dot = { Approval: 'bg-sys-approvals-d', Refund: 'bg-sys-payments-d' };
 
-const records: { events: Event[]; missing?: string; answer: string }[] = [
+const records: { events: Event[]; missing?: string; answer: string; state: 'ok' | 'bad' | 'gap' }[] = [
 	{
 		events: [
 			{ time: '10:02', name: 'Approval' },
 			{ time: '10:04', name: 'Refund' },
 		],
-		answer: 'Holds.',
+		answer: 'Satisfied.',
+		state: 'ok',
 	},
 	{
 		events: [
@@ -27,11 +29,13 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 			{ time: '10:05', name: 'Approval' },
 		],
 		answer: 'Violated.',
+		state: 'bad',
 	},
 	{
 		events: [{ time: '10:04', name: 'Refund' }],
 		missing: 'No report from approvals',
-		answer: 'Not yet known.',
+		answer: 'Inconclusive.',
+		state: 'gap',
 	},
 ];
 ---
@@ -52,7 +56,7 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 
 	<ol class="divide-y divide-line">
 		{
-			records.map(({ events, missing, answer }, i) => (
+			records.map(({ events, missing, answer, state }, i) => (
 				<li class="grid gap-4 px-5 py-4 sm:py-5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center sm:gap-6 sm:px-6">
 					<div class="flex flex-wrap items-start gap-x-8 gap-y-3">
 						<span class="sr-only">Record {i + 1}:</span>
@@ -81,9 +85,17 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 							</p>
 						)}
 					</div>
-					<p class="font-display text-subhead text-ink">
-						<span class="sr-only">Answer: </span>
-						{answer}
+					<p class="flex items-center gap-3 font-display text-subhead text-ink">
+						<span
+							aria-hidden="true"
+							class:list={[
+								'size-2.5 shrink-0 rounded-full',
+								state === 'ok' && 'bg-ink',
+								state === 'bad' && 'bg-ember',
+								state === 'gap' && 'border border-dashed border-ember',
+							]}
+						/>
+						<span><span class="sr-only">Answer: </span>{answer}</span>
 					</p>
 				</li>
 			))
