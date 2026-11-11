@@ -10,6 +10,8 @@ export default defineConfig({
 	redirects: {
 		// Retired placeholder; trace-grab replaced it.
 		'/trace-bounty': '/trace-grab',
+		// Placeholder with no posts; removed until there is something to publish.
+		'/blog': '/research/',
 	},
 	vite: {
 		plugins: [tailwindcss()],
