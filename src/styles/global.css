@@ -130,15 +130,6 @@
 	max-width: 40rem;
 }
 
-/* Section name set in the left margin of the grid. Sentence case, quiet. */
-@utility label {
-	font-family: var(--font-sans);
-	font-size: var(--text-label);
-	line-height: var(--text-label--line-height);
-	font-weight: 500;
-	color: var(--color-dusk);
-}
-
 @layer base {
 	:root {
 		color-scheme: light;

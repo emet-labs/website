@@ -58,7 +58,7 @@ const records: { events: Event[]; missing?: string; answer: string }[] = [
 							{events.map(({ time, name, flagged }) => (
 								<li class="relative min-w-16">
 									<span aria-hidden="true" class="block size-2.5 rounded-full bg-ink" />
-									<span class="mt-2 block text-label text-dusk tabular-nums">{time}</span>
+									<span class="meta mt-2 block text-dusk">{time}</span>
 									<span class="block text-small text-ink">
 										{flagged ? (
 											<mark class="-mx-1 rounded-sm bg-ink px-1 text-white">
