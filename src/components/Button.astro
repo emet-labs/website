@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
-type Variant = 'primary' | 'secondary' | 'inverse' | 'inverse-outline';
+type Variant = 'primary' | 'secondary';
 
 interface Props extends HTMLAttributes<'a'> {
 	href: string;
@@ -14,8 +14,6 @@ const { href, variant = 'primary', external = false, class: className, ...rest }
 const variants: Record<Variant, string> = {
 	primary: 'bg-ink text-white hover:bg-ink-deep',
 	secondary: 'border border-line-strong text-ink hover:border-ink',
-	inverse: 'bg-white text-ink hover:bg-mist',
-	'inverse-outline': 'border border-white/40 text-white hover:border-white',
 };
 ---
 
@@ -24,18 +22,12 @@ const variants: Record<Variant, string> = {
 	target={external ? '_blank' : undefined}
 	rel={external ? 'noopener noreferrer' : undefined}
 	class:list={[
-		'group inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 text-small font-medium transition-colors duration-200',
+		'inline-flex min-h-11 items-center justify-center rounded-sm px-5 text-small font-medium transition-colors duration-200',
 		variants[variant],
 		className,
 	]}
 	{...rest}
 >
 	<slot />
-	<span
-		aria-hidden="true"
-		class="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
-	>
-		{external ? '↗' : '→'}
-	</span>
-	{external && <span class="sr-only">(opens in a new tab)</span>}
+	{external && <span class="sr-only"> (opens in a new tab)</span>}
 </a>

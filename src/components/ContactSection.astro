@@ -1,0 +1,36 @@
+---
+import { links, site } from '../config/site';
+import Section from './Section.astro';
+
+interface Props {
+	/** One sentence of context for why someone would get in touch from this page. */
+	lead?: string;
+	/** Also list LinkedIn and GitHub. */
+	channels?: boolean;
+}
+
+const {
+	lead = 'If you are building agents that take consequential actions, we would like to hear from you.',
+	channels = false,
+} = Astro.props;
+---
+
+<Section label="Contact">
+	<p class="measure text-lede text-slate">{lead}</p>
+	<a href={links.email} class="link mt-4 inline-block py-2 font-display text-headline text-ink">{site.email}</a>
+	{
+		channels && (
+			<p class="mt-8 text-small text-slate">
+				Also on{' '}
+				<a href={links.linkedin} class="link text-ink" target="_blank" rel="noopener noreferrer">
+					LinkedIn<span class="sr-only"> (opens in a new tab)</span>
+				</a>{' '}
+				and{' '}
+				<a href={links.github} class="link text-ink" target="_blank" rel="noopener noreferrer">
+					GitHub<span class="sr-only"> (opens in a new tab)</span>
+				</a>
+				.
+			</p>
+		)
+	}
+</Section>

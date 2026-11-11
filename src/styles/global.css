@@ -25,8 +25,7 @@
 	--color-ink-deep: #1b2044;
 	--color-slate: #4b4f6e; /* body copy on paper, 7.9:1 */
 	--color-dusk: #5d5872; /* owl gradient midpoint, 6.8:1 on paper */
-	--color-silver: #9b9ca1; /* owl head and dot; decorative only on paper */
-	--color-haze: #c9cad6; /* secondary text on ink, 8.2:1 */
+	--color-silver: #9b9ca1; /* owl head and dot; decorative only, never text */
 	--color-line: rgb(38 44 87 / 0.14);
 	--color-line-strong: rgb(38 44 87 / 0.32);
 	--color-white: #ffffff;
@@ -42,41 +41,31 @@
 
 	--font-weight-display: 400;
 
-	/* Type scale. Display sizes are fluid; body sizes are fixed for legibility. */
-	--text-display: clamp(2.75rem, 1.55rem + 5.2vw, 6.5rem);
-	--text-display--line-height: 0.98;
-	--text-display--letter-spacing: -0.025em;
-	--text-title: clamp(2.375rem, 1.65rem + 3vw, 4.25rem);
-	--text-title--line-height: 1.04;
-	--text-title--letter-spacing: -0.02em;
-	--text-headline: clamp(1.875rem, 1.45rem + 1.7vw, 2.875rem);
-	--text-headline--line-height: 1.1;
-	--text-headline--letter-spacing: -0.015em;
-	--text-subhead: clamp(1.375rem, 1.22rem + 0.6vw, 1.75rem);
-	--text-subhead--line-height: 1.25;
-	--text-subhead--letter-spacing: -0.01em;
-	--text-lede: clamp(1.125rem, 1.06rem + 0.3vw, 1.3125rem);
-	--text-lede--line-height: 1.55;
+	/* Type scale. Headings are fluid but capped well short of "monumental";
+	   body sizes are fixed for legibility. */
+	--text-display: clamp(2.5rem, 1.75rem + 3vw, 4.25rem);
+	--text-display--line-height: 1.06;
+	--text-display--letter-spacing: -0.02em;
+	--text-title: clamp(2.25rem, 1.8rem + 1.8vw, 3.25rem);
+	--text-title--line-height: 1.08;
+	--text-title--letter-spacing: -0.015em;
+	--text-headline: clamp(1.625rem, 1.4rem + 0.9vw, 2.125rem);
+	--text-headline--line-height: 1.18;
+	--text-headline--letter-spacing: -0.01em;
+	--text-subhead: clamp(1.25rem, 1.17rem + 0.3vw, 1.4375rem);
+	--text-subhead--line-height: 1.32;
+	--text-lede: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+	--text-lede--line-height: 1.6;
 	--text-body: 1.0625rem;
 	--text-body--line-height: 1.65;
 	--text-small: 0.9375rem;
 	--text-small--line-height: 1.55;
-	--text-eyebrow: 0.75rem;
-	--text-eyebrow--line-height: 1.2;
-	--text-eyebrow--letter-spacing: 0.16em;
+	--text-label: 0.875rem;
+	--text-label--line-height: 1.4;
 
 	--radius-sm: 2px;
 
 	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-
-	--animate-rise: rise 700ms var(--ease-out) both;
-
-	@keyframes rise {
-		from {
-			opacity: 0;
-			transform: translateY(10px);
-		}
-	}
 }
 
 /* Page container: one max width and gutter for every section. */
@@ -100,14 +89,12 @@
 	max-width: 40rem;
 }
 
-/* Small uppercase label above a section or page title. */
-@utility eyebrow {
+/* Section name set in the left margin of the grid. Sentence case, quiet. */
+@utility label {
 	font-family: var(--font-sans);
-	font-size: var(--text-eyebrow);
-	line-height: var(--text-eyebrow--line-height);
-	letter-spacing: var(--text-eyebrow--letter-spacing);
+	font-size: var(--text-label);
+	line-height: var(--text-label--line-height);
 	font-weight: 500;
-	text-transform: uppercase;
 	color: var(--color-dusk);
 }
 
@@ -129,6 +116,8 @@
 	html {
 		scroll-behavior: smooth;
 		scrollbar-gutter: stable;
+		/* Keep focused and anchored elements clear of the sticky header. */
+		scroll-padding-top: 6.5rem;
 	}
 
 	body {
@@ -160,10 +149,6 @@
 		border-radius: var(--radius-sm);
 	}
 
-	.on-ink :focus-visible {
-		outline-color: var(--color-white);
-	}
-
 	::selection {
 		background: var(--color-ink);
 		color: var(--color-white);
@@ -190,6 +175,17 @@
 }
 
 @layer components {
+	/* A section's lead statement: display face at headline size. */
+	.statement {
+		font-family: var(--font-display);
+		font-weight: var(--font-weight-display);
+		font-size: var(--text-headline);
+		line-height: var(--text-headline--line-height);
+		letter-spacing: var(--text-headline--letter-spacing);
+		color: var(--color-ink);
+		text-wrap: balance;
+	}
+
 	/* Inline text link: underline that strengthens on hover. */
 	.link {
 		text-decoration-line: underline;

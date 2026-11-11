@@ -20,15 +20,15 @@ const year = new Date().getFullYear();
 			{
 				footerNav.map(({ heading, items }) => (
 					<div>
-						<p class="eyebrow">{heading}</p>
-						<ul class="mt-4 space-y-2.5 text-small">
+						<h2 class="label">{heading}</h2>
+						<ul class="mt-3 space-y-0.5 text-small">
 							{items.map(({ href, label, external }) => (
 								<li>
 									<a
 										href={href}
 										target={external ? '_blank' : undefined}
 										rel={external ? 'noopener noreferrer' : undefined}
-										class="text-slate transition-colors hover:text-ink"
+										class="inline-block py-1.5 text-slate transition-colors hover:text-ink"
 									>
 										{label}
 										{external && <span class="sr-only">(opens in a new tab)</span>}
@@ -42,10 +42,7 @@ const year = new Date().getFullYear();
 		</nav>
 	</div>
 
-	<div class="wrap flex flex-col gap-2 border-t border-line py-6 text-small text-dusk sm:flex-row sm:justify-between">
-		<p>© {year} {site.name}. All rights reserved.</p>
-		<p>
-			<a href={`mailto:${site.email}`} class="link">{site.email}</a>
-		</p>
+	<div class="wrap">
+		<p class="border-t border-line py-6 text-small text-dusk">© {year} {site.name}. All rights reserved.</p>
 	</div>
 </footer>

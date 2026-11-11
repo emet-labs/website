@@ -1,27 +1,24 @@
 ---
 /**
- * Opening block for interior pages: eyebrow, display title, optional lede (slot).
+ * Opening block for interior pages: title and optional lede (default slot).
+ * The current page is already marked in the navigation, so there is no eyebrow.
  */
 interface Props {
-	eyebrow: string;
 	title: string;
 }
 
-const { eyebrow, title } = Astro.props;
+const { title } = Astro.props;
 ---
 
-<section class="border-b border-line">
-	<div class="wrap grid gap-8 pt-16 pb-14 sm:pt-24 sm:pb-20 lg:grid-cols-12 lg:pt-32 lg:pb-24">
-		<p class="eyebrow animate-rise lg:col-span-3 lg:pt-4">{eyebrow}</p>
-		<div class="lg:col-span-9">
-			<h1 class="animate-rise text-title text-ink [animation-delay:60ms]">{title}</h1>
-			{
-				Astro.slots.has('default') && (
-					<div class="measure mt-8 animate-rise text-lede text-slate [animation-delay:120ms]">
-						<slot />
-					</div>
-				)
-			}
-		</div>
+<header class="wrap grid gap-8 pt-16 pb-16 sm:pt-24 sm:pb-20 lg:grid-cols-12 lg:pt-28">
+	<div class="lg:col-span-9">
+		<h1 class="text-title text-ink">{title}</h1>
+		{
+			Astro.slots.has('default') && (
+				<div class="measure mt-6 text-lede text-slate">
+					<slot />
+				</div>
+			)
+		}
 	</div>
-</section>
+</header>
