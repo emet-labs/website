@@ -1,109 +1,69 @@
 ---
 import ContactSection from '../components/ContactSection.astro';
-import PageHeader from '../components/PageHeader.astro';
 import Rows from '../components/Rows.astro';
 import Section from '../components/Section.astro';
+import Sequence from '../components/Sequence.astro';
 import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const questions = [
-	'What did this deployment actually do?',
-	'Did it stay within the rules we set?',
-	'Is the evidence strong enough to trust that conclusion?',
+const steps = [
+	{ label: 'Observe', title: 'What did it do?', note: 'Open-source instrumentation records events across your systems.' },
+	{ label: 'Check', title: 'Was it allowed?', note: 'Each event is checked against rules your team defines.' },
+	{ label: 'Conclude', title: 'How sure are we?', note: 'Every answer carries its evidence, or names what is missing.' },
 ];
 
 const commitments = [
+	{ term: 'Retraceable', body: 'Each answer links to its rule and the observations behind it.' },
+	{ term: 'Explicit about gaps', body: 'Incomplete evidence is reported as inconclusive, never as a pass.' },
+	{ term: 'Across systems', body: 'It reasons about the whole chain of actions, end to end.' },
+	{ term: 'Rules you own', body: 'Requirements are written down and reviewed by your team.' },
 	{
-		term: 'Conclusions you can retrace',
-		body: 'Each answer is tied to the rule it was checked against and to the observations it rests on, so a reviewer can follow how it was reached.',
-	},
-	{
-		term: 'Uncertainty stated plainly',
-		body: 'If a required source stopped reporting or the record has gaps, the result is reported as inconclusive, with the reason. A gap is never counted as a pass.',
-	},
-	{
-		term: 'The whole sequence',
-		body: 'Agents act through many systems at once. Sentinel is built to reason about the full chain of actions across all of them.',
-	},
-	{
-		term: 'Rules your team owns',
-		body: 'Requirements such as “a refund is issued only after an approval” are written down as explicit rules that a reviewer can read and approve.',
-	},
-	{
-		term: 'Prevention where it is sound',
-		body: 'For a narrow class of rules, Sentinel is designed to stop a non-compliant action before it takes effect. Everything else is monitored and surfaced for review.',
+		term: 'Prevention where sound',
+		body: 'For a narrow class of rules, it is designed to stop an action before it takes effect.',
 	},
 ];
 
 const status = [
 	{ term: 'Sentinel', body: 'In private development. Not yet generally available.' },
-	{
-		term: 'Instrumentation SDKs',
-		body: 'Source published under MPL-2.0.',
-		href: links.github,
-		linkLabel: 'GitHub',
-	},
-	{
-		term: 'Documentation',
-		body: 'Early documentation is public and still in progress.',
-		href: `${links.docs}/sentinel`,
-		linkLabel: 'Docs',
-	},
-	{
-		term: 'Test data',
-		body: 'Developed against real traces that teams contribute through trace-grab.',
-		href: '/trace-grab',
-		linkLabel: 'trace-grab',
-	},
+	{ term: 'Instrumentation SDKs', body: 'Source published under MPL-2.0.', href: links.github, linkLabel: 'GitHub' },
+	{ term: 'Documentation', body: 'Early and in progress.', href: `${links.docs}/sentinel`, linkLabel: 'Docs' },
+	{ term: 'Test data', body: 'Real traces contributed through trace-grab.', href: '/trace-grab', linkLabel: 'trace-grab' },
 ];
 ---
 
 <BaseLayout
 	title="Sentinel"
-	description="Sentinel is runtime verification for AI agents: it checks what a deployment actually did against rules you define and reports each conclusion with its evidence. In private development."
+	description="Sentinel is runtime verification for AI agents: it checks what a deployment did against rules you define and reports each conclusion with its evidence. In private development."
 >
-	<PageHeader title="Sentinel">
-		<p>
-			Runtime verification for AI agents. Sentinel checks what a deployment did against rules you
-			define, and reports each conclusion together with the evidence that supports it.
-		</p>
-		<p class="mt-4 text-small text-dusk">In private development.</p>
-	</PageHeader>
-
-	<Section label="What it answers">
-		<ol class="space-y-4">
-			{
-				questions.map((q, i) => (
-					<li class="flex gap-5 font-display text-headline text-ink">
-						<span class="w-5 shrink-0 pt-2.5 font-sans text-label text-dusk tabular-nums" aria-hidden="true">
-							{i + 1}
-						</span>
-						<span>{q}</span>
-					</li>
-				))
-			}
-		</ol>
-	</Section>
-
-	<Section label="Design commitments">
-		<p class="statement max-w-3xl">
-			Built for settings where a wrong answer is worse than no&nbsp;answer.
-		</p>
-		<Rows items={commitments} class="mt-10" />
-	</Section>
-
-	<Section label="In outline">
-		<p class="statement">Observe, check, conclude.</p>
-		<div class="measure mt-8 space-y-5 text-body text-slate">
-			<p>
-				Lightweight, open-source instrumentation reports what your applications and agents do. It
-				records events; it does not judge them.
+	<header class="wrap grid gap-12 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-28">
+		<div class="lg:col-span-6">
+			<p class="text-small text-dusk">In private development</p>
+			<h1 class="mt-4 text-display text-ink">Sentinel</h1>
+			<p class="mt-8 max-w-md text-lede text-slate">
+				Runtime verification for AI agents. It checks what a deployment did against your rules and
+				shows the evidence for every answer.
 			</p>
-			<p>
-				Sentinel evaluates those events against the rules you have defined while the deployment runs.
-				Each result arrives with its supporting evidence, or with an explicit account of what is
-				missing.
+		</div>
+		<div class="lg:col-span-5 lg:col-start-8 lg:self-end">
+			<Sequence steps={steps} vertical />
+		</div>
+	</header>
+
+	<Section label="Design commitments" tone="ink">
+		<div class="grid gap-10 md:grid-cols-9 md:gap-8">
+			<p class="statement md:sticky md:top-32 md:col-span-4 md:self-start">
+				Built for settings where a wrong answer is worse than no&nbsp;answer.
 			</p>
+			<dl class="divide-y divide-white/15 border-y border-white/15 md:col-span-5">
+				{
+					commitments.map(({ term, body }) => (
+						<div class="py-6">
+							<dt class="font-display text-subhead text-white">{term}</dt>
+							<dd class="mt-2 text-body text-haze">{body}</dd>
+						</div>
+					))
+				}
+			</dl>
 		</div>
 	</Section>
 
@@ -111,5 +71,5 @@ const status = [
 		<Rows items={status} />
 	</Section>
 
-	<ContactSection lead="If your agents take consequential actions and you need to account for them, tell us about it." />
+	<ContactSection lead="Do your agents take consequential actions? Tell us about it." />
 </BaseLayout>

@@ -2,49 +2,37 @@
 import Button from '../components/Button.astro';
 import ContactSection from '../components/ContactSection.astro';
 import Rows from '../components/Rows.astro';
+import RuleExample from '../components/RuleExample.astro';
 import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+const problem = [
+	'Agents now call tools, move money and change records.',
+	'Each action spans systems that keep separate, partial logs.',
+	'A model’s account of what it did is not evidence.',
+];
+
 const principles = [
-	{
-		term: 'Evidence before assurance',
-		body: 'A conclusion is only as good as what supports it, so every conclusion should point back to the observations it rests on.',
-	},
-	{
-		term: 'Unknown is a valid answer',
-		body: 'When the record is incomplete, the correct result is “not yet known.” Missing evidence is never counted as a pass.',
-	},
-	{
-		term: 'Rules people can read',
-		body: 'Requirements should be precise enough for a machine to check and plain enough for a reviewer to sign off on.',
-	},
-	{
-		term: 'Control where it is sound',
-		body: 'Some rules are worth enforcing before an action takes effect; others are better observed and reviewed. That line should be drawn deliberately.',
-	},
+	{ term: 'Evidence before assurance', body: 'Every conclusion points to what supports it.' },
+	{ term: 'Unknown is an answer', body: 'Missing evidence is never counted as a pass.' },
+	{ term: 'Rules people can read', body: 'Precise enough to check, plain enough to approve.' },
+	{ term: 'Control where it is sound', body: 'Block an action in advance only where that is safe.' },
 ];
 
 const work = [
 	{ href: '/sentinel', title: 'Sentinel', body: 'Runtime verification for AI agents. In private development.' },
-	{ href: '/research', title: 'Research', body: 'The open problems in verifying systems that act on their own.' },
-	{
-		href: '/trace-grab',
-		title: 'trace-grab',
-		body: 'An open-source tool for contributing tokenized agent traces to that research.',
-	},
+	{ href: '/research', title: 'Research', body: 'Open problems in verifying systems that act on their own.' },
+	{ href: '/trace-grab', title: 'trace-grab', body: 'Open-source tool for contributing tokenized traces.' },
 ];
 ---
 
 <BaseLayout>
-	<header class="wrap grid pt-16 pb-16 sm:pt-24 sm:pb-24 lg:grid-cols-12 lg:pt-32">
-		<div class="lg:col-span-10">
+	<header class="wrap grid gap-14 pt-14 pb-20 sm:pt-20 lg:grid-cols-12 lg:items-center lg:gap-8 lg:pt-24 lg:pb-28">
+		<div class="lg:col-span-5">
 			<h1 class="text-display text-ink">Know what your agents&nbsp;did.</h1>
-		</div>
-		<div class="mt-8 lg:col-span-6">
-			<p class="text-lede text-slate">
-				Emet Labs builds verification infrastructure for AI agents: systems that check what an agent
-				did against the rules you set, establish whether it was allowed to, and show the evidence
-				behind every conclusion, including when that evidence is not enough.
+			<p class="mt-8 max-w-md text-lede text-slate">
+				Emet Labs builds verification infrastructure for AI agents: a checkable account of what an
+				agent did, whether it was allowed, and how strong the evidence is.
 			</p>
 			<div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-2">
 				<Button href="/sentinel">Read about Sentinel</Button>
@@ -54,32 +42,24 @@ const work = [
 				Sentinel is in private development. trace-grab is open source under Apache-2.0.
 			</p>
 		</div>
+		<div class="lg:col-span-6 lg:col-start-7">
+			<RuleExample />
+		</div>
 	</header>
 
-	<Section label="The problem">
-		<p class="statement max-w-3xl">
-			Agents now act on our behalf. The means of holding them to account have not caught&nbsp;up.
-		</p>
-		<div class="measure mt-10 space-y-5 text-body text-slate">
-			<p>
-				AI agents increasingly do more than answer questions. They call tools, change records, move
-				money and hand work to other agents, often across many systems and with no person reviewing
-				each step.
-			</p>
-			<p>
-				When something goes wrong, or has to be shown to have gone right, the record is usually
-				scattered across services, incomplete, and ordered by clocks that disagree. Part of it comes
-				from the very system being assessed. A model’s explanation of what it did is not evidence of
-				what it did, and a confidence score is not something an auditor can check.
-			</p>
-		</div>
+	<Section label="The problem" tone="ink">
+		<ul class="space-y-8 sm:space-y-10">
+			{problem.map((line) => <li class="statement scroll-ink max-w-3xl">{line}</li>)}
+		</ul>
 	</Section>
 
 	<Section label="Our position">
-		<p class="statement max-w-3xl">
-			Trust in an autonomous system should be earned with evidence, not assumed from its&nbsp;design.
-		</p>
-		<Rows items={principles} class="mt-12" />
+		<div class="grid gap-10 md:grid-cols-9 md:gap-8">
+			<p class="statement md:sticky md:top-32 md:col-span-4 md:self-start">
+				Trust in an autonomous system should be earned with&nbsp;evidence.
+			</p>
+			<Rows items={principles} stacked class="md:col-span-5" />
+		</div>
 	</Section>
 
 	<Section label="Our work">
@@ -87,7 +67,10 @@ const work = [
 			{
 				work.map(({ href, title, body }) => (
 					<li>
-						<a href={href} class="group -mx-3 grid gap-1 rounded-sm px-3 py-7 transition-colors hover:bg-mist focus-visible:bg-mist md:grid-cols-9 md:items-baseline md:gap-8">
+						<a
+							href={href}
+							class="group -mx-3 grid gap-1 rounded-sm px-3 py-7 transition-colors hover:bg-mist focus-visible:bg-mist md:grid-cols-9 md:items-baseline md:gap-8"
+						>
 							<span class="font-display text-headline text-ink md:col-span-3">{title}</span>
 							<span class="text-body text-slate md:col-span-5">{body}</span>
 							<span
@@ -103,5 +86,5 @@ const work = [
 		</ul>
 	</Section>
 
-	<ContactSection />
+	<ContactSection lead="Building agents that take consequential actions? We would like to hear from you." />
 </BaseLayout>

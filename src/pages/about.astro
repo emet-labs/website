@@ -7,16 +7,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const principles = [
 	{
-		term: 'Claims that can be checked',
-		body: 'When we say something about our tools, we try to say it in a form you can verify yourself. Each of trace-grab’s privacy claims, for example, comes with a way to confirm it in the source.',
+		term: 'Claims you can check',
+		body: 'We state what our tools do in a form you can verify, as trace-grab does for each of its privacy claims.',
 	},
-	{
-		term: 'Explicit about uncertainty',
-		body: 'Systems that hide what they do not know produce false confidence. We would rather report a gap than paper over it, in our software and in how we describe it.',
-	},
+	{ term: 'Explicit about uncertainty', body: 'We report a gap rather than paper over it, in software and in prose.' },
 	{
 		term: 'Open where trust requires it',
-		body: 'Software that runs inside someone else’s environment, handling their data, should be open to inspection. That is why trace-grab and our instrumentation SDKs are published as open source.',
+		body: 'Software that runs in your environment should be open to inspection, so trace-grab and our SDKs are.',
 	},
 ];
 ---
@@ -26,27 +23,20 @@ const principles = [
 	description="Emet Labs is a research and engineering company building verification infrastructure for AI agents."
 >
 	<PageHeader title="We build the means to check what autonomous systems do.">
-		<p>Emet Labs is a research and engineering company working on verification infrastructure for AI agents.</p>
+		<p>Emet Labs is a research and engineering company working on verification for AI agents.</p>
 	</PageHeader>
 
 	<Section label="Why this work">
-		<div class="measure space-y-5 text-lede text-slate">
-			<p>
-				As AI systems move from producing text to taking actions, the cost of being wrong changes. A
-				mistaken answer can be ignored. A mistaken payment, deletion or disclosure cannot.
-			</p>
-			<p>
-				Organisations that deploy agents need to know what those agents did, whether it was permitted
-				and how strong the evidence is, and they need to be able to show it to the people they answer
-				to. We think that accountability belongs in the infrastructure, not in a reconstruction after
-				the fact.
-			</p>
-		</div>
+		<p class="statement max-w-3xl">A mistaken answer can be ignored. A mistaken payment&nbsp;cannot.</p>
+		<p class="measure mt-6 text-body text-slate">
+			As agents take actions, organisations need to show what happened and whether it was allowed. We
+			think that belongs in the infrastructure, not in a reconstruction after the fact.
+		</p>
 	</Section>
 
 	<Section label="How we work">
 		<Rows items={principles} />
 	</Section>
 
-	<ContactSection lead="We are happy to talk with engineers, researchers and organisations deploying agents." channels />
+	<ContactSection lead="We are glad to talk with engineers, researchers and teams deploying agents." channels />
 </BaseLayout>

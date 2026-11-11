@@ -1,55 +1,33 @@
 ---
 import ContactSection from '../components/ContactSection.astro';
-import PageHeader from '../components/PageHeader.astro';
-import Rows from '../components/Rows.astro';
 import Section from '../components/Section.astro';
+import Sequence from '../components/Sequence.astro';
 import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Example taken from the public trace-grab README and documentation.
-const command = 'npx @emetlabs/trace-grab grab ./langsmith-export --out ./corpus --from langsmith';
+const command = 'npx @emetlabs/trace-grab grab ./langsmith-export \
+    --out ./corpus --from langsmith';
 
-const before = `{
-  "name": "modify_account",
-  "inputs": {
-    "account": "acct_1208",
-    "actor": "alice@corp.com"
-  }
-}`;
-
-const after = `{
-  "name": "modify_account",
-  "inputs": {
-    "account": "TOK_4f1ab9c072",
-    "actor": "TOK_88b0e13a5d"
-  }
-}`;
+// The two string values that change; everything else passes through.
+const fields = [
+	{ key: 'account', before: 'acct_1208', after: 'TOK_4f1ab9c072' },
+	{ key: 'actor', before: 'alice@corp.com', after: 'TOK_88b0e13a5d' },
+];
 
 // Each claim is documented, with a command that verifies it, in the trace-grab README.
 const claims = [
-	'Contains no Emet Labs endpoint and has no upload command.',
+	'No Emet Labs endpoint and no upload command.',
 	'No telemetry, analytics or update check.',
-	'No postinstall script, and a single runtime dependency.',
+	'No postinstall script; one runtime dependency.',
 	'Published to npm with signed build provenance.',
 ];
 
 const steps = [
-	{
-		term: 'Export',
-		body: 'Start from a trace export you already have: a LangSmith export, OTLP JSON, or span-shaped JSONL.',
-	},
-	{
-		term: 'Run',
-		body: 'trace-grab writes the tokenized bundle to a folder you name. The key that maps tokens back to your values stays on your machine.',
-	},
-	{
-		term: 'Review',
-		body: 'report.md lists every field the tool saw and what happened to it. If anything looks wrong, delete the folder.',
-	},
-	{
-		term: 'Decide',
-		body: 'If you are comfortable with the result, get in touch and send it by whatever means your organisation prefers.',
-	},
+	{ label: 'Export', title: 'Start from a trace export', note: 'LangSmith, OTLP JSON or span-shaped JSONL.' },
+	{ label: 'Run', title: 'Tokenize locally', note: 'The key back to your values stays on your machine.' },
+	{ label: 'Review', title: 'Read report.md', note: 'Every field, and what happened to it.' },
+	{ label: 'Decide', title: 'Send it, or delete it', note: 'Transfer happens only by a method you choose.' },
 ];
 
 const resources = [
@@ -57,31 +35,30 @@ const resources = [
 	{ href: links.traceGrabRepo, label: 'Source' },
 	{ href: links.traceGrabNpm, label: 'npm' },
 ];
+
+const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-5 py-4 text-small leading-relaxed text-ink';
 ---
 
 <BaseLayout
 	title="trace-grab"
 	description="trace-grab is an open-source tool for contributing agent traces to Emet Labs research without sharing their contents. It tokenizes trace exports on your own machine."
 >
-	<PageHeader title="trace-grab">
-		<p>
-			A command-line tool for contributing agent traces to our research without handing over their
-			contents. It runs on your machine, replaces every string value with a stable token, and writes
-			the result to a folder you choose. Nothing is sent anywhere unless you send it yourself.
-		</p>
-		<p class="mt-4 text-small text-dusk">Open source, Apache-2.0. Runs on Node 20 or later.</p>
-	</PageHeader>
-
-	<div class="wrap grid pb-16 sm:pb-24 lg:grid-cols-12">
-		<div class="min-w-0 lg:col-span-9">
-			<pre
-				class="overflow-x-auto rounded-sm border border-line bg-mist px-5 py-4 text-small text-ink"
-				aria-label="Example command"><code><span class="text-dusk select-none" aria-hidden="true">$ </span>{command}</code></pre>
-			<ul class="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-small font-medium">
+	<header class="wrap grid gap-12 pt-16 pb-20 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-28">
+		<div class="lg:col-span-6">
+			<p class="text-small text-dusk">Open source · Apache-2.0 · Node 20+</p>
+			<h1 class="mt-4 text-display text-ink">trace-grab</h1>
+			<p class="mt-8 max-w-md text-lede text-slate">
+				Share the shape of your agent traces, not their contents. It runs on your machine and replaces
+				every string with a stable token.
+			</p>
+		</div>
+		<div class="min-w-0 lg:col-span-6 lg:self-end">
+			<pre class={codeClass} aria-label="Example command"><code><span class="text-dusk select-none" aria-hidden="true">$ </span>{command}</code></pre>
+			<ul class="mt-4 flex flex-wrap gap-x-8 text-small font-medium">
 				{
 					resources.map(({ href, label }) => (
 						<li>
-							<a href={href} class="link" target="_blank" rel="noopener noreferrer">
+							<a href={href} class="link inline-flex min-h-11 items-center" target="_blank" rel="noopener noreferrer">
 								{label} ↗<span class="sr-only"> (opens in a new tab)</span>
 							</a>
 						</li>
@@ -89,61 +66,47 @@ const resources = [
 				}
 			</ul>
 		</div>
-	</div>
-
-	<Section label="Why it exists">
-		<div class="measure space-y-5 text-lede text-slate">
-			<p>
-				Verification is only as good as the behaviour it is tested against, so Sentinel is developed
-				against real traces. Most teams cannot share raw traces: they contain customer data, internal
-				tool names and sometimes regulated content.
-			</p>
-			<p>
-				trace-grab lets you contribute the shape of your traces while keeping their content. The same
-				value always becomes the same token, so relationships survive. The values do not.
-			</p>
-		</div>
-	</Section>
+	</header>
 
 	<Section label="What changes">
 		<p class="statement">Equality is preserved. Identity is&nbsp;not.</p>
 		<div class="mt-10 grid gap-6 md:grid-cols-2">
-			<figure class="min-w-0">
-				<figcaption class="label mb-3">Before</figcaption>
-				<pre class="overflow-x-auto rounded-sm border border-line bg-mist px-5 py-4 text-small text-ink"><code>{before}</code></pre>
-			</figure>
-			<figure class="min-w-0">
-				<figcaption class="label mb-3">After</figcaption>
-				<pre class="overflow-x-auto rounded-sm border border-line bg-mist px-5 py-4 text-small text-ink"><code>{after}</code></pre>
-			</figure>
+			{
+				(['before', 'after'] as const).map((side) => (
+					<figure class="min-w-0">
+						<figcaption class="label mb-3">{side === 'before' ? 'Before' : 'After'}</figcaption>
+						<pre class={codeClass}><code>{'{\n  "name": "modify_account",\n  "inputs": {\n'}{fields.map(({ key, before, after }, i) => (
+							<>{`    "${key}": `}<mark class:list={['rounded-sm px-0.5', side === 'after' ? 'bg-ink text-white' : 'bg-line text-ink']}>"{side === 'before' ? before : after}"</mark>{i < fields.length - 1 ? ',\n' : '\n'}</>
+						))}{'  }\n}'}</code></pre>
+					</figure>
+				))
+			}
 		</div>
-		<p class="measure mt-8 text-body text-slate">
-			Numbers, booleans and timestamps pass through, as do field names and a short, documented list of
-			structural fields such as tool and span names. Tokenization is pseudonymization, not
-			anonymization; the{' '}
-			<a href={links.traceGrabThreatModel} class="link text-ink" target="_blank" rel="noopener noreferrer">threat model<span class="sr-only"> (opens in a new tab)</span></a>{' '}
-			sets out what it does and does not protect against.
-		</p>
-	</Section>
-
-	<Section label="Claims you can check">
-		<ul class="divide-y divide-line border-y border-line">
-			{claims.map((claim) => <li class="py-5 text-body text-ink">{claim}</li>)}
-		</ul>
-		<p class="mt-6 text-small text-slate">
-			The command that verifies each claim is listed in the{' '}
-			<a href={`${links.traceGrabRepo}#what-it-does-not-do`} class="link text-ink" target="_blank" rel="noopener noreferrer">README<span class="sr-only"> (opens in a new tab)</span></a>.
+		<p class="measure mt-6 text-small text-slate">
+			Numbers, timestamps, field names, and tool and span names pass through. Tokenization is
+			pseudonymization, not anonymization: see the{' '}
+			<a href={links.traceGrabThreatModel} class="link text-ink" target="_blank" rel="noopener noreferrer">threat model<span class="sr-only"> (opens in a new tab)</span></a>.
 		</p>
 	</Section>
 
 	<Section label="How to contribute">
-		<Rows items={steps} ordered />
-		<p class="mt-6 text-small text-slate">
+		<Sequence steps={steps} />
+		<p class="mt-10 text-small text-slate">
 			Read{' '}
 			<a href={links.traceGrabTransfer} class="link text-ink" target="_blank" rel="noopener noreferrer">how transfer works<span class="sr-only"> (opens in a new tab)</span></a>{' '}
 			before sending anything.
 		</p>
 	</Section>
 
-	<ContactSection lead="If you run agents with tracing enabled and would like to contribute, write to us." />
+	<Section label="Claims you can check">
+		<ul class="grid gap-x-8 sm:grid-cols-2">
+			{claims.map((claim) => <li class="border-t border-line py-5 text-body text-ink">{claim}</li>)}
+		</ul>
+		<p class="mt-6 text-small text-slate">
+			Each comes with a verifying command in the{' '}
+			<a href={`${links.traceGrabRepo}#what-it-does-not-do`} class="link text-ink" target="_blank" rel="noopener noreferrer">README<span class="sr-only"> (opens in a new tab)</span></a>.
+		</p>
+	</Section>
+
+	<ContactSection lead="Run agents with tracing enabled? Write to us to contribute." />
 </BaseLayout>
