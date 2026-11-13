@@ -1,57 +1,393 @@
 @import "tailwindcss";
 
+/*
+ * Emet Labs design tokens.
+ *
+ * Palette, "ink and bone": a warm bone paper, a near-black ink with the blue
+ * cast of the logo's navy, and one accent, ember, the complement of that navy.
+ * Ember carries meaning: it marks what is violated or missing, never decoration.
+ * The logo is used unchanged; its transparent artwork sits on bone and cards.
+ * The default Tailwind palette is cleared, so every colour comes from this list.
+ *
+ * Contrast (WCAG): ink 15:1, slate 7.9:1, dusk 5.7:1, ember 4.9:1 on bone;
+ * on the ink panel, white 15:1, haze 8.6:1, ember-light 6.0:1. Silver is for
+ * marks only, never text.
+ */
+
 @font-face {
-	font-family: "Satoshi";
-	src: url("/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2") format("woff2");
+	font-family: "Forum";
+	src: url("/fonts/forum/Forum-Regular.woff2") format("woff2");
 	font-style: normal;
-	font-weight: 300 900;
+	font-weight: 400;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: "Sentient";
-	src: url("/Sentient_Complete/Fonts/WEB/fonts/Sentient-Variable.woff2") format("woff2");
+	font-family: "Public Sans";
+	src: url("/fonts/public-sans/PublicSans-Variable.woff2") format("woff2");
 	font-style: normal;
-	font-weight: 200 700;
+	font-weight: 300 700;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Public Sans";
+	src: url("/fonts/public-sans/PublicSans-Italic-Variable.woff2") format("woff2");
+	font-style: italic;
+	font-weight: 300 700;
 	font-display: swap;
 }
 
 @theme {
-	--font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
-	--font-serif: "Sentient", ui-serif, Georgia, serif;
+	--color-*: initial;
+	--color-paper: #f3f1ec; /* bone: the page */
+	--color-card: #faf9f6; /* a lifted surface on bone */
+	--color-mist: #e8e4dc; /* sand: code, hover, quiet fills */
+	--color-ink: #1a1c27; /* text, and the brand panel */
+	--color-ink-deep: #0f1017;
+	--color-slate: #474957; /* body text */
+	--color-dusk: #615c6b; /* secondary text and labels */
+	--color-silver: #9b9ca1; /* the logo's silver: marks only */
+	--color-haze: #b9b7c2; /* secondary text on ink */
+	--color-ember: #b0462a; /* violated or missing */
+	--color-ember-light: #e0805e; /* ember on ink */
+	--color-line: rgb(26 28 39 / 0.12);
+	--color-line-strong: rgb(26 28 39 / 0.28);
+	--color-rule: rgb(246 244 239 / 0.14); /* hairlines on ink */
+	--color-rule-strong: rgb(246 244 239 / 0.32);
+	--color-white: #f6f4ef; /* warm white, for text on ink */
+
+	/* Diagram colours: one muted hue per system, the same in every diagram.
+	   "-d" is the deep version for bone, "-l" the light version for the ink panel.
+	   Ember stays reserved for what is violated or missing. */
+	--color-sys-model-l: #b3a6e6;
+	--color-sys-tools-l: #7ccfa6;
+	--color-sys-approvals-d: #96640f;
+	--color-sys-approvals-l: #e7b85e;
+	--color-sys-payments-d: #2f63a8;
+	--color-sys-payments-l: #84b4ec;
+	--color-sys-ledger-l: #e293b4;
+	--color-sys-crm-d: #1f7a74;
+
+	/* Code syntax colours (JSON and shell), on the sand code surface (all 5:1 or more). */
+	--color-code-key: #2b5594;
+	--color-code-string: #2c6a45;
+	--color-code-number: #8a4a12;
+	--color-code-literal: #6b3fa0;
+	--color-code-punct: #615c6b;
+	--color-transparent: transparent;
+	--color-current: currentColor;
+
+	--font-display: "Forum", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+	--font-sans: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+
+	--font-weight-display: 400;
+
+	/* Type scale: restrained, with clear steps. Forum (display) has a small
+	   x-height and one weight, so it relies on size and space, not weight;
+	   Public Sans carries text. Each step is roughly 1.25x the next. */
+	--text-hero: clamp(2.5rem, 1.75rem + 2.6vw, 4.25rem); /* 40-68px: page titles */
+	--text-hero--line-height: 1.04;
+	--text-hero--letter-spacing: -0.015em;
+	--text-display: clamp(2.125rem, 1.65rem + 1.7vw, 3.25rem); /* 34-52px */
+	--text-display--line-height: 1.08;
+	--text-display--letter-spacing: -0.012em;
+	--text-title: clamp(1.875rem, 1.55rem + 1.15vw, 2.625rem); /* 30-42px */
+	--text-title--line-height: 1.12;
+	--text-title--letter-spacing: -0.01em;
+	--text-headline: clamp(1.5rem, 1.33rem + 0.65vw, 2rem); /* 24-32px: statements */
+	--text-headline--line-height: 1.2;
+	--text-headline--letter-spacing: -0.006em;
+	--text-subhead: clamp(1.25rem, 1.18rem + 0.3vw, 1.4375rem);
+	--text-subhead--line-height: 1.3;
+	--text-lede: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+	--text-lede--line-height: 1.6;
+	--text-body: 1.0625rem;
+	--text-body--line-height: 1.65;
+	--text-small: 0.9375rem;
+	--text-small--line-height: 1.55;
+	--text-label: 0.875rem;
+	--text-label--line-height: 1.4;
+	--text-meta: 0.6875rem;
+	--text-meta--line-height: 1.5;
+	--text-code: 0.8125rem; /* code blocks on phones; text-small from 40rem */
+	--text-code--line-height: 1.625;
+
+	--radius-sm: 2px;
+	--radius-md: 6px; /* the brand panel */
+	--radius-frame: 4px; /* product screenshots */
+
+	/* Product screenshots sit on the page with one soft, consistent shadow. */
+	--shadow-frame: 0 1px 2px rgb(26 28 39 / 0.06), 0 14px 34px -14px rgb(26 28 39 / 0.22);
+	--shadow-float: 0 18px 40px -12px rgb(0 0 0 / 0.55);
+
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Page container: one max width and gutter for every section. */
+@utility wrap {
+	width: 100%;
+	max-width: 78rem;
+	margin-inline: auto;
+	padding-inline: 1.25rem;
+
+	@media (width >= 40rem) {
+		padding-inline: 2rem;
+	}
+
+	@media (width >= 64rem) {
+		padding-inline: 2.5rem;
+	}
+}
+
+/* Labels and metadata: indexes, times, status. Small, tracked Public Sans caps. */
+@utility meta {
+	font-family: var(--font-sans);
+	font-size: var(--text-meta);
+	line-height: var(--text-meta--line-height);
+	font-weight: 600;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Corner ticks: the construction marks of a measured cell. Draws an L at each
+   corner in --tick-color, over whatever border the element has. */
+@utility ticks {
+	--tick: 10px;
+	--tick-color: var(--color-line-strong);
+	background-image:
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color)),
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color)),
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color)),
+		linear-gradient(var(--tick-color), var(--tick-color)), linear-gradient(var(--tick-color), var(--tick-color));
+	background-size:
+		var(--tick) 1px, 1px var(--tick), var(--tick) 1px, 1px var(--tick),
+		var(--tick) 1px, 1px var(--tick), var(--tick) 1px, 1px var(--tick);
+	background-position:
+		left top, left top, right top, right top,
+		left bottom, left bottom, right bottom, right bottom;
+	background-repeat: no-repeat;
+}
+
+/* Outside any layer, so it beats transition utilities (which would otherwise
+   fade the focus ring in from the element's text colour). */
+:focus-visible {
+	transition-property: none;
+}
+
+/* The backdrop for product screenshots: sand crossed by faint horizontal lanes,
+   the trace motif of the site's diagrams, fading out towards the bottom. */
+@utility stage {
+	background-color: var(--color-mist);
+	background-image:
+		linear-gradient(to bottom, transparent 55%, var(--color-mist)),
+		repeating-linear-gradient(to bottom, transparent 0 39px, var(--color-line) 39px 40px);
+}
+
+/* Comfortable reading width for running text. */
+@utility measure {
+	max-width: 40rem;
 }
 
 @layer base {
 	:root {
 		color-scheme: light;
 		font-family: var(--font-sans);
-		background: #fff;
-		color: #0a0a0a;
+		background: var(--color-paper);
+		color: var(--color-ink);
 		font-synthesis: none;
 		text-rendering: optimizeLegibility;
+		-webkit-text-size-adjust: 100%;
 	}
 
 	* {
-		border-color: currentColor;
+		border-color: var(--color-line);
 	}
 
-html {
-	scroll-behavior: smooth;
-	scrollbar-gutter: stable;
-}
+	html {
+		scroll-behavior: smooth;
+		scrollbar-gutter: stable;
+		/* Keep focused and anchored elements clear of the sticky header. */
+		scroll-padding-top: 6.5rem;
+	}
 
 	body {
 		margin: 0;
 		min-width: 320px;
 	}
 
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-display);
+		font-weight: var(--font-weight-display);
+		text-wrap: balance;
+		font-kerning: normal;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
 	a,
 	button {
-		text-underline-offset: 0.2em;
+		text-underline-offset: 0.22em;
+		text-decoration-thickness: 1px;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 3px;
+		border-radius: var(--radius-sm);
+	}
+
+	.tone-ink :focus-visible {
+		outline-color: var(--color-white);
 	}
 
 	::selection {
-		background: #0a0a0a;
-		color: #fff;
+		background: var(--color-ink);
+		color: var(--color-white);
+	}
+
+	code,
+	pre {
+		font-family: var(--font-mono);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
+
+@layer components {
+	/* A section's lead statement: display face at headline size. */
+	.statement {
+		font-family: var(--font-display);
+		font-weight: var(--font-weight-display);
+		font-size: var(--text-headline);
+		line-height: var(--text-headline--line-height);
+		letter-spacing: var(--text-headline--letter-spacing);
+		color: var(--color-ink);
+		text-wrap: balance;
+	}
+
+	.tone-ink .statement {
+		color: var(--color-white);
+	}
+
+	/* Two-tone emphasis: the lead phrase in ink, the continuation quieter. */
+	.quiet {
+		color: var(--color-dusk);
+	}
+
+	.tone-ink .quiet {
+		color: var(--color-haze);
+	}
+
+	.tone-ink .meta {
+		color: var(--color-haze);
+	}
+
+	/* Inline text link: underline that strengthens on hover. */
+	.link {
+		text-decoration-line: underline;
+		text-decoration-color: var(--color-line-strong);
+		transition: text-decoration-color 200ms var(--ease-out);
+
+		&:hover {
+			text-decoration-color: currentColor;
+		}
+	}
+
+	/* Long-form text (legal, privacy). From 64rem the headings hang in the left
+	   margin (columns 1-3) and text runs on columns 4-9, the same axis as Section. */
+	.prose-emet {
+		color: var(--color-slate);
+		font-size: var(--text-body);
+		line-height: var(--text-body--line-height);
+
+		& > * {
+			max-width: 40rem;
+		}
+
+		& > * + * {
+			margin-top: 1.25em;
+		}
+
+		@media (width >= 64rem) {
+			display: grid;
+			grid-template-columns: repeat(12, minmax(0, 1fr));
+			column-gap: 2rem;
+			align-items: baseline;
+
+			& > * {
+				grid-column: 4 / span 6;
+			}
+
+			& > h2 {
+				grid-column: 1 / span 3;
+			}
+
+			/* A heading and the text beside it start the same row. */
+			& > h2 + * {
+				margin-top: 2.5em;
+			}
+
+			& > h2:first-child + * {
+				margin-top: 0;
+			}
+		}
+
+		& h2 {
+			margin-top: 2.5em;
+
+			&:first-child {
+				margin-top: 0;
+			}
+
+			color: var(--color-ink);
+			font-size: var(--text-subhead);
+			line-height: var(--text-subhead--line-height);
+		}
+
+		& strong {
+			font-weight: 600;
+		}
+
+		& a {
+			color: var(--color-ink);
+			text-decoration-line: underline;
+			text-decoration-color: var(--color-line-strong);
+
+			&:hover {
+				text-decoration-color: currentColor;
+			}
+		}
+
+		& ul {
+			padding-left: 1.25em;
+			list-style: disc;
+
+			& > li + li {
+				margin-top: 0.5em;
+			}
+		}
+
+		& li::marker {
+			color: var(--color-silver);
+		}
 	}
 }

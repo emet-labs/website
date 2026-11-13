@@ -1,0 +1,42 @@
+---
+/**
+ * A page section. It opens with an indexed header row on a hairline, the index
+ * in the instrument voice ("02") and the name as the section's h2. Content below
+ * composes its own grid, so pages are not forced into one layout.
+ *
+ * tone:
+ * - "paper" (default): the bone page.
+ * - "panel": the inset ink brand panel, within the page margins. Use it for the
+ *   page's signature moment and its close, not for every section.
+ *
+ * index: optional. Use it only where the order of sections matters.
+ */
+interface Props {
+	index?: string;
+	label?: string;
+	tone?: 'paper' | 'panel';
+	id?: string;
+	class?: string;
+}
+
+const { index, label, tone = 'paper', id, class: className } = Astro.props;
+const panel = tone === 'panel';
+---
+
+<section id={id} class:list={['py-16 sm:py-20 lg:py-24', className]}>
+	<div class="wrap">
+		<div class:list={[panel && 'tone-ink rounded-md bg-ink px-6 py-12 text-white sm:px-12 sm:py-16 lg:px-16 lg:py-20']}>
+			{
+				label && (
+					<div class:list={['flex items-baseline gap-4 border-t pt-4', panel ? 'border-rule' : 'border-line']}>
+						{index && <span class:list={['meta', panel ? 'text-haze' : 'text-dusk']}>{index}</span>}
+						<h2 class:list={['font-sans text-label font-medium', panel ? 'text-haze' : 'text-ink']}>{label}</h2>
+					</div>
+				)
+			}
+			<div class:list={[label && 'mt-10 sm:mt-12 lg:mt-14']}>
+				<slot />
+			</div>
+		</div>
+	</div>
+</section>

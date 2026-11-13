@@ -1,46 +1,51 @@
 ---
-import ContactLink from '../components/ContactLink';
+import ContactSection from '../components/ContactSection.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
 	title="About"
-	description="Emet Labs builds security tooling for agentic AI systems."
+	description="Emet Labs is a research and engineering company building verification infrastructure for AI agents."
+	footerEmail={false}
 >
-	<section class="mx-auto w-full max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-		<div class="grid gap-12 lg:grid-cols-12">
-			<p class="text-xs font-medium uppercase tracking-[0.16em] text-black/50 lg:col-span-3">
-				About
+	<header class="wrap pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-28">
+		<h1 class="text-hero text-ink">About</h1>
+		<p class="statement mt-8 max-w-2xl sm:mt-10">
+			A mistaken answer can be ignored. <span class="quiet">A mistaken payment cannot.</span>
+		</p>
+	</header>
+
+	<div class="wrap grid gap-14 pb-8 sm:pb-12 lg:grid-cols-12 lg:gap-8">
+		<div class="measure text-lede text-slate lg:order-last lg:col-span-6 lg:col-start-4">
+			<p>
+				Emet Labs is a research and engineering company building verification infrastructure for AI
+				agents.
 			</p>
-			<div class="max-w-3xl lg:col-span-8">
-				<h1 class="font-serif text-4xl font-light tracking-[-0.045em] sm:text-5xl">
-					Emet Labs
-				</h1>
-
-				<p class="mt-8 text-xl leading-snug tracking-[-0.025em] text-black/70">
-					We build security tooling for agentic AI systems.
-				</p>
-
-				<p class="mt-8 text-lg leading-snug text-black/70">
-					Our main product is {" "}
-					<a href="/sentinel" class="underline hover:no-underline">Sentinel</a>,
-					{" "}a runtime verification engine that checks what an AI deployment actually did
-					against specifications and reports the conclusion with evidence. It's in private
-					development.
-				</p>
-
-				<p class="mt-6 text-lg leading-snug text-black/70">
-					To build Sentinel, we need real trace data from production agents. If you run
-					agents with tracing enabled and want to help, {" "}
-					<a href="/trace-grab" class="underline hover:no-underline">trace-grab</a>{" "}
-					is an open-source tool that sanitizes your trace exports on your own machine
-					before you share them with us. No sensitive data leaves your environment.
-				</p>
-
-				<div class="mt-10">
-					<ContactLink class="inline-flex text-sm font-medium underline hover:no-underline" />
-				</div>
-			</div>
+			<p class="mt-6">
+				As agents start to take actions with consequences, the people responsible for them need a record
+				they can check. We think that record belongs in the infrastructure, not in the agent’s own
+				account.
+			</p>
 		</div>
-	</section>
+
+		<dl class="grid gap-6 text-small sm:grid-cols-2 lg:col-span-3 lg:grid-cols-1 ticks border border-line p-6 lg:border-x-0 lg:border-b-0 lg:bg-none lg:px-0">
+			<div>
+				<dt class="meta text-dusk">Work</dt>
+				<dd class="mt-1 text-ink">
+					<a href="/sentinel/" class="link">Sentinel</a>, <a href="/research/" class="link">research</a>{' '}
+					and <a href="/trace-grab/" class="link">trace-grab</a>
+				</dd>
+			</div>
+			<div>
+				<dt class="meta text-dusk">Open source</dt>
+				<dd class="mt-1 text-slate">Code that runs inside your systems: trace-grab and our instrumentation SDKs.</dd>
+			</div>
+			<div>
+				<dt class="meta text-dusk">Careers</dt>
+				<dd class="mt-1 text-ink"><a href="/careers/" class="link inline-flex min-h-11 items-center">Work with us</a></dd>
+			</div>
+		</dl>
+	</div>
+
+	<ContactSection lead="Engineers, researchers, teams deploying agents:" follow="we are glad to talk." channels />
 </BaseLayout>

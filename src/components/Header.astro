@@ -1,47 +1,133 @@
 ---
-import ContactLink from './ContactLink';
+import { links, primaryNav } from '../config/site';
+import Logo from './Logo.astro';
 
-const pathname = Astro.url.pathname;
-
-const navItems = [
-	{ href: '/sentinel', label: 'Sentinel' },
-	{ href: '/trace-grab', label: 'trace-grab' },
-	{ href: '/about', label: 'About' },
-	{ href: '/blog', label: 'Blog' },
-	{ href: 'https://docs.emetlabs.ai', label: 'Docs', external: true },
-];
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => {
+	const h = href.replace(/\/$/, '');
+	return pathname === h || pathname.startsWith(`${h}/`);
+};
 ---
 
-<header class="border-b border-black/10">
-	<div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
-		<a
-			href="/"
-			class="text-lg font-medium tracking-[-0.03em]"
-			aria-label="Emet Labs home"
-		>
-			Emet Labs.
+<header class="sticky top-0 z-40 border-b border-transparent bg-paper/95 backdrop-blur-md transition-colors duration-300 data-[scrolled]:border-line data-[menu-open]:border-line supports-[backdrop-filter]:bg-paper/80" data-header>
+	<div class="wrap flex h-18 items-center justify-between gap-6 lg:h-20">
+		<a href="/" aria-label="Emet Labs home" class="-ml-1 shrink-0 p-1">
+			<Logo class="h-10 w-auto lg:h-12" />
 		</a>
 
-		<nav class="flex items-center gap-5 text-sm sm:gap-8" aria-label="Primary navigation">
+		<nav aria-label="Primary" class="hidden items-center gap-6 md:flex lg:gap-8">
+			<ul class="flex items-center gap-5 text-small lg:gap-7">
+				{
+					primaryNav.map(({ href, label, external }) => (
+						<li>
+							<a
+								href={href}
+								target={external ? '_blank' : undefined}
+								rel={external ? 'noopener noreferrer' : undefined}
+								aria-current={isCurrent(href) ? 'page' : undefined}
+								class:list={[
+									'py-2 underline-offset-[0.5em] transition-colors hover:text-ink',
+									isCurrent(href) ? 'text-ink underline decoration-silver' : 'text-slate',
+								]}
+							>
+								{label}
+								{external && <span aria-hidden="true"> ↗</span>}
+								{external && <span class="sr-only">(opens in a new tab)</span>}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<a href={links.email} class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition-colors hover:border-ink">Contact us</a>
+		</nav>
+
+		<button
+			type="button"
+			class="-mr-2 inline-flex size-11 items-center justify-center rounded-sm md:hidden"
+			aria-controls="mobile-nav"
+			aria-expanded="false"
+			data-menu-toggle
+		>
+			<span class="sr-only">Menu</span>
+			<svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5">
+				<path data-icon-open d="M3 7h16M3 15h16"></path>
+				<path data-icon-close class="hidden" d="M5 5l12 12M17 5L5 17"></path>
+			</svg>
+		</button>
+	</div>
+
+	<nav
+		id="mobile-nav"
+		aria-label="Primary"
+		class="hidden max-h-[calc(100svh-4.5rem)] overflow-y-auto overscroll-contain border-t border-line bg-paper md:hidden"
+		data-menu
+	>
+		<ul class="wrap flex flex-col py-3">
 			{
-				navItems.map(({ href, label, external }) => (
-					<a
-						href={href}
-						target={external ? '_blank' : undefined}
-						rel={external ? 'noopener noreferrer' : undefined}
-						class:list={[
-							'transition-opacity hover:opacity-50',
-							pathname.startsWith(href) && 'underline',
-						]}
-						aria-current={pathname.startsWith(href) ? 'page' : undefined}
-					>
-						{label}
-					</a>
+				primaryNav.map(({ href, label, external }) => (
+					<li>
+						<a
+							href={href}
+							target={external ? '_blank' : undefined}
+							rel={external ? 'noopener noreferrer' : undefined}
+							aria-current={isCurrent(href) ? 'page' : undefined}
+							class:list={[
+								'flex min-h-12 items-center border-b border-line font-display text-subhead',
+								isCurrent(href) ? 'text-ink underline decoration-silver underline-offset-[0.3em]' : 'text-slate',
+							]}
+						>
+							{label}
+							{external && <span aria-hidden="true" class="ml-2 text-small">↗</span>}
+							{external && <span class="sr-only">(opens in a new tab)</span>}
+						</a>
+					</li>
 				))
 			}
-			<ContactLink
-				class="hidden rounded-full border border-black px-4 py-2 transition-colors hover:bg-black hover:text-white sm:inline-flex"
-			/>
-		</nav>
-	</div>
+			<li class="pt-5 pb-3">
+				<a href={links.email} class="inline-flex min-h-11 items-center rounded-sm bg-ink px-5 text-small font-medium text-white">Contact us</a>
+			</li>
+		</ul>
+	</nav>
 </header>
+
+<script>
+	const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+	// A hairline appears under the header once the page has scrolled.
+	const header = document.querySelector<HTMLElement>('[data-header]');
+	if (header) {
+		const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+	}
+
+	if (toggle && menu) {
+		const setOpen = (open: boolean) => {
+			toggle.setAttribute('aria-expanded', String(open));
+			menu.classList.toggle('hidden', !open);
+			header?.toggleAttribute('data-menu-open', open);
+			toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
+			toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
+		};
+
+		toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+
+		// Close on a tap or click outside the header (the menu and its toggle).
+		document.addEventListener('click', (event) => {
+			if (toggle.getAttribute('aria-expanded') === 'true' && header && !header.contains(event.target as Node)) {
+				setOpen(false);
+			}
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+				setOpen(false);
+				toggle.focus();
+			}
+		});
+
+		// Close if the viewport grows past the mobile breakpoint.
+		window.matchMedia('(min-width: 48rem)').addEventListener('change', (e) => e.matches && setOpen(false));
+	}
+</script>

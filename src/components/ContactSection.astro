@@ -1,0 +1,44 @@
+---
+import { links, site } from '../config/site';
+import Section from './Section.astro';
+
+interface Props {
+	/** The question this page puts to the reader, set large. */
+	lead?: string;
+	/** The quieter continuation of the lead. */
+	follow?: string;
+	/** Also list LinkedIn and GitHub. */
+	channels?: boolean;
+}
+
+const {
+	lead = 'Building agents that take consequential actions?',
+	follow = 'We would like to hear from you.',
+	channels = false,
+} = Astro.props;
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<Section tone="panel" label="Contact">
+	<div class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
+		<div class="lg:col-span-7">
+			<p class="statement">{lead}</p>
+			<p class="mt-5 text-lede text-haze">{follow}</p>
+		</div>
+		<div class="lg:col-span-4 lg:col-start-9">
+			<a href={links.email} class="link inline-flex min-h-11 items-center font-display text-subhead text-white">{site.email}</a>
+			{
+				channels && (
+					<p class="meta mt-3 flex gap-5 text-haze">
+						<a href={links.linkedin} class="link inline-flex min-h-11 items-center" {...ext}>
+							LinkedIn ↗<span class="sr-only"> (opens in a new tab)</span>
+						</a>
+						<a href={links.github} class="link inline-flex min-h-11 items-center" {...ext}>
+							GitHub ↗<span class="sr-only"> (opens in a new tab)</span>
+						</a>
+					</p>
+				)
+			}
+		</div>
+	</div>
+</Section>

@@ -1,0 +1,190 @@
+---
+/**
+ * The homepage's signature graphic: one agent task traced across six systems.
+ *
+ * Each system is a lane with its own hue (shared with the site's other
+ * diagrams); each event is a mark, and a connector shows which agent step
+ * caused it. Hollow ember marks are events that were never reported. It depicts
+ * the problem Emet Labs works on (one action, scattered across partial logs).
+ * It is an abstract illustration, labelled as one, and shows no product output.
+ *
+ * Three layouts come from one generator (wide from 64rem, medium from 40rem,
+ * and a portrait figure for phones), each with fewer steps and larger labels as
+ * the screen narrows, so the point (missing events) stays visible and the text
+ * stays legible. Both are deterministic, so every build is
+ * identical. A cursor sweeps once and the marks appear as it passes; under
+ * reduced motion everything is shown at once, and nothing loops.
+ */
+const lanes = ['agent', 'model', 'tools', 'approvals', 'payments', 'ledger'];
+const hue = [
+	{ fill: 'fill-white', text: 'fill-white' },
+	{ fill: 'fill-sys-model-l', text: 'fill-sys-model-l' },
+	{ fill: 'fill-sys-tools-l', text: 'fill-sys-tools-l' },
+	{ fill: 'fill-sys-approvals-l', text: 'fill-sys-approvals-l' },
+	{ fill: 'fill-sys-payments-l', text: 'fill-sys-payments-l' },
+	{ fill: 'fill-sys-ledger-l', text: 'fill-sys-ledger-l' },
+];
+
+type Layout = {
+	W: number;
+	H: number;
+	left: number;
+	right: number;
+	top: number;
+	gap: number;
+	steps: number;
+	lost: number[]; // steps whose downstream event never arrives
+	label: number; // font size, in user units
+	tick: number;
+	r: number;
+	seed: number;
+};
+
+function build(l: Layout) {
+	let seed = l.seed;
+	const rand = () => {
+		seed |= 0;
+		seed = (seed + 0x6d2b79f5) | 0;
+		let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+		t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+	};
+	const y = (i: number) => l.top + i * l.gap;
+	const spans: { x: number; y: number; w: number; lane: number }[] = [];
+	const marks: { x: number; y: number; lane: number; lost?: boolean }[] = [];
+	const links: { x1: number; y1: number; x2: number; y2: number; lost?: boolean }[] = [];
+	const span = l.right - l.left;
+	for (let s = 0; s < l.steps; s++) {
+		const x = l.left + 30 + (s * (span - 100)) / (l.steps - 1) + (rand() - 0.5) * 20;
+		spans.push({ x: x - 40, y: y(1), w: 28 + rand() * 14, lane: 1 });
+		spans.push({ x, y: y(0), w: 20 + rand() * 24, lane: 0 });
+		marks.push({ x, y: y(0), lane: 0 });
+		// Spread targets across the four downstream systems, so every lane is used.
+		const lane = 2 + ((s + Math.floor(rand() * 2)) % 4);
+		const targets = rand() > 0.6 ? [lane, 2 + ((lane - 1) % 4)] : [lane];
+		targets.forEach((t, k) => {
+			const tx = x + 16 + rand() * 36;
+			const lost = l.lost.includes(s) && k === 0;
+			marks.push({ x: tx, y: y(t), lane: t, lost });
+			links.push({ x1: x, y1: y(0), x2: tx, y2: y(t), lost });
+		});
+	}
+	return { ...l, y, spans, marks, links, ticks: Array.from({ length: 6 }, (_, i) => l.left + (i * span) / 5) };
+}
+
+const sweep = 3.2; // seconds for the cursor to cross
+const wide = build({ W: 1200, H: 430, left: 132, right: 1160, top: 58, gap: 62, steps: 9, lost: [2, 5, 7], label: 13, tick: 12, r: 4.5, seed: 0x2c57a1 });
+const medium = build({ W: 900, H: 430, left: 160, right: 860, top: 56, gap: 60, steps: 7, lost: [2, 5], label: 18, tick: 16, r: 6, seed: 0x3b9d });
+const narrow = build({ W: 640, H: 560, left: 210, right: 590, top: 70, gap: 80, steps: 5, lost: [1, 3], label: 27, tick: 23, r: 8, seed: 0x51e7 });
+
+const delay = (f: typeof wide, x: number) => `${(((x - f.left) / (f.right - f.left)) * sweep).toFixed(2)}s`;
+const curve = ({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }) =>
+	`M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
+const figures = [
+	{ f: wide, cls: 'hidden lg:block' },
+	{ f: medium, cls: 'hidden sm:block lg:hidden' },
+	{ f: narrow, cls: 'block sm:hidden' },
+];
+---
+
+<figure class="trace-field" style={`--sweep:${sweep}s`}>
+	{
+		figures.map(({ f, cls }) => (
+			<svg
+				viewBox={`0 0 ${f.W} ${f.H}`}
+				class:list={['h-auto w-full', cls]}
+				role="img"
+				aria-label="Illustration: one agent task traced across six systems. Most events are connected; some were never reported."
+			>
+				{lanes.map((name, i) => (
+					<g>
+						<text
+							x="0"
+							y={f.y(i) + f.label * 0.35}
+							class:list={[hue[i].text, 'font-sans font-semibold tracking-[0.09em] uppercase']}
+							font-size={f.label}
+						>
+							{name}
+						</text>
+						<line x1={f.left} x2={f.right} y1={f.y(i)} y2={f.y(i)} class="stroke-rule" stroke-width="1" />
+					</g>
+				))}
+
+				{f.ticks.map((x, i) => (
+					<g>
+						<line x1={x} x2={x} y1={f.H - 38} y2={f.H - 31} class="stroke-rule-strong" stroke-width="1" />
+						<text x={x} y={f.H - 8} text-anchor="middle" class="fill-haze font-sans tabular-nums" font-size={f.tick}>
+							t+{i * 2}s
+						</text>
+					</g>
+				))}
+
+				{f.links.map((l) => (
+					<path
+						d={curve(l)}
+						fill="none"
+						stroke-width="1"
+						class:list={['te', l.lost ? 'stroke-ember-light' : 'stroke-rule-strong']}
+						stroke-dasharray={l.lost ? '3 4' : undefined}
+						style={`--d:${delay(f, l.x1)}`}
+					/>
+				))}
+
+				{f.spans.map((s) => (
+					<rect x={s.x} y={s.y - f.r * 0.7} width={s.w} height={f.r * 1.4} rx={f.r * 0.7} class:list={['te opacity-45', hue[s.lane].fill]} style={`--d:${delay(f, s.x)}`} />
+				))}
+
+				{f.marks.map((m) =>
+					m.lost ? (
+						<circle cx={m.x} cy={m.y} r={f.r + 0.5} fill="none" stroke-width="1.5" stroke-dasharray="2.5 2.5" class="te stroke-ember-light" style={`--d:${delay(f, m.x)}`} />
+					) : (
+						<circle cx={m.x} cy={m.y} r={f.r} class:list={['te', hue[m.lane].fill]} style={`--d:${delay(f, m.x)}`} />
+					),
+				)}
+
+				<line class="cursor stroke-white" x1={f.left} x2={f.left} y1="24" y2={f.H - 44} stroke-width="1" opacity="0" style={`--travel:${f.right - f.left}px`} />
+			</svg>
+		))
+	}
+	<figcaption class="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-rule pt-4">
+		<span class="meta text-haze">Fig. 1 — Illustration. One agent task, six systems, six partial logs.</span>
+		<span class="meta flex flex-wrap items-center gap-x-5 gap-y-2 text-haze" aria-hidden="true">
+			<span class="inline-flex items-center gap-2"><span class="h-1.5 w-4 rounded-full bg-haze/60"></span>Step</span>
+			<span class="inline-flex items-center gap-2"><span class="size-2 rounded-full bg-white"></span>Reported</span>
+			<span class="inline-flex items-center gap-2"><span class="size-2.5 rounded-full border border-dashed border-ember-light"></span>Never reported</span>
+		</span>
+	</figcaption>
+</figure>
+
+<style>
+	@media (prefers-reduced-motion: no-preference) {
+		.trace-field .te {
+			animation: te-in 500ms var(--ease-out) both;
+			animation-delay: var(--d);
+		}
+
+		.trace-field .cursor {
+			animation: sweep var(--sweep) linear both;
+		}
+	}
+
+	@keyframes te-in {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes sweep {
+		0% {
+			opacity: 0.6;
+			transform: translateX(0);
+		}
+		92% {
+			opacity: 0.6;
+		}
+		100% {
+			opacity: 0;
+			transform: translateX(var(--travel));
+		}
+	}
+</style>

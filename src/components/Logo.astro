@@ -1,0 +1,23 @@
+---
+/**
+ * The Emet Labs logo, unaltered. Its background is transparent but the owl's
+ * face and feather lines are negative space, so place it on a light surface (bone or card) (bg-paper) only.
+ * Intrinsic size 679 × 337; set height through `class` and width follows.
+ */
+interface Props {
+	class?: string;
+	loading?: 'eager' | 'lazy';
+}
+
+const { class: className = 'h-11 w-auto', loading = 'eager' } = Astro.props;
+---
+
+<img
+	src="/brand/emet-labs-logo.png"
+	width="679"
+	height="337"
+	alt="Emet Labs"
+	decoding="async"
+	loading={loading}
+	class={className}
+/>

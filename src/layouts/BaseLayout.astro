@@ -1,53 +1,86 @@
 ---
+import Fonts from '../components/Fonts.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { site } from '../config/site';
 import '../styles/global.css';
 
 interface Props {
+	/** Page name; rendered as "Name — Emet Labs". Omit on the homepage. */
 	title?: string;
 	description?: string;
+	/** Exclude from search indexes (e.g. placeholder pages). */
+	noindex?: boolean;
+	/** Show the email in the footer. Turn off on pages that already set it prominently. */
+	footerEmail?: boolean;
 }
 
-const {
-	title = 'Emet Labs.',
-	description = 'Runtime Verification for Graph-based Agentic Execution.',
-} = Astro.props;
+const { title, description = site.description, noindex = false, footerEmail = true } = Astro.props;
 
-const pageTitle = title === 'Emet Labs.' ? title : `${title} — Emet Labs.`;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — Verification infrastructure for AI agents`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL('/brand/og-image.png', site.url).href;
+// Bump when the favicon files change.
+const iconVersion = '2';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
-		<link
-			rel="preload"
-			as="font"
-			type="font/woff2"
-			href="/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			as="font"
-			type="font/woff2"
-			href="/Sentient_Complete/Fonts/WEB/fonts/Sentient-Variable.woff2"
-			crossorigin
-		/>
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+
+		<Fonts />
+
+		<!-- Without JavaScript the mobile menu cannot open: show its links, hide the
+		     toggle, and let the header scroll away so the links do not cover the page. -->
+		<noscript>
+			<style>
+				#mobile-nav { display: block; }
+				[data-menu-toggle] { display: none; }
+				@media (max-width: 47.99rem) { [data-header] { position: static; } }
+				@media (min-width: 48rem) { #mobile-nav { display: none; } }
+			</style>
+		</noscript>
+
+		<!-- Favicons: the owl from the supplied logo, unmodified, on a light tile. The
+		     version query makes browsers fetch these instead of a cached icon. -->
+		<link rel="icon" href={`/favicon.ico?v=${iconVersion}`} sizes="any" />
+		<link rel="icon" href={`/favicon.svg?v=${iconVersion}`} type="image/svg+xml" />
+		<link rel="icon" href={`/favicon-32.png?v=${iconVersion}`} type="image/png" sizes="32x32" />
+		<link rel="icon" href={`/favicon-16.png?v=${iconVersion}`} type="image/png" sizes="16x16" />
+		<link rel="apple-touch-icon" href={`/apple-touch-icon.png?v=${iconVersion}`} />
+		<link rel="manifest" href="/site.webmanifest" />
+		<meta name="theme-color" content="#f3f1ec" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="The Emet Labs logo: the words Emet Labs beside an owl." />
+		<meta name="twitter:card" content="summary_large_image" />
 	</head>
-	<body class="min-h-svh bg-white text-black antialiased">
+	<body class="min-h-svh bg-paper text-ink antialiased">
+		<a
+			href="#main"
+			class="sr-only rounded-sm bg-ink px-4 py-2 text-small text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
+		>
+			Skip to content
+		</a>
 		<div class="flex min-h-svh flex-col">
 			<Header />
-			<main class="flex flex-1 flex-col">
+			<main id="main" class="flex flex-1 flex-col">
 				<slot />
 			</main>
-			<Footer />
+			<Footer email={footerEmail} />
 		</div>
 	</body>
 </html>

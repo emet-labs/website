@@ -1,0 +1,14 @@
+---
+/**
+ * Font loading. Both families are self-hosted under the SIL Open Font License
+ * (an OFL.txt beside each font in public/fonts), so pages make no third-party font requests.
+ *
+ * - Forum: display (headings, hero statements, page titles).
+ * - Public Sans: text and interface. A variable font, one file per style.
+ *
+ * The two upright files are preloaded because every page uses them above the fold.
+ */
+---
+
+<link rel="preload" as="font" type="font/woff2" href="/fonts/forum/Forum-Regular.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="/fonts/public-sans/PublicSans-Variable.woff2" crossorigin />

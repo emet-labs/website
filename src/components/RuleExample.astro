@@ -1,0 +1,104 @@
+---
+/**
+ * A worked example of the idea behind Emet Labs' work, deliberately generic:
+ * one rule, three short records, and the three answers a verifier can honestly
+ * give. It illustrates the problem, not any product's internals, and is
+ * labelled as an example.
+ *
+ * Static on purpose: every record and answer is visible at once, so the point
+ * (that "inconclusive" is a real answer) needs no interaction and reads the
+ * same with or without JavaScript or a screen reader. The answers use the
+ * product's own words, as the dashboard on the same page does.
+ */
+type Event = { time: string; name: 'Approval' | 'Refund'; flagged?: boolean };
+// System hues, shared with the site's other diagrams.
+const dot = { Approval: 'bg-sys-approvals-d', Refund: 'bg-sys-payments-d' };
+
+const records: { events: Event[]; missing?: string; answer: string; state: 'ok' | 'bad' | 'gap' }[] = [
+	{
+		events: [
+			{ time: '10:02', name: 'Approval' },
+			{ time: '10:04', name: 'Refund' },
+		],
+		answer: 'Satisfied.',
+		state: 'ok',
+	},
+	{
+		events: [
+			{ time: '10:02', name: 'Refund', flagged: true },
+			{ time: '10:05', name: 'Approval' },
+		],
+		answer: 'Violated.',
+		state: 'bad',
+	},
+	{
+		events: [{ time: '10:04', name: 'Refund' }],
+		missing: 'No report from approvals',
+		answer: 'Inconclusive.',
+		state: 'gap',
+	},
+];
+---
+
+<figure class="rounded-md border border-line bg-card">
+	<figcaption class="flex items-baseline justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
+		<span>
+			<span class="block text-label text-dusk">Rule</span>
+			<span class="mt-1 block text-body text-ink">A refund is issued only after an approval.</span>
+		</span>
+		<span class="shrink-0 text-label text-dusk">Example</span>
+	</figcaption>
+
+	<div class="hidden grid-cols-[minmax(0,1fr)_10rem] gap-6 px-5 pt-4 text-label text-dusk sm:grid sm:px-6" aria-hidden="true">
+		<span>Record</span>
+		<span>Answer</span>
+	</div>
+
+	<ol class="divide-y divide-line">
+		{
+			records.map(({ events, missing, answer, state }, i) => (
+				<li class="grid gap-4 px-5 py-4 sm:py-5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center sm:gap-6 sm:px-6">
+					<div class="flex flex-wrap items-start gap-x-8 gap-y-3">
+						<span class="sr-only">Record {i + 1}:</span>
+						<ol class="relative flex gap-8 before:absolute before:top-[4.5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
+							{events.map(({ time, name, flagged }) => (
+								<li class="relative min-w-16">
+									<span aria-hidden="true" class:list={['block size-2.5 rounded-full', flagged ? 'bg-ember' : dot[name]]} />
+									<span class="meta mt-2 block text-dusk">{time}</span>
+									<span class="block text-small text-ink">
+										{flagged ? (
+											<mark class="-mx-1 rounded-sm bg-ember px-1 text-white">
+												{name}
+												<span class="sr-only"> (before any approval)</span>
+											</mark>
+										) : (
+											name
+										)}
+									</span>
+								</li>
+							))}
+						</ol>
+						{missing && (
+							<p class="min-w-0">
+								<span aria-hidden="true" class="block size-2.5 rounded-full border border-dashed border-ember" />
+								<span class="mt-2 block text-small text-ember italic">{missing}</span>
+							</p>
+						)}
+					</div>
+					<p class="flex items-center gap-3 font-display text-subhead text-ink">
+						<span
+							aria-hidden="true"
+							class:list={[
+								'size-2.5 shrink-0 rounded-full',
+								state === 'ok' && 'bg-ink',
+								state === 'bad' && 'bg-ember',
+								state === 'gap' && 'border border-dashed border-ember',
+							]}
+						/>
+						<span><span class="sr-only">Answer: </span>{answer}</span>
+					</p>
+				</li>
+			))
+		}
+	</ol>
+</figure>

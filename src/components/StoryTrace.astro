@@ -1,0 +1,153 @@
+---
+/**
+ * "Why it is hard to know", told in three steps beside one diagram.
+ *
+ * On wide screens the diagram is sticky and changes state as each step reaches
+ * the middle of the viewport:
+ *   1. one task becomes actions in several systems;
+ *   2. each system keeps its own clock and log, and one event never arrives;
+ *   3. the agent's own account says otherwise.
+ * Without JavaScript, or below 64rem, the diagram shows its final state and the
+ * steps read as a list. Under reduced motion the states still follow the scroll,
+ * but switch without transitions. The diagram is abstract: it illustrates the problem, not a product.
+ */
+const steps = [
+	{
+		title: 'Agents now call tools, move money and change records.',
+		note: 'One task becomes actions in several systems.',
+	},
+	{
+		title: 'Each action spans systems that keep separate, partial logs.',
+		note: 'Their clocks disagree, and some events never arrive.',
+	},
+	{
+		title: 'A model’s account of what it did is not evidence.',
+		note: 'What an agent says it did has to be checked against what the systems recorded.',
+	},
+];
+
+const lanes = [
+	{ name: 'agent', y: 70, clock: '10:02:03.120', text: 'fill-ink' },
+	{ name: 'crm', y: 175, clock: '10:02:02.870', text: 'fill-sys-crm-d' },
+	{ name: 'payments', y: 280, clock: '10:02:04.015', text: 'fill-sys-payments-d' },
+];
+const curve = (x1: number, y1: number, x2: number, y2: number) =>
+	`M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
+---
+
+<div class="grid gap-12 lg:grid-cols-12 lg:gap-8" data-story>
+	<figure class="story-figure lg:sticky lg:top-28 lg:col-span-6 lg:self-start" data-step="3">
+		<div class="ticks border border-line px-3 py-5 sm:px-8 sm:py-8">
+			<svg viewBox="0 0 440 330" class="block h-auto w-full" role="img" aria-label="Illustration: an agent's actions in two other systems. Their clocks disagree, one write was never recorded, and the agent's own log claims it was.">
+				{
+					lanes.map(({ name, y, clock, text }) => (
+						<g>
+							<text x="0" y={y - 12} class:list={[text, 'font-sans text-[12px] font-semibold tracking-[0.09em] uppercase']}>{name}</text>
+							<line x1="0" x2="440" y1={y} y2={y} class="stroke-line-strong" stroke-width="1" />
+							<text x="440" y={y - 12} text-anchor="end" class="s2 fill-dusk font-sans text-[13px] tabular-nums">{clock}</text>
+						</g>
+					))
+				}
+
+				<!-- Step 1: one task fans out into actions in other systems. -->
+				<g class="s1">
+					<rect x="102" y="67" width="36" height="6" rx="3" class="fill-silver" />
+					<circle cx="120" cy="70" r="5.5" class="fill-ink" />
+					<circle cx="196" cy="70" r="5.5" class="fill-ink" />
+					<circle cx="268" cy="70" r="5.5" class="fill-ink" />
+					<path d={curve(196, 70, 226, 280)} fill="none" class="stroke-line-strong" stroke-width="1" />
+					<circle cx="226" cy="280" r="5.5" class="fill-sys-payments-d" />
+					<path d={curve(120, 70, 150, 175)} fill="none" class="stroke-line-strong" stroke-width="1" />
+					<circle cx="150" cy="175" r="5.5" class="fill-sys-crm-d" />
+				</g>
+
+				<!-- The write to the CRM: observed in step 1, missing from step 2. -->
+				<path d={curve(268, 70, 300, 175)} fill="none" class="s1-only stroke-line-strong" stroke-width="1" />
+				<circle cx="300" cy="175" r="5.5" class="s1-only fill-sys-crm-d" />
+				<g class="s2">
+					<path d={curve(268, 70, 300, 175)} fill="none" class="stroke-ember" stroke-width="1" stroke-dasharray="3 4" />
+					<circle cx="300" cy="175" r="6" fill="none" class="stroke-ember" stroke-width="1.25" stroke-dasharray="2.5 2.5" />
+				</g>
+
+				<!-- Step 3: the agent's account against the record. -->
+				<g class="s3">
+					<line x1="268" y1="60" x2="268" y2="36" class="stroke-ink" stroke-width="1" />
+					<rect x="150" y="4" width="262" height="32" rx="2" class="fill-ink" />
+					<text x="162" y="25" class="callout fill-white font-sans text-[13px]">agent log: “record updated”</text>
+					<text x="300" y="206" text-anchor="middle" class="fill-ember font-sans text-[13px] font-medium">no write recorded</text>
+				</g>
+			</svg>
+		</div>
+		<figcaption class="meta mt-3 text-dusk">Illustration. Times and systems are examples.</figcaption>
+	</figure>
+
+	<ol class="lg:col-span-5 lg:col-start-8">
+		{
+			steps.map(({ title, note }, i) => (
+				<li class="border-t border-line py-8 first:border-t-0 first:pt-0 lg:flex lg:min-h-[42vh] lg:flex-col lg:justify-center lg:border-t-0 lg:py-0" data-story-step={i + 1}>
+					<p class="meta text-dusk">{String(i + 1).padStart(2, '0')} /</p>
+					<p class="statement mt-4">{title}</p>
+					<p class="mt-4 max-w-md text-body text-slate">{note}</p>
+				</li>
+			))
+		}
+	</ol>
+</div>
+
+<style>
+	.story-figure :is(.s1, .s1-only, .s2, .s3) {
+		transition: opacity 400ms var(--ease-out);
+	}
+
+	/* Larger diagram text on phones, where the figure is drawn smaller. */
+	@media (width < 40rem) {
+		.story-figure text {
+			font-size: 17px;
+		}
+
+		.story-figure .callout {
+			font-size: 15px;
+		}
+	}
+
+	.story-figure[data-step='1'] :is(.s2, .s3),
+	.story-figure[data-step='2'] .s3,
+	.story-figure:not([data-step='1']) .s1-only {
+		opacity: 0;
+	}
+</style>
+
+<script>
+	const wide = window.matchMedia('(min-width: 64rem)');
+	for (const root of document.querySelectorAll<HTMLElement>('[data-story]')) {
+		const figure = root.querySelector<HTMLElement>('.story-figure');
+		const steps = [...root.querySelectorAll<HTMLElement>('[data-story-step]')];
+		if (!figure || !steps.length) continue;
+
+		// The step is whichever one has passed the middle of the viewport. It is
+		// recomputed on every scroll (throttled to one update per frame), so jumps
+		// (End key, anchors, find-in-page) land on the right step too.
+		const update = () => {
+			const middle = window.innerHeight / 2;
+			figure.dataset.step = steps.filter((s) => s.getBoundingClientRect().top < middle).pop()?.dataset.storyStep ?? '1';
+		};
+		let frame = 0;
+		const onScroll = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(update);
+		};
+		const setup = () => {
+			window.removeEventListener('scroll', onScroll);
+			window.removeEventListener('resize', onScroll);
+			if (!wide.matches) {
+				figure.dataset.step = '3';
+				return;
+			}
+			update();
+			window.addEventListener('scroll', onScroll, { passive: true });
+			window.addEventListener('resize', onScroll);
+		};
+		setup();
+		wide.addEventListener('change', setup);
+	}
+</script>
