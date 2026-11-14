@@ -1,7 +1,7 @@
 ---
 import JsonBlock from '../components/JsonBlock.astro';
-import ShellBlock from '../components/ShellBlock.astro';
 import Section from '../components/Section.astro';
+import ShellBlock from '../components/ShellBlock.astro';
 import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -10,8 +10,8 @@ const command = `npx @emetlabs/trace-grab grab \\
   ./langsmith-export --out ./corpus \\
   --from langsmith`;
 
-// One tool call before and after trace-grab. String values become stable
-// tokens; the tool name, field names, numbers and booleans pass through, as
+// One tool call before and after tokenization. String values become stable
+// tokens. The tool name, field names, numbers and booleans pass through, as
 // the public README documents.
 const before = {
 	name: 'modify_account',
@@ -23,42 +23,126 @@ const after = {
 };
 const changed = ['account', 'actor'];
 
-// Each claim is documented in the trace-grab README, with a way to check it.
-const claims = [
+// Rules that a method could propose from traces, and what each one needs
+// the trace to keep. None of these needs a string value.
+const candidates = [
+	{
+		rule: 'An approval comes before a refund.',
+		needs: 'The order of events, and the names of the tools.',
+	},
+	{
+		rule: 'A refund goes to the account that the approval named.',
+		needs: 'Which values are equal across events.',
+	},
+	{
+		rule: 'A refund is never larger than its order.',
+		needs: 'Numbers.',
+	},
+	{
+		rule: 'No agent deletes an account without a confirmation first.',
+		needs: 'The order of events, and the names of the tools.',
+	},
+];
+
+// Reasons to take part. Each one is a fact about how the collection works.
+const reasons = [
+	{
+		term: 'Real behavior is the scarce thing.',
+		body: 'Inference learns only what the data shows. Real agents take paths and fail in ways that nobody thinks to write down. Those are the cases that a rule must catch.',
+	},
+	{
+		term: 'You decide at every step.',
+		body: 'The tool writes a report of every field and what happened to it. You read it. You can then send the corpus or delete it. Nothing is sent for you.',
+	},
+	{
+		term: 'The values stay with you.',
+		body: 'Tokenization runs on your machine. The key that maps tokens back to values stays there too.',
+	},
+	{
+		term: 'You can check the claims.',
+		body: 'The tool is open source. Each property listed below has a command that tests it.',
+	},
+];
+
+// The risks of sharing traces, what we do about each, and what is left.
+const risks = [
+	{
+		risk: 'String values hold personal or secret data.',
+		done: 'Every string value becomes a token on your machine, by default. The tool keeps no string content unless you name a field to reveal.',
+		left: 'A token is a pseudonym. A person with your salt and key map can reverse it, so both stay on your machine.',
+	},
+	{
+		risk: 'The tool sends data somewhere without you knowing.',
+		done: 'It has no upload command, no telemetry and no postinstall script. Network code exists in one module only.',
+		left: 'You still choose how to send the corpus. That channel is yours.',
+	},
+	{
+		risk: 'Structure and equality reveal patterns.',
+		done: 'We call tokenization what it is: pseudonymization, not anonymization. The threat model lists what it protects against, and what it does not.',
+		left: 'Event order, field names, numbers and timestamps pass through. You can drop a field, or shift all timestamps.',
+	},
+	{
+		risk: 'A tool or span name says something on its own.',
+		done: 'These names pass through on purpose, because every analysis is written in that vocabulary. This is a named exception.',
+		left: 'A sensitive name stays visible unless you drop the field.',
+	},
+	{
+		risk: 'You send something that you did not intend.',
+		done: 'The report lists every field and its disposition before anything leaves. You can delete the corpus instead of sending it.',
+		left: 'The report is only useful if someone reads it.',
+	},
+];
+
+// Each property is documented in the trace-grab README, with a way to check it.
+const properties = [
 	'No Emet Labs endpoint and no upload command.',
 	'No telemetry, analytics or update check.',
-	'No postinstall script; one runtime dependency.',
+	'No postinstall script, and one runtime dependency.',
 	'Published to npm with signed build provenance.',
 ];
 
-// Steps 1-3 happen on the contributor's machine; step 4 is their decision.
+// Steps 1-3 happen on the contributor's machine. Step 4 is their decision.
 const steps = [
 	{ label: 'Export', title: 'Start from a trace export', note: 'LangSmith, OTLP JSON or span-shaped JSONL.' },
-	{ label: 'Run', title: 'Tokenize locally', note: 'The key back to your values stays on your machine.' },
+	{ label: 'Run', title: 'Tokenize locally', note: 'The key that maps tokens back to values stays on your machine.' },
 	{ label: 'Review', title: 'Read report.md', note: 'Every field, and what happened to it.' },
-	{ label: 'Decide', title: 'Send it, or delete it', note: 'Transfer happens only by a method you choose.' },
+	{ label: 'Decide', title: 'Send the corpus, or delete it', note: 'Transfer happens only by a method that you choose.' },
 ];
 
 const resources = [
 	{ href: links.traceGrabDocs, label: 'Documentation' },
+	{ href: links.traceGrabThreatModel, label: 'Threat model' },
 	{ href: links.traceGrabRepo, label: 'Source' },
 	{ href: links.traceGrabNpm, label: 'npm' },
 ];
 
 const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py-4 text-code text-ink sm:px-5 sm:text-small sm:leading-relaxed';
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <BaseLayout
-	title="trace-grab"
-	description="trace-grab is an open-source tool for contributing agent traces to Emet Labs research without sharing their string values. It tokenizes trace exports on your own machine."
+	title="Help us study traces"
+	description="Emet Labs studies how AI agents behave, to learn rules that check them. We ask teams to share agent traces with their string values replaced by tokens. This page explains the problem, why the data helps, and the risks."
 >
 	<header class="wrap grid gap-14 pt-16 pb-8 sm:pt-24 lg:grid-cols-12 lg:gap-8 lg:pt-28 lg:pb-12">
 		<div class="lg:col-span-6">
-			<p class="meta text-dusk">Open source · Apache-2.0 · Node 20+</p>
-			<h1 class="mt-6 text-hero text-ink">trace-grab</h1>
-			<p class="mt-8 max-w-md text-lede text-slate sm:mt-10">
-				Contribute the structure of your agent traces while their string values stay with you. It runs on
-				your machine and replaces each string value with a stable token.
+			<p class="meta text-dusk">Research · Data contribution</p>
+			<h1 class="mt-6 text-hero text-ink">Help us study traces.</h1>
+			<div class="mt-8 max-w-md space-y-5 text-lede text-slate sm:mt-10">
+				<p>
+					We study how AI agents behave, so that we can learn rules that check them. Real traces are the
+					data that we need.
+				</p>
+				<p>
+					Below: the problem, why the data helps, why you might share it, and the risks.
+				</p>
+			</div>
+			<p class="meta mt-8 flex flex-wrap gap-x-6 gap-y-2 text-dusk">
+				<a href="#problem" class="link inline-flex min-h-11 items-center">The problem</a>
+				<a href="#use" class="link inline-flex min-h-11 items-center">How the data helps</a>
+				<a href="#why" class="link inline-flex min-h-11 items-center">Why share</a>
+				<a href="#risks" class="link inline-flex min-h-11 items-center">The risks</a>
+				<a href="#take-part" class="link inline-flex min-h-11 items-center">Take part</a>
 			</p>
 		</div>
 		<div class="min-w-0 lg:col-span-6 lg:self-end">
@@ -67,7 +151,7 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 				{
 					resources.map(({ href, label }) => (
 						<li>
-							<a href={href} class="link inline-flex min-h-11 items-center" target="_blank" rel="noopener noreferrer">
+							<a href={href} class="link inline-flex min-h-11 items-center" {...ext}>
 								{label} ↗<span class="sr-only"> (opens in a new tab)</span>
 							</a>
 						</li>
@@ -77,27 +161,150 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 		</div>
 	</header>
 
-	<Section label="What changes">
+	<Section id="changes" label="What changes">
 		<p class="statement">Equality is preserved. Identity is&nbsp;not.</p>
+		<p class="measure mt-6 text-body text-slate">
+			The same value always gets the same token. So a method can see that two events involve the same
+			account. It cannot see which account.
+		</p>
 		<div class="mt-10 grid gap-6 md:grid-cols-2">
 			{
 				(['before', 'after'] as const).map((side) => (
 					<figure class="min-w-0">
-						<figcaption class="meta mb-3 text-dusk">{side === 'before' ? 'Before' : 'After'}</figcaption>
+						<figcaption class="meta mb-3 text-dusk">{side === 'before' ? 'What you have' : 'What we would receive'}</figcaption>
 						<JsonBlock value={side === 'before' ? before : after} mark={changed} tone={side} class={codeClass} />
 					</figure>
 				))
 			}
 		</div>
 		<p class="measure mt-6 text-small text-slate">
-			Numbers, booleans, timestamps, field names, and tool and span names pass through. Tokenization is
-			pseudonymization, not anonymization: see the{' '}
-			<a href={links.traceGrabThreatModel} class="link text-ink" target="_blank" rel="noopener noreferrer">threat model<span class="sr-only"> (opens in a new tab)</span></a>.
+			Numbers, booleans, timestamps, field names, and tool and span names pass through.
 		</p>
 	</Section>
 
-	<Section label="How to contribute">
-		<div class="grid gap-12 lg:grid-cols-4 lg:gap-8">
+	<Section id="problem" index="01" label="The problem" class="mt-8 sm:mt-12">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Rules for agents are hard to write.{' '}
+				<span class="quiet">We lack real data to learn them from.</span>
+			</p>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					A runtime verification monitor checks rules. People must write each rule in a formal language.
+					This is slow, and people forget rules that matter.
+				</p>
+				<p>
+					An existing system already shows how it behaves. Specification inference studies that behavior
+					and proposes rules. A person then reviews each rule before anyone enforces it.
+				</p>
+				<p>
+					A method like this needs real data. Synthetic traces show only the paths that we thought to
+					write.
+				</p>
+				<p>
+					<a href="/research/#problem-inference" class="link inline-flex min-h-11 items-center font-medium text-ink">
+						The research problem: specification inference →
+					</a>
+				</p>
+			</div>
+		</div>
+	</Section>
+
+	<Section id="use" index="02" label="How the data helps">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				A trace shows order, equality and numbers.{' '}
+				<span class="quiet">A method needs those, not the values.</span>
+			</p>
+			<div class="lg:col-span-7 lg:col-start-6">
+				<p class="measure text-body text-slate">
+					These are rules that a method could propose from traces of a refund workflow. Each one needs a
+					different part of the trace.
+				</p>
+				<dl class="mt-8 border-t border-line">
+					{
+						candidates.map(({ rule, needs }) => (
+							<div class="grid gap-1 border-b border-line py-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,14rem)] sm:gap-8">
+								<dt class="text-body text-ink">{rule}</dt>
+								<dd class="text-small text-slate">
+									<span class="meta block text-dusk">Needs</span>
+									{needs}
+								</dd>
+							</div>
+						))
+					}
+				</dl>
+			</div>
+		</div>
+	</Section>
+
+	<Section id="why" index="03" label="Why share traces">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Teams that run agents are the ones who need rules for them.
+			</p>
+			<dl class="border-t border-line lg:col-span-7 lg:col-start-6">
+				{
+					reasons.map(({ term, body }) => (
+						<div class="border-b border-line py-6">
+							<dt class="font-display text-subhead text-ink">{term}</dt>
+							<dd class="mt-2 text-body text-slate">{body}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</Section>
+
+	<Section id="risks" index="04" label="The risks, and what we do about them">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Tokenization lowers the risk.{' '}
+				<span class="quiet">It does not remove it.</span>
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				Tokenization is pseudonymization, not anonymization. This list says what we do for each risk and
+				what is left. The{' '}
+				<a href={links.traceGrabThreatModel} class="link text-ink" {...ext}>threat model<span class="sr-only"> (opens in a new tab)</span></a>{' '}
+				has the full account.
+			</p>
+		</div>
+
+		<ol class="mt-14 border-t border-line">
+			{
+				risks.map(({ risk, done, left }, i) => (
+					<li class="grid gap-6 border-b border-line py-10 lg:grid-cols-12 lg:gap-8">
+						<div class="lg:col-span-4">
+							<p class="meta text-dusk">{String(i + 1).padStart(2, '0')} / Risk</p>
+							<h3 class="mt-3 text-subhead text-ink">{risk}</h3>
+						</div>
+						<div class="lg:col-span-4">
+							<p class="meta text-dusk">What we do</p>
+							<p class="mt-2 text-small text-slate">{done}</p>
+						</div>
+						<div class="lg:col-span-4">
+							<p class="meta text-dusk">What remains</p>
+							<p class="mt-2 text-small text-slate">{left}</p>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</Section>
+
+	<Section id="take-part" index="05" label="How to take part">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				The tool is a means.{' '}
+				<span class="quiet">It is open source, so you can read it before you run it.</span>
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				The steps run on your machine, apart from the last one. The command is at the top of this page. The
+				tool reads LangSmith exports, OTLP JSON and span-shaped JSONL.
+			</p>
+		</div>
+
+		<div class="mt-16 grid gap-12 lg:grid-cols-4 lg:gap-8">
 			{
 				[
 					{ name: 'On your machine', items: steps.slice(0, 3), start: 1, span: 'lg:col-span-3', list: 'sm:grid-cols-3', rule: 'border-ink' },
@@ -120,21 +327,24 @@ const codeClass = 'overflow-x-auto rounded-sm border border-line bg-mist px-4 py
 				))
 			}
 		</div>
-		<p class="mt-12 text-small text-slate">
-			To contribute, write to <a href={links.email} class="link text-ink">{site.email}</a>. Read{' '}
-			<a href={links.traceGrabTransfer} class="link text-ink" target="_blank" rel="noopener noreferrer">how transfer works<span class="sr-only"> (opens in a new tab)</span></a>{' '}
-			before sending anything.
+
+		<div class="mt-16 grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="meta text-dusk lg:col-span-4">What you can check yourself</p>
+			<div class="lg:col-span-7 lg:col-start-6">
+				<ul class="divide-y divide-line border-y border-line">
+					{properties.map((property) => <li class="py-4 text-body text-ink">{property}</li>)}
+				</ul>
+				<p class="mt-6 text-small text-slate">
+					Each property is documented, with a method to check it, in the{' '}
+					<a href={`${links.traceGrabRepo}#what-it-does-not-do`} class="link text-ink" {...ext}>README<span class="sr-only"> (opens in a new tab)</span></a>.
+				</p>
+			</div>
+		</div>
+
+		<p class="measure mt-16 text-body text-slate">
+			To take part, write to <a href={links.email} class="link text-ink">{site.email}</a>. Read{' '}
+			<a href={links.traceGrabTransfer} class="link text-ink" {...ext}>how transfer works<span class="sr-only"> (opens in a new tab)</span></a>{' '}
+			before you send anything.
 		</p>
 	</Section>
-
-	<Section label="Claims you can check">
-		<ul class="divide-y divide-line border-y border-line">
-			{claims.map((claim) => <li class="py-4 text-lede text-ink">{claim}</li>)}
-		</ul>
-		<p class="mt-6 text-small text-slate">
-			Each is documented, with a way to check it, in the{' '}
-			<a href={`${links.traceGrabRepo}#what-it-does-not-do`} class="link text-ink" target="_blank" rel="noopener noreferrer">README<span class="sr-only"> (opens in a new tab)</span></a>.
-		</p>
-	</Section>
-
 </BaseLayout>

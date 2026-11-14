@@ -2,46 +2,20 @@
 import { links, site } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Fields close to Emet Labs' work. Areas of interest, not job listings.
-const areas = ['Runtime verification', 'Formal methods', 'Distributed systems', 'Agent infrastructure'];
 ---
 
 <BaseLayout
 	title="Careers"
-	description="Work with Emet Labs on verification infrastructure for AI agents."
+	description="Work with Emet Labs on runtime verification for AI agents."
 	footerEmail={false}
 >
-	<header class="wrap pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-28">
+	<header class="wrap pt-16 pb-24 sm:pt-24 sm:pb-32 lg:pt-28 lg:pb-40">
 		<p class="meta text-dusk">Careers</p>
 		<h1 class="mt-6 text-hero text-ink">Work With Us</h1>
-		<div class="mt-8 max-w-2xl sm:mt-10">
-			<div>
-				<p class="text-lede text-slate">
-					If the problem of checking what autonomous systems do interests you, write to us and tell us
-					what you have been building.
-				</p>
-			</div>
-		</div>
+		<p class="mt-8 max-w-2xl text-lede text-slate sm:mt-10">
+			We work on runtime verification, formal methods, distributed systems and agent infrastructure. If
+			checking what autonomous systems do interests you, write to us at{' '}
+			<a href={links.email} class="link text-ink">{site.email}</a> and tell us what you have been building.
+		</p>
 	</header>
-
-	<section class="wrap pb-12 sm:pb-16 lg:pb-20">
-		<div class="tone-ink rounded-md bg-ink px-5 py-12 text-white sm:px-10 sm:py-16 lg:px-14 lg:py-20">
-			<p class="meta text-haze">Write to</p>
-			<a
-				href={links.email}
-				class="group mt-6 inline-flex min-h-11 flex-wrap items-baseline gap-x-4 py-1 font-display text-[length:var(--text-headline)] leading-tight sm:text-[length:var(--text-display)] sm:leading-none tracking-[-0.015em] text-white"
-			>
-				<span class="break-all underline decoration-rule-strong decoration-1 underline-offset-[0.18em] transition-colors group-hover:decoration-white">
-					{site.email}
-				</span>
-				<span aria-hidden="true" class="text-haze transition-transform duration-200 group-hover:translate-x-1">→</span>
-			</a>
-			<div class="mt-16 border-t border-rule pt-6">
-				<p class="meta text-haze">Fields close to our work</p>
-				<ul class="mt-4 grid gap-y-2 text-small text-white sm:flex sm:flex-wrap sm:gap-x-8">
-					{areas.map((a) => <li>{a}</li>)}
-				</ul>
-			</div>
-		</div>
-	</section>
 </BaseLayout>

@@ -1,9 +1,132 @@
 ---
+import Button from '../components/Button.astro';
+import Cite from '../components/Cite.astro';
 import ContactSection from '../components/ContactSection.astro';
+import CrossSystem from '../components/CrossSystem.astro';
 import RuleExample from '../components/RuleExample.astro';
 import Section from '../components/Section.astro';
 import { links } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// The headline facts, readable in five seconds.
+const glance = [
+	{ label: 'Reads', body: 'Events from your services, applications and agents, through OpenTelemetry.' },
+	{ label: 'Checks against', body: 'Rules for the protocols between them. Your team writes the rules. Each rule has a version.' },
+	{ label: 'Answers with', body: 'A verdict for each task: satisfied, violated or inconclusive. Each one has its evidence.' },
+];
+
+// The three steps that the example below shows.
+const steps = [
+	{ label: 'Events come in', body: 'Each system reports what it did, with a time.' },
+	{ label: 'A rule says what must hold', body: 'A precise statement, in plain words and in logic.' },
+	{ label: 'Sentinel gives a verdict', body: 'One for each trace. “Inconclusive” is a verdict too.' },
+];
+
+// The words that this page uses, defined once.
+const terms = [
+	{ term: 'Rule', body: 'A precise statement of what must hold.' },
+	{ term: 'Event', body: 'One thing that happened in one system, with a time.' },
+	{ term: 'Trace', body: 'The events of one task, in order. A task is one job that can cross many systems, such as one refund.' },
+	{ term: 'Verdict', body: 'The answer for one trace and one rule.' },
+];
+
+// What Sentinel is not. Each row names a nearby kind of tool, and the difference.
+const notThese = [
+	{
+		term: 'Monitoring of one service at a time.',
+		body: 'The alerts of each service see only that service. Sentinel checks the rules that span services, applications and agents.',
+	},
+	{
+		term: 'An eval suite.',
+		body: 'Evals run chosen test inputs before release. Sentinel checks the real runs of your agents.',
+	},
+	{
+		term: 'A model that grades a model.',
+		body: 'A judge model gives a score, and a score is an opinion. A monitor gives a verdict. Anyone can compute it again from the same events and the same rule.',
+	},
+	{
+		term: 'A log viewer.',
+		body: 'A log viewer shows what happened. Sentinel says whether the protocol held, and shows the events that it used.',
+	},
+	{
+		term: 'A guardrail prompt.',
+		body: 'A prompt asks the agent to behave. Sentinel does not depend on the agent. It reads the systems that act.',
+	},
+];
+
+// Examples of cross-system protocols. Each one involves more than one system.
+const protocols = [
+	{ between: 'Approvals · Payments', rule: 'A refund is issued only after an approval.' },
+	{ between: 'Checkout · Ledger', rule: 'Every order that checkout accepts reaches the ledger within five minutes.' },
+	{ between: 'Services · Access', rule: 'A service reads customer data only after the access service grants it.' },
+	{ between: 'Agent · Tools', rule: 'An agent deletes an account only after a user confirms.' },
+];
+
+// The path from your systems to a verdict. Each stage is one cell.
+const flow = [
+	{
+		name: 'Your systems',
+		body: 'Services, applications, agents and tools each record what they did. Many teams already send these records as OpenTelemetry spans.',
+		dots: ['bg-ink', 'bg-sys-approvals-d', 'bg-sys-payments-d'],
+	},
+	{
+		name: 'OpenTelemetry',
+		body: 'The open standard that carries those records. Where a system does not emit them, our open-source SDKs add them.',
+		dots: [],
+	},
+	{
+		name: 'Sentinel',
+		body: 'Puts the events in order, and checks each task against your rules. Your team writes the rules. Each rule has a version.',
+		dots: [],
+	},
+	{
+		name: 'Verdicts',
+		body: 'Satisfied, violated or inconclusive. Each one lists the events that it rests on, and says what is missing.',
+		dots: [],
+	},
+];
+
+// Each problem that cross-system monitoring meets, what Sentinel does about it,
+// and where the research behind it is. Sentinel is the entry; Research is the depth.
+const answers = [
+	{
+		topic: 'Across systems',
+		claim: 'Sentinel checks protocols that no single system can.',
+		body: 'The rule “a refund is issued only after an approval” belongs to neither service. Sentinel reads events from all of them, puts them in order, and checks the rule across them. It reads the systems that act, not an agent’s own account of what it did.',
+		href: '/research/#cross',
+		linkLabel: 'Why the rules that matter sit between systems',
+	},
+	{
+		topic: 'Speed',
+		claim: 'The monitor is designed to keep up with the event stream.',
+		body: 'A monitor that falls behind forces a team to sample, and sampling creates gaps in the evidence. We design for the event rate of all your systems at once.',
+		href: '/research/#problem-speed',
+		linkLabel: 'The research problem: fast monitoring',
+	},
+	{
+		topic: 'Evidence',
+		claim: 'Every verdict names its evidence, including what is missing.',
+		body: 'When an event never arrives, Sentinel does not guess. It returns “inconclusive” and shows the gap. A pass with a hole in the evidence would be a wrong answer.',
+		href: '/research/#how',
+		linkLabel: 'How a monitor reaches a verdict',
+	},
+	{
+		topic: 'Rules',
+		claim: 'Your team sets the rules. We are researching how to propose them.',
+		body: 'Writing formal rules is hard. We study how to infer candidate rules from your existing traces, for your team to review before anyone enforces them.',
+		href: '/research/#problem-inference',
+		linkLabel: 'The research problem: specification inference',
+		status: 'In research',
+	},
+	{
+		topic: 'Prevention',
+		claim: 'For a narrow class of rules, Sentinel is being built to stop an action first.',
+		body: 'Some actions cannot be undone, and only some rules can be enforced before an action. We work on which ones.',
+		href: '/research/#area-enforcement',
+		linkLabel: 'The research area: enforcement',
+		status: 'In development',
+	},
+];
 
 // What the evidence view below shows, in plain terms.
 const callouts = [
@@ -43,47 +166,184 @@ const status = [
 
 <BaseLayout
 	title="Sentinel"
-	description="Sentinel checks what AI agents did against rules your team sets, and reports each answer with its evidence. In private development."
+	description="Sentinel is integrated runtime verification for all of your services, applications and AI agents. It checks the protocols between them against rules that your team writes, and gives each verdict with its evidence. In private development."
 	footerEmail={false}
 >
 	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
-		<p class="meta text-dusk">In private development</p>
-		<h1 class="mt-6 text-hero text-ink">Sentinel</h1>
-		<p class="mt-8 max-w-2xl text-lede text-slate sm:mt-10">
-			Runtime verification for AI agents. Your team sets the rules; Sentinel checks what your agents did
-			against them, and shows the evidence behind each answer.
+		<p class="meta text-dusk">Cross-system runtime verification · In private development</p>
+		<h1 class="mt-6 max-w-4xl text-hero text-ink">Sentinel is integrated runtime verification for your services, applications and&nbsp;agents.</h1>
+		<p class="mt-8 max-w-2xl text-lede text-ink sm:mt-10">
+			It monitors them as they run. It checks the protocols between them against rules that your team
+			writes, and gives each verdict with its evidence.
 		</p>
+		<p class="mt-5 max-w-2xl text-body text-slate">
+			Runtime verification is a field of formal methods. A monitor reads the events of a running system, and
+			checks them against a rule written in logic.{' '}
+			<a href="/research/#rv" class="link font-medium text-ink">What is runtime verification? →</a>
+		</p>
+		<div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
+			<Button href={links.email}>Talk to us</Button>
+			<a href="#example" class="link inline-flex min-h-11 items-center text-small font-medium">See an example</a>
+			<a href={`${links.docs}/sentinel`} class="link inline-flex min-h-11 items-center text-small font-medium" target="_blank" rel="noopener noreferrer">
+				Docs ↗<span class="sr-only"> (opens in a new tab)</span>
+			</a>
+		</div>
+
+		<dl class="ticks mt-14 grid gap-px bg-line sm:grid-cols-3">
+			{
+				glance.map(({ label, body }) => (
+					<div class="bg-paper p-6">
+						<dt class="meta text-dusk">{label}</dt>
+						<dd class="mt-4 text-body text-ink">{body}</dd>
+					</div>
+				))
+			}
+		</dl>
 	</header>
 
-	<figure class="wrap mt-12 sm:mt-16 lg:mt-20">
-		<div class="stage rounded-md p-3 sm:p-6 lg:p-10">
-			<picture>
-				<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="900" height="1176" />
-				<img
-					src="/product/sentinel-verdicts.webp"
-					width="2200"
-					height="962"
-					alt="The Sentinel dashboard's Verdicts list: eight answers for three refund rules, marked Satisfy, Violate or Inconclusive."
-					class="block h-auto w-full rounded-frame border border-line shadow-frame"
-					decoding="async"
-					fetchpriority="high"
-				/>
-			</picture>
-		</div>
-	</figure>
-
-	<Section label="One rule, three answers">
+	<Section id="example" index="01" label="How it works, in one example">
 		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
-			<p class="statement lg:col-span-4">
-				The same rule, checked against three records. “Inconclusive” is an answer too.
-			</p>
+			<div class="lg:col-span-4">
+				<p class="statement">
+					A rule, the events of each task, and a verdict for each.
+				</p>
+				<ol class="mt-10 space-y-6">
+					{
+						steps.map(({ label, body }, i) => (
+							<li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-t border-line pt-4">
+								<span class="meta pt-1 text-dusk">{String(i + 1).padStart(2, '0')}</span>
+								<span class="text-small text-slate">
+									<span class="font-medium text-ink">{label}.</span> {body}
+								</span>
+							</li>
+						))
+					}
+				</ol>
+			</div>
 			<div class="lg:col-span-7 lg:col-start-6">
 				<RuleExample />
+				<p class="meta mt-3 text-dusk">Illustration. One rule, three traces, three verdicts.</p>
 			</div>
+		</div>
+
+		<div class="mt-16 grid gap-10 sm:mt-20 lg:grid-cols-12 lg:gap-8">
+			<p class="meta text-dusk lg:col-span-4">Four words, each used one way</p>
+			<dl class="border-t border-line lg:col-span-7 lg:col-start-6">
+				{
+					terms.map(({ term, body }) => (
+						<div class="grid gap-1 border-b border-line py-4 sm:grid-cols-[6rem_minmax(0,1fr)] sm:gap-6">
+							<dt class="meta text-dusk sm:pt-1.5">{term}</dt>
+							<dd class="text-body text-slate">{body}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+		<div class="mt-8 grid lg:grid-cols-12 lg:gap-8">
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				There are three verdicts, not two. A monitor that cannot decide must say so. This is standard in
+				runtime verification.<Cite ids={['bartocci', 'bauer']} base="/research/" /> In the third trace above, the approvals
+				system did not report. A monitor that said “satisfied” there would be guessing.
+			</p>
 		</div>
 	</Section>
 
-	<Section label="An answer, with its evidence" tone="panel">
+	<Section id="not" index="02" label="What Sentinel is, and is not">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Sentinel checks rules.{' '}
+				<span class="quiet">It does not grade, test or log.</span>
+			</p>
+			<dl class="border-t border-line lg:col-span-7 lg:col-start-6">
+				{
+					notThese.map(({ term, body }) => (
+						<div class="grid gap-2 border-b border-line py-6 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-6">
+							<dt class="meta text-dusk sm:pt-1.5">Not</dt>
+							<dd class="text-body text-slate">
+								<span class="font-medium text-ink">{term}</span> {body}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</Section>
+
+	<Section id="across" index="03" label="Across your systems">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				The rules that matter most are protocols between systems.{' '}
+				<span class="quiet">No single service can check them.</span>
+			</p>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					A protocol is an agreement about how systems work together. It says which event comes first,
+					which must follow, and which must never happen. Few protocols live in one codebase. They sit
+					between the approvals service and the payments service, between checkout and the ledger, and
+					between an agent and the tools that it calls.
+				</p>
+				<p>
+					Each system sees only its own events, and an agent’s log is its own account. So no one system
+					can say whether a protocol held. Sentinel reads all of them, puts the events in order, and checks
+					the protocol across them.
+				</p>
+				<p>
+					<a href="/research/#cross" class="link inline-flex min-h-11 items-center font-medium text-ink">
+						The research: runtime verification across systems →
+					</a>
+				</p>
+			</div>
+		</div>
+
+		<div class="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="meta text-dusk lg:col-span-4">Examples of protocols</p>
+			<dl class="border-t border-line lg:col-span-7 lg:col-start-6">
+				{
+					protocols.map(({ between, rule }) => (
+						<div class="grid gap-1 border-b border-line py-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
+							<dt class="meta text-dusk sm:pt-1.5">{between}</dt>
+							<dd class="text-body text-ink">{rule}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+
+		<div class="mt-14 grid gap-6 lg:grid-cols-2">
+			<CrossSystem variant="ok" fig={1} />
+			<CrossSystem variant="gap" fig={2} />
+		</div>
+	</Section>
+
+	<Section id="see" index="04" label="In the product">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				One verdict for each task and each rule.
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				This is the Verdicts list for three refund rules. Each row is one task. Your team can open any row
+				to see the evidence behind it.
+			</p>
+		</div>
+		<figure class="mt-12">
+			<div class="stage rounded-md p-3 sm:p-6 lg:p-10">
+				<picture>
+					<source media="(max-width: 39.99rem)" srcset="/product/sentinel-verdicts-mobile.webp" width="900" height="1176" />
+					<img
+						src="/product/sentinel-verdicts.webp"
+						width="2200"
+						height="962"
+						alt="The Sentinel dashboard's Verdicts list: eight answers for three refund rules, marked Satisfy, Violate or Inconclusive."
+						class="block h-auto w-full rounded-frame border border-line shadow-frame"
+						loading="lazy"
+						decoding="async"
+					/>
+				</picture>
+			</div>
+		</figure>
+	</Section>
+
+	<Section id="evidence" index="05" label="An answer, with its evidence" tone="panel">
 		<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 			<div class="lg:col-span-4">
 				<p class="statement">Built for settings where a wrong answer is worse than no&nbsp;answer.</p>
@@ -125,7 +385,99 @@ const status = [
 		</div>
 	</Section>
 
-	<Section label="Where it stands">
+	<Section id="fits" index="06" label="Where it fits">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Your systems already emit traces.{' '}
+				<span class="quiet">Sentinel reads them.</span>
+			</p>
+			<dl class="border-t border-line lg:col-span-7 lg:col-start-6">
+				<div class="grid gap-1 border-b border-line py-4 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6">
+					<dt class="meta text-dusk sm:pt-1.5">Standard</dt>
+					<dd class="text-body text-slate">
+						<a href="https://opentelemetry.io/" class="link text-ink" target="_blank" rel="noopener noreferrer">OpenTelemetry<span class="sr-only"> (opens in a new tab)</span></a>,
+						the open standard for traces. You add no new format.
+					</dd>
+				</div>
+				<div class="grid gap-1 border-b border-line py-4 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6">
+					<dt class="meta text-dusk sm:pt-1.5">SDKs</dt>
+					<dd class="text-body text-slate">
+						TypeScript, Python, Go, JVM, .NET and Elixir. Open source, under MPL-2.0.{' '}
+						<a href={links.github} class="link text-ink" target="_blank" rel="noopener noreferrer">GitHub ↗<span class="sr-only"> (opens in a new tab)</span></a>
+					</dd>
+				</div>
+				<div class="grid gap-1 border-b border-line py-4 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6">
+					<dt class="meta text-dusk sm:pt-1.5">Research</dt>
+					<dd class="text-body text-slate">
+						A checker is only as good as its events, so we treat integration as a research problem.{' '}
+						<a href="/research/#problem-integration" class="link text-ink">Read more →</a>
+					</dd>
+				</div>
+			</dl>
+		</div>
+
+		<figure class="mt-14">
+			<ol class="ticks grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
+				{
+					flow.map(({ name, body, dots }, i) => (
+						<li class="bg-paper p-6">
+							<p class="meta text-dusk">{String(i + 1).padStart(2, '0')}</p>
+							<p class="mt-6 font-display text-subhead text-ink">{name}</p>
+							<p class="mt-2 text-small text-slate">{body}</p>
+							{dots.length > 0 && (
+								<p class="mt-5 flex gap-2" aria-hidden="true">
+									{dots.map((d) => (
+										<span class:list={['size-2.5 rounded-full', d]} />
+									))}
+								</p>
+							)}
+							{i === 3 && (
+								<p class="mt-5 flex gap-2" aria-hidden="true">
+									<span class="size-2.5 rounded-full bg-ink" />
+									<span class="size-2.5 rounded-full bg-ember" />
+									<span class="size-2.5 rounded-full border border-dashed border-ember" />
+								</p>
+							)}
+						</li>
+					))
+				}
+			</ol>
+			<figcaption class="meta mt-4 text-dusk">Illustration. From your systems to a verdict.</figcaption>
+		</figure>
+	</Section>
+
+	<Section id="problems" index="07" label="Why this is hard, and where the research is">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Checking behavior across systems is hard in five ways.{' '}
+				<span class="quiet">Each one is a research problem.</span>
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				Below, each problem has the answer that Sentinel gives, and a link to the research behind it.
+			</p>
+		</div>
+		<ol class="mt-14 border-t border-line">
+			{
+				answers.map(({ topic, claim, body, href, linkLabel, status }, i) => (
+					<li class="grid gap-5 border-b border-line py-12 sm:py-14 lg:grid-cols-12 lg:gap-8">
+						<p class="meta text-dusk lg:col-span-3 lg:pt-3">
+							{String(i + 1).padStart(2, '0')} / {topic}
+							{status && <span class="mt-2 block text-ink">{status}</span>}
+						</p>
+						<div class="lg:col-span-8 lg:col-start-4">
+							<h3 class="max-w-3xl text-headline text-ink">{claim}</h3>
+							<p class="mt-5 max-w-2xl text-body text-slate">{body}</p>
+							<a href={href} class="link mt-4 inline-flex min-h-11 items-center text-small font-medium text-ink">
+								{linkLabel} →
+							</a>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</Section>
+
+	<Section id="status" index="08" label="Where it stands">
 		<ul class="ticks grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
 			{
 				status.map(({ label, state, body, href, linkLabel }) => (
@@ -150,5 +502,5 @@ const status = [
 		</ul>
 	</Section>
 
-	<ContactSection lead="Do your agents take consequential actions?" follow="Tell us about them." />
+	<ContactSection lead="Do your services, applications and agents depend on one another?" follow="Tell us about the protocols between them." />
 </BaseLayout>

@@ -11,22 +11,25 @@ const work = [
 		href: '/research/',
 		title: 'Research',
 		status: 'Ongoing',
-		body: 'Open problems in specifying, observing and checking systems that act on their own.',
+		body: 'What runtime verification is, how it works, and the open problems it meets in agents.',
 	},
 	{
 		href: '/trace-grab/',
-		title: 'trace-grab',
-		status: 'Open source · Apache-2.0',
-		body: 'A tool for contributing agent traces without sharing their string values.',
+		title: 'Help us study traces',
+		status: 'Research data · Apache-2.0',
+		body: 'Collecting agent traces for specification-inference research, without their string values.',
 	},
 ];
 ---
 
 <BaseLayout footerEmail={false}>
 	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
-		<h1 class="max-w-3xl text-hero text-ink">Know what your agents&nbsp;did.</h1>
+		<h1 class="max-w-3xl text-hero text-ink">Verify what your software&nbsp;did.</h1>
 		<div class="mt-8 flex flex-col gap-8 sm:mt-10 lg:flex-row lg:items-end lg:justify-between">
-			<p class="max-w-xl text-lede text-slate">Emet Labs builds verification infrastructure for AI agents.</p>
+			<p class="max-w-xl text-lede text-slate">
+				Emet Labs builds <a href="/research/#rv" class="link">runtime verification</a>: formal rules for your services,
+				applications and AI agents, checked against what happened.
+			</p>
 			<div class="flex flex-wrap items-center gap-x-7 gap-y-3">
 				<Button href="/sentinel/">See how Sentinel answers</Button>
 				<a href="/research/" class="link inline-flex min-h-11 items-center text-small font-medium">Our research</a>
@@ -44,8 +47,8 @@ const work = [
 		<p class="max-w-4xl font-display text-[length:var(--text-title)] leading-[1.18] tracking-[-0.01em] text-ink text-balance">
 			Agents now act on their own.{' '}
 			<span class="quiet">
-				We build the means to check what they did against the rules people set, and to say plainly
-				when the evidence is not enough.
+				We check what they did against formal rules that people set, and we say plainly when the
+				evidence is not enough.
 			</span>
 		</p>
 	</section>
@@ -60,8 +63,8 @@ const work = [
 				<span class="meta text-dusk">In private development</span>
 				<span class="mt-10 font-display text-[length:var(--text-title)] leading-none text-ink">Sentinel</span>
 				<span class="mt-6 max-w-sm text-body text-slate">
-					Runtime verification for AI agents: rules your team sets, checked against what happened, with the
-					evidence behind each answer.
+					Integrated runtime verification across your services, applications and agents: rules your team sets,
+					checked against what happened, with the evidence behind each answer.
 				</span>
 				<span class="mt-8 inline-flex items-center gap-2 text-small font-medium text-ink lg:mt-auto lg:pt-10">
 					See how Sentinel answers

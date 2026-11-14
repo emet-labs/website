@@ -84,24 +84,25 @@
 
 	--font-weight-display: 400;
 
-	/* Type scale: restrained, with clear steps. Forum (display) has a small
-	   x-height and one weight, so it relies on size and space, not weight;
-	   Public Sans carries text. Each step is roughly 1.25x the next. */
-	--text-hero: clamp(2.5rem, 1.75rem + 2.6vw, 4.25rem); /* 40-68px: page titles */
-	--text-hero--line-height: 1.04;
-	--text-hero--letter-spacing: -0.015em;
-	--text-display: clamp(2.125rem, 1.65rem + 1.7vw, 3.25rem); /* 34-52px */
-	--text-display--line-height: 1.08;
+	/* Type scale: quiet, with headers close to body text. Forum (display) has a
+	   small x-height and one weight, so it relies on size and space, not weight;
+	   Public Sans carries text. The largest step is 52px, and a statement is 26px
+	   at most, against 17px body text. */
+	--text-hero: clamp(2.125rem, 1.75rem + 1.5vw, 3.25rem); /* 34-52px: page titles */
+	--text-hero--line-height: 1.08;
+	--text-hero--letter-spacing: -0.014em;
+	--text-display: clamp(1.75rem, 1.5rem + 1vw, 2.5rem); /* 28-40px */
+	--text-display--line-height: 1.1;
 	--text-display--letter-spacing: -0.012em;
-	--text-title: clamp(1.875rem, 1.55rem + 1.15vw, 2.625rem); /* 30-42px */
-	--text-title--line-height: 1.12;
+	--text-title: clamp(1.5rem, 1.3rem + 0.8vw, 2rem); /* 24-32px */
+	--text-title--line-height: 1.15;
 	--text-title--letter-spacing: -0.01em;
-	--text-headline: clamp(1.5rem, 1.33rem + 0.65vw, 2rem); /* 24-32px: statements */
-	--text-headline--line-height: 1.2;
-	--text-headline--letter-spacing: -0.006em;
-	--text-subhead: clamp(1.25rem, 1.18rem + 0.3vw, 1.4375rem);
-	--text-subhead--line-height: 1.3;
-	--text-lede: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+	--text-headline: clamp(1.3125rem, 1.15rem + 0.5vw, 1.625rem); /* 21-26px: statements */
+	--text-headline--line-height: 1.25;
+	--text-headline--letter-spacing: -0.005em;
+	--text-subhead: clamp(1.0625rem, 1.02rem + 0.25vw, 1.25rem); /* 17-20px */
+	--text-subhead--line-height: 1.35;
+	--text-lede: clamp(1.0625rem, 1.03rem + 0.15vw, 1.1875rem);
 	--text-lede--line-height: 1.6;
 	--text-body: 1.0625rem;
 	--text-body--line-height: 1.65;
@@ -389,5 +390,119 @@
 		& li::marker {
 			color: var(--color-silver);
 		}
+	}
+}
+
+
+/*
+ * Motion. All of it is decoration: nothing is hidden without it, and nothing
+ * moves under prefers-reduced-motion. Rules sit outside any layer so that they
+ * win over utility classes.
+ */
+
+/* Hover states, for devices that can hover. */
+@media (hover: hover) {
+	/* A measured cell warms up when the pointer is on it. */
+	main :is(ul, ol, dl).ticks > :is(li, div) {
+		transition: background-color 280ms var(--ease-out);
+	}
+
+	main :is(ul, ol, dl).ticks > :is(li, div):hover {
+		background-color: var(--color-card);
+	}
+
+	/* A product screenshot lifts a little. */
+	.stage picture img {
+		transition:
+			transform 600ms var(--ease-out),
+			box-shadow 600ms var(--ease-out);
+	}
+
+	.stage:hover picture img {
+		transform: translateY(-4px);
+		box-shadow: 0 2px 4px rgb(26 28 39 / 0.06), 0 22px 44px -14px rgb(26 28 39 / 0.28);
+	}
+}
+
+/* A link underline that thickens, and a header link that draws one. */
+.link {
+	transition:
+		text-decoration-color 200ms var(--ease-out),
+		text-decoration-thickness 200ms var(--ease-out);
+}
+
+.link:hover {
+	text-decoration-thickness: 2px;
+}
+
+.nav-link {
+	background: linear-gradient(currentColor, currentColor) no-repeat left calc(100% - 0.3rem) / 0 1px;
+	transition:
+		background-size 320ms var(--ease-out),
+		color 200ms var(--ease-out);
+}
+
+.nav-link:hover {
+	background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	/* Pages fade into one another. The header stays where it is. */
+	@view-transition {
+		navigation: auto;
+	}
+
+	[data-header] {
+		view-transition-name: site-header;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 240ms;
+		animation-timing-function: var(--ease-out);
+	}
+
+	/* The opening block of each page rises in, one part after the next. */
+	main > header > * {
+		animation: rise 800ms var(--ease-out) both;
+	}
+
+	main > header > :nth-child(2) { animation-delay: 70ms; }
+	main > header > :nth-child(3) { animation-delay: 140ms; }
+	main > header > :nth-child(4) { animation-delay: 210ms; }
+	main > header > :nth-child(5) { animation-delay: 280ms; }
+	main > header > :nth-child(n + 6) { animation-delay: 350ms; }
+
+	/* Below the fold, each block rises as it scrolls into view. Browsers without
+	   scroll-driven animation skip this, and the content just sits there. */
+	@supports (animation-timeline: view()) {
+		main
+			section
+			:is(.statement, .measure, figure, table, dl > div, ol > li, ul > li):not(.trace-field, [data-story] *, nav *, .ticks > *, .ticks *) {
+			animation: reveal linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 45%;
+		}
+
+		/* Grid cells reveal as a group, so a row does not ripple. */
+		main section .ticks {
+			animation: reveal linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 45%;
+		}
+	}
+}
+
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+}
+
+@keyframes reveal {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
 	}
 }

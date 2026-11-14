@@ -15,6 +15,9 @@ bunx astro build    # static output in dist/
 
 - `src/config/site.ts`: site metadata, navigation and external links.
   Change values here rather than in components.
+- `src/config/references.ts`: every citation on the site, in one list. A reference's number is
+  its position in the list, so add new ones at the end. The Research page prints the list, and
+  `Cite` links footnote marks to it.
 - `src/styles/global.css`: design tokens (colour, type scale, radius) and the shared utilities:
   `wrap`, `measure`, `meta` (small, tracked Public Sans caps for labels, times and status), `ticks`
   (corner marks for measured grids), `.statement`, `.quiet` (the quieter half of a two-tone
@@ -29,10 +32,20 @@ bunx astro build    # static output in dist/
     trace-grab. `ShellBlock` adds a copy button when JavaScript is available.
   - `TraceField`: the homepage's Fig. 1, one agent task traced across six systems.
   - `StoryTrace`: the homepage's sticky three-step diagram.
-  - `RuleExample`: "one rule, three answers". It is used on Sentinel only, by design: the
-    homepage carries no product example.
+  - `RuleExample`: one rule, three traces and three verdicts. It is used on Sentinel only, by
+    design: the homepage carries no product example.
+  - `CrossSystem`: Fig. 2 and Fig. 3, a rule between two systems that never call each other,
+    with a monitor outside both. `variant` is `ok` or `gap`. Used on Research and Sentinel.
+  - `Cite`: footnote marks that link to the reference list. Pass reference ids.
 - Every diagram is an illustration and is labelled as one. None shows product output.
-- Motion:
+- Motion (all decoration, and none of it runs under `prefers-reduced-motion`):
+  - Each page's opening block rises in on load. Below the fold, blocks rise as they scroll
+    into view, using CSS scroll-driven animation (`animation-timeline: view()`). Browsers
+    without it show the content as it is.
+  - Pages fade into one another (CSS view transitions). The header stays put.
+  - Hover: measured cells warm up, screenshots lift, links thicken their underline, header
+    links draw one, and buttons rise. These rules sit at the end of `global.css`, outside any
+    layer, so they win over utility classes.
   - Fig. 1 sweeps once on load.
   - The story diagram changes state with scroll on wide screens.
   - The header gains a hairline once the page scrolls.
@@ -48,7 +61,10 @@ bunx astro build    # static output in dist/
   self-hosted from `public/fonts/` as WOFF2 under the SIL Open Font License 1.1. Each font's
   `OFL.txt` sits beside it. Pages make no third-party font requests.
 - The type scale is in `global.css` (`--text-hero` down to `--text-meta`). Forum has one
-  weight, so hierarchy comes from size and space.
+  weight, so hierarchy comes from size and space. Headers stay close to body text: the largest
+  step is 52px, a statement is at most 26px, and body text is 17px.
+- Whitespace: Astro trims the space between a line of text and an inline element that starts
+  the next line. Write `{' '}` at the end of the line before a `<span>` or `<a>`.
 
 ## Colour
 

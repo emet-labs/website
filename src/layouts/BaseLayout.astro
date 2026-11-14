@@ -17,7 +17,7 @@ interface Props {
 
 const { title, description = site.description, noindex = false, footerEmail = true } = Astro.props;
 
-const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — Verification infrastructure for AI agents`;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — Runtime verification for services, applications and AI agents`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImage = new URL('/brand/og-image.png', site.url).href;
 // Bump when the favicon files change.

@@ -1,7 +1,7 @@
 ---
 /**
  * A worked example of the idea behind Emet Labs' work, deliberately generic:
- * one rule, three short records, and the three answers a verifier can honestly
+ * one rule, three short traces, and the three verdicts a verifier can honestly
  * give. It illustrates the problem, not any product's internals, and is
  * labelled as an example.
  *
@@ -45,13 +45,15 @@ const records: { events: Event[]; missing?: string; answer: string; state: 'ok' 
 		<span>
 			<span class="block text-label text-dusk">Rule</span>
 			<span class="mt-1 block text-body text-ink">A refund is issued only after an approval.</span>
+			<span class="mt-2 block text-label text-dusk">In logic</span>
+			<code class="mt-1 block text-code text-ink sm:text-small">forall x. G ( refund(x) -&gt; O approve(x) )</code>
 		</span>
 		<span class="shrink-0 text-label text-dusk">Example</span>
 	</figcaption>
 
 	<div class="hidden grid-cols-[minmax(0,1fr)_10rem] gap-6 px-5 pt-4 text-label text-dusk sm:grid sm:px-6" aria-hidden="true">
-		<span>Record</span>
-		<span>Answer</span>
+		<span>Trace</span>
+		<span>Verdict</span>
 	</div>
 
 	<ol class="divide-y divide-line">
@@ -59,7 +61,7 @@ const records: { events: Event[]; missing?: string; answer: string; state: 'ok' 
 			records.map(({ events, missing, answer, state }, i) => (
 				<li class="grid gap-4 px-5 py-4 sm:py-5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center sm:gap-6 sm:px-6">
 					<div class="flex flex-wrap items-start gap-x-8 gap-y-3">
-						<span class="sr-only">Record {i + 1}:</span>
+						<span class="sr-only">Trace {i + 1}:</span>
 						<ol class="relative flex gap-8 before:absolute before:top-[4.5px] before:right-0 before:left-0 before:h-px before:bg-line-strong">
 							{events.map(({ time, name, flagged }) => (
 								<li class="relative min-w-16">
@@ -95,7 +97,7 @@ const records: { events: Event[]; missing?: string; answer: string; state: 'ok' 
 								state === 'gap' && 'border border-dashed border-ember',
 							]}
 						/>
-						<span><span class="sr-only">Answer: </span>{answer}</span>
+						<span><span class="sr-only">Verdict: </span>{answer}</span>
 					</p>
 				</li>
 			))

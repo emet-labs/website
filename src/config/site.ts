@@ -7,7 +7,7 @@ export const site = {
 	name: 'Emet Labs',
 	url: 'https://emetlabs.ai',
 	description:
-		'Emet Labs builds verification infrastructure for AI agents: establishing what an autonomous system actually did, whether it was allowed to, and how strong the evidence is.',
+		'Emet Labs builds runtime verification infrastructure for services, applications and AI agents: formal rules for the protocols between them, checked against what happened, with the evidence behind every verdict.',
 	email: 'founders@emetlabs.ai',
 } as const;
 
@@ -32,7 +32,7 @@ export interface NavItem {
 export const primaryNav: NavItem[] = [
 	{ href: '/sentinel/', label: 'Sentinel' },
 	{ href: '/research/', label: 'Research' },
-	{ href: '/trace-grab/', label: 'trace-grab' },
+	{ href: '/trace-grab/', label: 'Share traces' },
 	{ href: '/about/', label: 'About' },
 	{ href: links.docs, label: 'Docs', external: true },
 ];
@@ -42,7 +42,7 @@ export const footerNav: NavItem[][] = [
 	[
 		{ href: '/sentinel/', label: 'Sentinel' },
 		{ href: '/research/', label: 'Research' },
-		{ href: '/trace-grab/', label: 'trace-grab' },
+		{ href: '/trace-grab/', label: 'Share traces' },
 		{ href: '/about/', label: 'About' },
 		{ href: '/careers/', label: 'Careers' },
 	],

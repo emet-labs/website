@@ -26,7 +26,7 @@ const isCurrent = (href: string) => {
 								rel={external ? 'noopener noreferrer' : undefined}
 								aria-current={isCurrent(href) ? 'page' : undefined}
 								class:list={[
-									'py-2 underline-offset-[0.5em] transition-colors hover:text-ink',
+									'nav-link py-2 underline-offset-[0.5em] hover:text-ink',
 									isCurrent(href) ? 'text-ink underline decoration-silver' : 'text-slate',
 								]}
 							>
@@ -38,7 +38,7 @@ const isCurrent = (href: string) => {
 					))
 				}
 			</ul>
-			<a href={links.email} class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition-colors hover:border-ink">Contact us</a>
+			<a href={links.email} class="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-small font-medium transition duration-200 hover:border-ink hover:bg-ink hover:text-white">Contact us</a>
 		</nav>
 
 		<button

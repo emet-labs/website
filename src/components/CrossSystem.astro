@@ -1,0 +1,168 @@
+---
+/**
+ * Fig. 2 and Fig. 3: a rule that joins two systems which never call each other,
+ * and a monitor that sits outside both.
+ *
+ * The agent asks the approvals system for an approval, and later asks the
+ * payments system for a refund. The two systems do not talk. The rule "an
+ * approval comes before a refund" lives between them, so no single program can
+ * check it. The monitor reads events from the systems that act, not from the
+ * agent's own account, so the agent lane has no line down to the monitor.
+ *
+ * variant "ok":  both events are reported. The verdict is Satisfied.
+ * variant "gap": the approval is never reported. The verdict is Inconclusive,
+ *                because the monitor cannot tell "no approval" from "not reported".
+ *
+ * Two layouts from one generator: a wide one from 40rem and a portrait one for
+ * phones, with larger text, so labels stay legible at every width. This is an
+ * illustration, labelled as one. It shows no product output.
+ */
+interface Props {
+	variant: 'ok' | 'gap';
+	fig: number;
+}
+
+const { variant, fig } = Astro.props;
+const gap = variant === 'gap';
+
+// Position of each event along the lane, from 0 (start) to 1 (end).
+const at = { ask: 0.12, approve: 0.3, request: 0.52, refund: 0.76 };
+
+const layouts = [
+	{ key: 'wide', cls: 'hidden sm:block', W: 640, H: 372, x0: 24, x1: 616, ys: [58, 134, 210, 306], fs: 17, r: 6.5, vfs: 26 },
+	{ key: 'narrow', cls: 'block sm:hidden', W: 420, H: 500, x0: 16, x1: 404, ys: [62, 176, 290, 420], fs: 21, r: 8, vfs: 32 },
+];
+
+const lanes = [
+	{ name: 'agent', text: 'fill-white' },
+	{ name: 'approvals', text: 'fill-sys-approvals-l' },
+	{ name: 'payments', text: 'fill-sys-payments-l' },
+	{ name: 'sentinel', text: 'fill-white' },
+];
+
+const curve = (x1: number, y1: number, x2: number, y2: number) =>
+	`M${x1} ${y1} C${x1} ${(y1 + y2) / 2} ${x2} ${(y1 + y2) / 2} ${x2} ${y2}`;
+
+const label = gap
+	? 'Illustration: an agent asks the approvals system for an approval, then asks the payments system for a refund. The approval event is never reported, so the monitor cannot decide and returns Inconclusive.'
+	: 'Illustration: an agent asks the approvals system for an approval, then asks the payments system for a refund. Both events are reported to the monitor, which checks that the approval came first and returns Satisfied.';
+---
+
+<figure class="tone-ink rounded-md bg-ink px-4 pt-5 pb-4 text-white sm:px-6 sm:pt-6 sm:pb-5">
+	{
+		layouts.map(({ key, cls, W, H, x0, x1, ys, fs, r, vfs }) => {
+			const x = (f: number) => x0 + f * (x1 - x0);
+			const [yAgent, yApprove, yPay, yMon] = ys;
+			const id = `xs-${fig}-${key}`;
+			return (
+				<svg viewBox={`0 0 ${W} ${H}`} class:list={['block h-auto w-full', cls]} role="img" aria-label={label}>
+					<defs>
+						<marker id={`${id}-arrow`} viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+							<path d="M0 0L10 5L0 10z" class={gap ? 'fill-ember-light' : 'fill-white'} />
+						</marker>
+					</defs>
+
+					{lanes.map(({ name, text }, i) => (
+						<g>
+							<text
+								x={x0}
+								y={ys[i] - fs * 0.8}
+								class:list={[text, 'font-sans font-semibold tracking-[0.09em] uppercase']}
+								font-size={fs - 2}
+							>
+								{name}
+							</text>
+							<line x1={x0} x2={x1} y1={ys[i]} y2={ys[i]} class="stroke-rule" stroke-width="1" />
+						</g>
+					))}
+
+					{/* The agent's calls into the two systems. */}
+					<path d={curve(x(at.ask), yAgent, x(at.approve), yApprove)} fill="none" class="stroke-rule-strong" stroke-width="1.25" />
+					<path d={curve(x(at.request), yAgent, x(at.refund), yPay)} fill="none" class="stroke-rule-strong" stroke-width="1.25" />
+
+					{/* What the monitor reads: the two systems that act, not the agent. */}
+					<line
+						x1={x(at.refund)}
+						x2={x(at.refund)}
+						y1={yPay}
+						y2={yMon}
+						class="stroke-rule-strong"
+						stroke-width="1.25"
+						stroke-dasharray="2 5"
+					/>
+					{!gap && (
+						<line
+							x1={x(at.approve)}
+							x2={x(at.approve)}
+							y1={yApprove}
+							y2={yMon}
+							class="stroke-rule-strong"
+							stroke-width="1.25"
+							stroke-dasharray="2 5"
+						/>
+					)}
+
+					{/* The rule between the two systems. */}
+					<line
+						x1={x(at.approve) + r + 3}
+						y1={yApprove + (yPay - yApprove) * 0.07}
+						x2={x(at.refund) - r - 5}
+						y2={yPay - (yPay - yApprove) * 0.07}
+						class:list={[gap ? 'stroke-ember-light' : 'stroke-white']}
+						stroke-width="1.5"
+						stroke-dasharray="7 5"
+						marker-end={`url(#${id}-arrow)`}
+					/>
+					<text
+						x={(x(at.approve) + x(at.refund)) / 2 - (key === 'wide' ? 4 : 6)}
+						y={(yApprove + yPay) / 2 + fs * 0.35 + 2}
+						text-anchor="middle"
+						class:list={[gap ? 'fill-ember-light' : 'fill-white', 'font-sans']}
+						font-size={fs}
+					>
+						<tspan stroke="var(--color-ink)" stroke-width="6" paint-order="stroke">approval first?</tspan>
+					</text>
+
+					{/* Events. */}
+					<circle cx={x(at.ask)} cy={yAgent} r={r} class="fill-white" />
+					<circle cx={x(at.request)} cy={yAgent} r={r} class="fill-white" />
+					{gap ? (
+						<g>
+							<circle cx={x(at.approve)} cy={yApprove} r={r + 0.5} fill="none" stroke-width="1.75" stroke-dasharray="3 3" class="stroke-ember-light" />
+							<text x={x(at.approve) - r - 8} y={yApprove + fs * 0.35} text-anchor="end" class="fill-ember-light font-sans" font-size={fs}>
+								missing
+							</text>
+						</g>
+					) : (
+						<g>
+							<circle cx={x(at.approve)} cy={yApprove} r={r} class="fill-sys-approvals-l" />
+							<text x={x(at.approve) - r - 8} y={yApprove + fs * 0.35} text-anchor="end" class="fill-white font-sans" font-size={fs}>
+								approve
+							</text>
+						</g>
+					)}
+					<circle cx={x(at.refund)} cy={yPay} r={r} class="fill-sys-payments-l" />
+					<text x={x(at.refund) + r + 8} y={yPay + fs * 0.35} class="fill-white font-sans" font-size={fs}>
+						refund
+					</text>
+
+					{/* The monitor's marks and verdict. */}
+					{!gap && <circle cx={x(at.approve)} cy={yMon} r={r - 1} class="fill-white" />}
+					<circle cx={x(at.refund)} cy={yMon} r={r - 1} class="fill-white" />
+					<text
+						x={x1}
+						y={yMon + vfs + 8}
+						text-anchor="end"
+						class:list={[gap ? 'fill-ember-light' : 'fill-white', 'font-display']}
+						font-size={vfs}
+					>
+						{gap ? 'Inconclusive.' : 'Satisfied.'}
+					</text>
+				</svg>
+			);
+		})
+	}
+	<figcaption class="meta mt-4 border-t border-rule pt-3">
+		Fig. {fig} — Illustration. {gap ? 'The approval is never reported.' : 'Both events are reported.'}
+	</figcaption>
+</figure>

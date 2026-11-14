@@ -1,9 +1,192 @@
 ---
 import ContactSection from '../components/ContactSection.astro';
+import Cite from '../components/Cite.astro';
+import CrossSystem from '../components/CrossSystem.astro';
 import Section from '../components/Section.astro';
+import { refNumber, references } from '../config/references';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Each open question, with the property of agents that makes it hard.
+// Verification results that show formal verification works at scale.
+// `url` is the project's own page. `ref` is its entry in src/config/references.ts.
+const results = [
+	{
+		name: 'seL4',
+		url: 'https://sel4.systems/',
+		ref: 'sel4',
+		body: 'An operating-system microkernel, with a proof that its C code does what its specification says.',
+	},
+	{
+		name: 'CompCert',
+		url: 'https://compcert.org/',
+		ref: 'compcert',
+		body: 'A C compiler, with a proof that the compiled program keeps the meaning of the source.',
+	},
+	{
+		name: 'HACL*',
+		url: 'https://hacl-star.github.io/',
+		ref: 'hacl',
+		body: 'A cryptographic library with proofs of correctness and memory safety. It is used in Firefox.',
+	},
+	{
+		name: 'Signal, 2026',
+		url: 'https://deepmind.google/blog/introducing-alphaproof-code/',
+		ref: 'signal',
+		body: 'Google DeepMind’s AlphaProof Code proved security properties of the code behind Signal’s protocol, such as protection after a device is compromised.',
+	},
+	{
+		name: '123 libraries, 2026',
+		url: 'https://www.anthropic.com/research/formal-verification',
+		ref: 'anthropic',
+		body: 'Anthropic, with Theorem, had Claude prove that 239 entry points in 123 open-source libraries do not crash on inputs up to 64 MB. The proofs cover compiled binaries.',
+	},
+];
+
+// Where formal verification stops.
+const limits = [
+	{ term: 'Cost', body: 'Proofs take expert effort, often more than the code itself.' },
+	{ term: 'Difficulty', body: 'Someone must write a correct specification, and someone must find the proof.' },
+	{
+		term: 'Existing code',
+		body: 'Verification is far easier on a new project that is built for it. On a project that already exists, it is very hard.',
+	},
+	{
+		term: 'Input, output and nondeterminism',
+		body: 'A proof needs a model of the environment. Networks, users, clocks and other programs have no fixed model. Consumer software lives in that world.',
+	},
+];
+
+// What runtime verification gains, and the one thing it gives up.
+const gains = [
+	{ term: 'It fits existing systems.', body: 'You add observation. You do not rewrite the code or prove it again.' },
+	{ term: 'It fits nondeterminism.', body: 'A monitor checks what happened. It does not need to predict what will happen.' },
+	{
+		term: 'It reaches the real environment.',
+		body: 'A rule can speak about timing, about order, and about data in messages from other systems.',
+	},
+	{ term: 'Its limit is stated.', body: 'It covers the runs that it observes. It does not cover every possible run.' },
+];
+
+// The comparison, row by row.
+const compare = [
+	{ row: 'When it checks', fv: 'Before the program runs.', rv: 'While the program runs, or on its recorded trace.' },
+	{ row: 'What it needs', fv: 'The source code, a model of the environment, and a proof.', rv: 'Events, and a rule.' },
+	{ row: 'Existing systems', fv: 'Very hard.', rv: 'Feasible.' },
+	{ row: 'Nondeterminism and I/O', fv: 'Very hard.', rv: 'Natural.' },
+	{ row: 'What it covers', fv: 'Every possible run.', rv: 'Every observed run.' },
+];
+
+// The four problems that cross-system monitoring needs solved.
+const challenges = [
+	{
+		topic: 'Speed',
+		title: 'Monitoring that is very fast.',
+		body: 'A cross-system monitor sees every event from every agent. It must keep up with that stream, with low delay and bounded memory. A slow monitor forces a team to sample, and sampling creates gaps in the evidence.',
+	},
+	{
+		topic: 'Integration',
+		title: 'Monitoring that is easy to add to an existing app.',
+		body: 'A monitor is only as good as its events, and teams will not rewrite their software. We work on SDKs, source weaving (observation code inserted into existing code at build time), and changes to the runtime. Each must keep the system fast. Each must also keep it secure, because instrumentation runs inside the system that it watches.',
+	},
+	{
+		topic: 'Inference',
+		title: 'Specification inference.',
+		body: 'Writing formal rules is hard, so some rules never get written. An existing system already shows how it behaves. We study that behavior, extract candidate rules, let people review them, and then enforce them.',
+	},
+	{
+		topic: 'Languages',
+		title: 'Specification languages.',
+		body: 'A language has many design levers. Two goals matter most. The first is expressivity: how advanced and useful the rules you can write are. The second is efficiency: how fast a monitor can check them. The two goals pull against each other, because a richer rule costs more to check.',
+	},
+];
+
+// The five steps of a monitor, in order.
+const steps = [
+	{
+		name: 'Specify',
+		body: 'People write a rule in a formal language. Temporal logics are common. They speak about order in time: “before”, “always”, “within five minutes”.',
+	},
+	{
+		name: 'Observe',
+		body: 'The system emits events. An event is one observed action, such as a call, a message or a payment. The events of one task, in order, are a trace.',
+	},
+	{
+		name: 'Monitor',
+		body: 'A tool turns the rule into a monitor. A monitor is often a small state machine. It reads each event once and keeps a small state.',
+	},
+	{
+		name: 'Decide',
+		body: 'After each event, the monitor can give a verdict. A verdict is the answer: satisfied, violated or inconclusive.',
+	},
+	{
+		name: 'React',
+		body: 'The team reads the verdict. In some cases the monitor also stops an action before it takes effect. This is runtime enforcement.',
+	},
+];
+
+// The monitor for the worked example, as a transition table.
+const transitions = [
+	{ from: 'Waiting', on: 'approve(x)', to: 'Approved', tone: 'ok' },
+	{ from: 'Waiting', on: 'refund(x), and the approvals source has reported', to: 'Violated', tone: 'bad' },
+	{ from: 'Waiting', on: 'refund(x), and the approvals source has not reported', to: 'Inconclusive', tone: 'gap' },
+	{ from: 'Approved', on: 'any event', to: 'Approved', tone: 'ok' },
+	{ from: 'Waiting or Approved', on: 'the task closes', to: 'Satisfied', tone: 'ok' },
+] as const;
+
+// What runtime verification needs from research. Each area is one open question.
+const areas = [
+	{
+		name: 'Specification languages',
+		question: 'Which languages let people state real rules?',
+		body: 'Temporal logics, regular expressions, state machines and stream languages trade power for readability and speed. A rule that nobody can read is a rule that nobody can review.',
+	},
+	{
+		name: 'Monitorability',
+		question: 'Which rules can a monitor check at all?',
+		body: 'A monitor sees a finite prefix of a run. It can see a refund that breaks a rule the moment it happens. It cannot see that “every request is answered” fails, because the answer may still arrive.',
+		refs: ['bauer'],
+	},
+	{
+		name: 'Monitor synthesis',
+		question: 'How do you build a fast monitor from a rule?',
+		body: 'A monitor must keep up with the event stream and use bounded memory. Algorithms differ in speed, in memory, and in what they cost the system they watch.',
+	},
+	{
+		name: 'Instrumentation',
+		question: 'How do you get events out without changing the run?',
+		body: 'Wrappers, tracing hooks and logs each change the system a little, or miss part of it. A monitor is only as good as its events.',
+	},
+	{
+		name: 'Time and order',
+		question: 'What order do events really have?',
+		body: 'Events come from many machines, and the clocks disagree. Lamport showed that only some pairs of events have a defined order. A monitor must not invent an order that the evidence does not give.',
+		refs: ['lamport'],
+	},
+	{
+		name: 'Data',
+		question: 'How does a rule speak about things?',
+		body: 'Real rules name an order, a user or an account. First-order monitoring lets a rule say “for every order x”, and it tracks each x on its own. The cost grows with the number of x.',
+		refs: ['basin'],
+	},
+	{
+		name: 'Incomplete evidence',
+		question: 'What does a monitor say when events are lost?',
+		body: 'Classic runtime verification assumes a full trace. Real systems drop, sample and delay events. A sound monitor must tell a rule that holds from a rule that it cannot check.',
+	},
+	{
+		name: 'Enforcement',
+		question: 'Which rules can a system enforce before an action?',
+		body: 'Schneider showed that a monitor that can only stop a run enforces safety rules, and no more. A refund can be blocked. An email cannot be recalled.',
+		refs: ['schneider'],
+	},
+	{
+		name: 'Verified monitors',
+		question: 'Who checks the monitor?',
+		body: 'A monitor with a bug gives wrong verdicts with full confidence. Some research groups prove their monitors correct in a proof assistant.',
+	},
+];
+
+// Where agents break the assumptions of classic runtime verification.
+// Each open question has one cause in the way agents work.
 const questions = [
 	{
 		topic: 'Specify',
@@ -13,7 +196,7 @@ const questions = [
 	{
 		topic: 'Evidence',
 		question: 'When is evidence enough for a verdict, and how do you say it is not?',
-		why: 'Telemetry is sampled, delayed and sometimes lost, and an agent’s own log is a weak witness.',
+		why: 'Telemetry is sampled, delayed and sometimes lost. An agent’s own log is a weak witness.',
 	},
 	{
 		topic: 'Order',
@@ -26,31 +209,435 @@ const questions = [
 		why: 'Some actions cannot be undone.',
 	},
 	{
-		topic: 'Data',
-		question: 'How do you learn from production traces without collecting the sensitive values inside them?',
-		why: 'Real traces are what a verifier has to handle, and they carry customer data.',
+		topic: 'Infer',
+		question: 'How do you extract rules from the behavior of a system that already exists?',
+		why: 'Writing formal rules by hand is hard, so some rules never get written. Traces show how a system really behaves, and a method can propose rules from them for people to review. Real traces carry customer data, so the collection must keep the values private.',
 		href: '/trace-grab/',
-		linkLabel: 'See trace-grab',
+		linkLabel: 'Help us study traces',
 	},
 ];
+
+// What we hold to be true, and build on.
+const commitments = [
+	{
+		term: 'People own the rules.',
+		body: 'A rule is formal, it has a version, and the team that owns the agent can read it. A verdict names the exact version of the rule that it used.',
+	},
+	{
+		term: 'Independent systems are the witnesses.',
+		body: 'We trust events from the systems that act, such as payments and approvals. We do not trust the agent’s account of itself.',
+	},
+	{
+		term: 'Inconclusive is a verdict.',
+		body: 'If evidence is missing, the verdict says so and names the gap. A “pass” with a hole in the evidence is a wrong answer.',
+	},
+	{
+		term: 'A verdict has limits, and we state them.',
+		body: 'A verdict speaks about one run, under the evidence that the monitor saw. It does not prove that an agent is safe.',
+	},
+];
+
 ---
 
 <BaseLayout
 	footerEmail={false}
 	title="Research"
-	description="The research behind Emet Labs: runtime verification for autonomous AI agents, and the open questions in specifying, observing and controlling systems that act on their own."
+	description="From formal methods to runtime verification: how Emet Labs checks what autonomous AI agents did across systems, and the research problems that make it possible."
 >
 	<header class="wrap pt-16 sm:pt-24 lg:pt-28">
 		<h1 class="text-hero text-ink">Research</h1>
 		<p class="mt-8 max-w-2xl text-lede text-slate sm:mt-10">
-			Verification for systems that act on their own. Autonomous agents strain the assumptions of
-			runtime verification; <span class="text-ink">these are the questions we are working on.</span>
+			Runtime verification checks what a system did against a rule written in logic.{' '}
+			<span class="text-ink">We study how to do it for AI agents, across systems.</span>
 		</p>
-
+		<p class="meta mt-8 flex flex-wrap gap-x-6 gap-y-2 text-dusk">
+			<a href="#formal" class="link inline-flex min-h-11 items-center">Formal methods</a>
+			<a href="#rv" class="link inline-flex min-h-11 items-center">Runtime verification</a>
+			<a href="#cross" class="link inline-flex min-h-11 items-center">Across systems</a>
+			<a href="#challenges" class="link inline-flex min-h-11 items-center">Problems we work on</a>
+			<a href="#areas" class="link inline-flex min-h-11 items-center">Research areas</a>
+		</p>
 	</header>
 
-	<div class="wrap mt-16 sm:mt-20">
-		<ol class="border-t border-line">
+	<Section id="formal" index="01" label="Formal methods" class="mt-8 sm:mt-12">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Formal methods show, by logic, that software is correct.{' '}
+				<span class="quiet">That is how we can trust it at scale.</span>
+			</p>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					Formal methods use mathematical logic to state what software must do, and to check that it
+					does so. A specification has one exact meaning. A check gives the same answer every time.
+				</p>
+				<p>
+					This gives us a basis for confidence. We want to use powerful tools at scale. Some of these
+					tools, such as AI agents, we cannot fully trust. A logical check does not depend on trust.
+				</p>
+			</div>
+		</div>
+
+		<div class="mt-16 grid gap-10 sm:mt-20 lg:grid-cols-12 lg:gap-8">
+			<div class="lg:col-span-4">
+				<p class="meta text-dusk">The standard form</p>
+				<h3 class="mt-4 text-headline text-ink">Formal verification</h3>
+			</div>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					Engineers write a specification in logic. A verifier checks, before the program runs, that the
+					code conforms to it. A verified program matches its specification on every input. The bugs
+					that the specification rules out cannot occur.
+				</p>
+				<p>Industry uses it, and it has reached large systems.</p>
+			</div>
+		</div>
+
+		<ul class="ticks mt-10 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-5">
+			{
+				results.map(({ name, url, ref, body }) => (
+					<li class="flex flex-col bg-paper p-6">
+						<p class="font-display text-subhead text-ink">
+							<a href={url} class="link" target="_blank" rel="noopener noreferrer">
+								{name} ↗<span class="sr-only"> (opens in a new tab)</span>
+							</a>
+							<Cite ids={[ref]} />
+						</p>
+						<p class="mt-3 text-small text-slate">{body}</p>
+					</li>
+				))
+			}
+		</ul>
+		<p class="measure mt-6 text-small text-dusk">
+			The 2026 entries follow their public announcements. Read the original posts for the exact scope of each
+			proof. In both, AI wrote the proofs. This lowers the cost of proof. It does not change what a proof
+			can reach.
+		</p>
+	</Section>
+
+	<Section id="limits" index="02" label="Where formal verification stops">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				A proof needs a program that holds still.{' '}
+				<span class="quiet">An agent does not hold still.</span>
+			</p>
+			<dl class="border-t border-line lg:col-span-7 lg:col-start-6">
+				{
+					limits.map(({ term, body }) => (
+						<div class="grid gap-2 border-b border-line py-6 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6">
+							<dt class="meta text-dusk sm:pt-1.5">{term}</dt>
+							<dd class="text-body text-slate">{body}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+		<div class="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					AI agents are the extreme case. An agent chooses each action by sampling from a model, with
+					tool results that nobody controls. The same task takes a different path each time.
+				</p>
+				<p>
+					You can verify the code around an agent. You cannot prove, in the classic sense, that the
+					agent’s own choices obey a rule.
+				</p>
+			</div>
+		</div>
+	</Section>
+
+	<Section id="rv" index="03" label="Runtime verification">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Runtime verification keeps the logic.{' '}
+				<span class="quiet">It moves the check from the proof to the run.</span>
+			</p>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					Runtime verification (RV) is a field of formal methods.<Cite ids={['bartocci', 'leucker']} /> A monitor reads the events of a real
+					run, in order. It checks them against a specification in logic, and it gives a verdict. There
+					is no proof about the program, so the program can be any program.
+				</p>
+				<p>This is the trade that makes RV useful for the software that people ship today.</p>
+			</div>
+		</div>
+
+		<ul class="ticks mt-14 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
+			{
+				gains.map(({ term, body }) => (
+					<li class="bg-paper p-6">
+						<p class="font-display text-subhead text-ink">{term}</p>
+						<p class="mt-3 text-small text-slate">{body}</p>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="mt-14 overflow-hidden rounded-sm border border-line">
+			<table class="w-full text-left text-small">
+				<caption class="sr-only">Formal verification and runtime verification, compared</caption>
+				<thead class="meta bg-mist text-dusk">
+					<tr>
+						<th scope="col" class="w-1/4 px-4 py-3 font-semibold"><span class="sr-only">Property</span></th>
+						<th scope="col" class="px-4 py-3 font-semibold">Formal verification</th>
+						<th scope="col" class="px-4 py-3 font-semibold text-ink">Runtime verification</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-line align-top">
+					{
+						compare.map(({ row, fv, rv }) => (
+							<tr>
+								<th scope="row" class="px-4 py-3.5 font-medium text-ink">{row}</th>
+								<td class="px-4 py-3.5 text-slate">{fv}</td>
+								<td class="bg-card px-4 py-3.5 text-ink">{rv}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+	</Section>
+
+	<Section id="cross" index="04" label="Across systems">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Our work is runtime verification across systems.{' '}
+				<span class="quiet">The rules that matter most sit between them.</span>
+			</p>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					Most RV tools watch one program. An agent acts through many systems: a model, tools, an
+					approvals service, a payments system, a ledger. These systems seldom call each other. They
+					interact through shared state, and through the agent.
+				</p>
+				<p>
+					Take the rule “a refund is issued only after an approval”. It belongs to neither service.
+					No single program sees both events, so it is hard to write the rule in code. It is harder
+					to make an agent obey it, because the agent never sees the rule.
+				</p>
+				<p>
+					A monitor outside the agents sees the events of all the systems. It checks the rule across
+					them. It also has to handle two facts of distributed systems. Clocks disagree, and some
+					events never arrive. The verdict must say when either fact limits the answer.
+				</p>
+			</div>
+		</div>
+
+		<div class="mt-14 grid gap-6 lg:grid-cols-2">
+			<CrossSystem variant="ok" fig={2} />
+			<CrossSystem variant="gap" fig={3} />
+		</div>
+	</Section>
+
+	<Section id="challenges" index="05" label="Problems we work on">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Four problems decide whether cross-system monitoring can work in practice.
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				Each problem is open. Each needs both research and engineering.
+			</p>
+		</div>
+		<ol class="mt-14 border-t border-line">
+			{
+				challenges.map(({ topic, title, body }, i) => (
+					<li id={`problem-${topic.toLowerCase()}`} class="grid gap-5 border-b border-line py-12 sm:py-14 lg:grid-cols-12 lg:gap-8">
+						<p class="meta text-dusk lg:col-span-3 lg:pt-3">
+							{String(i + 1).padStart(2, '0')} / {topic}
+						</p>
+						<div class="lg:col-span-8 lg:col-start-4">
+							<h3 class="max-w-3xl text-headline text-ink">{title}</h3>
+							<p class="mt-5 max-w-2xl text-body text-slate">{body}</p>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</Section>
+
+	<Section id="how" index="06" label="How a monitor works">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Five steps, from a rule to a verdict.{' '}
+				<span class="quiet">Each step is a field of research.</span>
+			</p>
+			<ol class="border-t border-line lg:col-span-7 lg:col-start-6">
+				{
+					steps.map(({ name, body }, i) => (
+						<li class="grid gap-2 border-b border-line py-6 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-6">
+							<p class="meta text-dusk sm:pt-1.5">
+								{String(i + 1).padStart(2, '0')} / {name}
+							</p>
+							<p class="text-body text-slate">{body}</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+
+		<figure class="mt-16 rounded-md border border-line bg-card sm:mt-20">
+			<figcaption class="flex items-baseline justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
+				<span>
+					<span class="block text-label text-dusk">Worked example</span>
+					<span class="mt-1 block text-body text-ink">A refund is issued only after an approval.</span>
+				</span>
+				<span class="shrink-0 text-label text-dusk">Illustration</span>
+			</figcaption>
+
+			<div class="grid gap-8 p-5 sm:p-6 lg:grid-cols-12 lg:gap-10">
+				<div class="min-w-0 lg:col-span-5">
+					<p class="meta text-dusk">The rule, in logic</p>
+					<pre class="mt-3 overflow-x-auto rounded-sm bg-mist px-4 py-4 text-code text-ink sm:text-small"><code>forall x.
+  G ( refund(x) -&gt; O approve(x) )</code></pre>
+					<p class="mt-4 text-small text-slate">
+						<code class="text-ink">x</code> is an order. <code class="text-ink">G</code> means “at every
+						moment”. <code class="text-ink">O</code> means “at some earlier moment”. For every order, at
+						every moment, a refund needs an approval before it.
+					</p>
+					<p class="mt-4 text-small text-slate">
+						The monitor keeps one small state for each order. It reads each event once. A source has
+						reported when the monitor knows all of that source’s events for the task.
+					</p>
+				</div>
+
+				<div class="min-w-0 lg:col-span-7">
+					<p class="meta text-dusk">The monitor, as a state machine</p>
+					<svg
+						viewBox="0 0 760 340"
+						class="mt-3 hidden h-auto w-full text-ink sm:block"
+						aria-hidden="true"
+						font-family="var(--font-sans)"
+					>
+						<defs>
+							<marker id="rv-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+								<path d="M0 0L10 5L0 10z" fill="currentColor"></path>
+							</marker>
+						</defs>
+
+						<!-- Start arrow and the Waiting state -->
+						<line x1="14" y1="190" x2="58" y2="190" stroke="currentColor" stroke-width="2" marker-end="url(#rv-arrow)"></line>
+						<circle cx="110" cy="190" r="50" fill="none" stroke="currentColor" stroke-width="2"></circle>
+						<text x="110" y="196" text-anchor="middle" font-size="20" fill="currentColor">Waiting</text>
+
+						<!-- Waiting to Approved -->
+						<line x1="156" y1="176" x2="412" y2="99" stroke="currentColor" stroke-width="2" marker-end="url(#rv-arrow)"></line>
+						<text x="250" y="116" text-anchor="middle" font-size="18" fill="currentColor">approve(x)</text>
+						<circle cx="440" cy="90" r="28" fill="none" stroke="currentColor" stroke-width="2"></circle>
+						<path d="M427 64 C 418 22, 462 22, 453 64" fill="none" stroke="currentColor" stroke-width="2" marker-end="url(#rv-arrow)"></path>
+						<text x="440" y="20" text-anchor="middle" font-size="16" fill="currentColor">any event</text>
+						<text x="484" y="86" font-size="20" fill="currentColor">Approved</text>
+						<text x="484" y="108" font-size="16" class="fill-dusk">then Satisfied when the task closes</text>
+
+						<!-- Waiting to Violated -->
+						<line x1="160" y1="190" x2="410" y2="190" stroke="currentColor" stroke-width="2" marker-end="url(#rv-arrow)"></line>
+						<text x="285" y="176" text-anchor="middle" font-size="18" fill="currentColor">refund(x)</text>
+						<circle cx="440" cy="190" r="28" class="fill-ember stroke-ember" stroke-width="2"></circle>
+						<text x="484" y="186" font-size="20" class="fill-ember">Violated</text>
+						<text x="484" y="208" font-size="16" class="fill-dusk">approvals reported, none found</text>
+
+						<!-- Waiting to Inconclusive -->
+						<line x1="156" y1="204" x2="412" y2="281" stroke="currentColor" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#rv-arrow)"></line>
+						<text x="250" y="264" text-anchor="middle" font-size="18" fill="currentColor">refund(x)</text>
+						<circle cx="440" cy="290" r="28" fill="none" class="stroke-ember" stroke-width="2" stroke-dasharray="5 4"></circle>
+						<text x="484" y="286" font-size="20" class="fill-ember">Inconclusive</text>
+						<text x="484" y="308" font-size="16" class="fill-dusk">approvals did not report</text>
+					</svg>
+
+					<div class="mt-4 overflow-hidden rounded-sm border border-line">
+						<table class="w-full text-left text-small">
+							<caption class="sr-only">Transitions of the monitor for the refund rule</caption>
+							<thead class="meta bg-mist text-dusk">
+								<tr>
+									<th scope="col" class="px-3 py-2.5 font-semibold sm:px-4">In state</th>
+									<th scope="col" class="px-3 py-2.5 font-semibold sm:px-4">On</th>
+									<th scope="col" class="px-3 py-2.5 font-semibold sm:px-4">Next</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-line align-top">
+								{
+									transitions.map(({ from, on, to, tone }) => (
+										<tr>
+											<td class="px-3 py-3 text-ink sm:px-4">{from}</td>
+											<td class="px-3 py-3 text-slate sm:px-4">{on}</td>
+											<td class:list={['px-3 py-3 font-medium sm:px-4', tone === 'ok' ? 'text-ink' : 'text-ember']}>
+												{to}
+											</td>
+										</tr>
+									))
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</figure>
+
+		<div class="mt-16 grid gap-10 sm:mt-20 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">Three verdicts, and each one is an answer.</p>
+			<div class="measure space-y-6 text-body text-slate lg:col-span-7 lg:col-start-6">
+				<p>
+					<span class="font-medium text-ink">Satisfied</span> means that the run followed the rule. For a
+					rule that says “always”, a monitor can only say this when the task has closed. Until then, the
+					next event can still break the rule.
+				</p>
+				<p>
+					<span class="font-medium text-ink">Violated</span> means that the run broke the rule. The
+					verdict is final. No later event can undo it.
+				</p>
+				<p>
+					<span class="font-medium text-ink">Inconclusive</span> means that the monitor cannot decide.
+					Two different causes give this verdict. The run can be unfinished, so the events so far fit
+					both outcomes. Or the evidence can be incomplete, so an event that matters is missing.
+					Classic RV models the first cause. Agents force us to model the second.
+				</p>
+			</div>
+		</div>
+	</Section>
+
+	<Section id="areas" index="07" label="Research areas">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Runtime verification joins logic, algorithms and systems.{' '}
+				<span class="quiet">These nine areas carry it.</span>
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				The field has met every year since 2001 at the International Conference on Runtime Verification.
+				The areas below are where a working monitor needs a research answer. Each area has a question
+				that people still argue about.
+			</p>
+		</div>
+
+		<ol class="ticks mt-14 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-3">
+			{
+				areas.map(({ name, question, body, refs }, i) => (
+					<li id={`area-${name.toLowerCase().replace(/ /g, '-')}`} class="flex flex-col bg-paper p-6">
+						<p class="meta text-dusk">
+							{String(i + 1).padStart(2, '0')} / {name}
+						</p>
+						<h3 class="mt-8 text-subhead text-ink">{question}</h3>
+						<p class="mt-3 text-small text-slate">
+							{body}
+							{refs && <Cite ids={refs} />}
+						</p>
+					</li>
+				))
+			}
+		</ol>
+	</Section>
+
+	<Section id="agents" index="08" label="Open questions for agents">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Runtime verification grew up on programs that follow their own code.{' '}
+				<span class="quiet">Agents do not.</span>
+			</p>
+			<p class="measure text-body text-slate lg:col-span-7 lg:col-start-6">
+				Classic RV assumes a program with fixed paths, one clock, a complete trace and a program that
+				reports on itself. An agent breaks each of these. These are the open questions that follow, and
+				the ones we work on.
+			</p>
+		</div>
+
+		<ol class="mt-14 border-t border-line">
 			{
 				questions.map(({ topic, question, why, href, linkLabel }, i) => (
 					<li id={`q${i + 1}`} class="grid gap-5 border-b border-line py-12 sm:py-16 lg:grid-cols-12 lg:gap-8">
@@ -58,7 +645,7 @@ const questions = [
 							{String(i + 1).padStart(2, '0')} / {topic}
 						</p>
 						<div class="lg:col-span-8 lg:col-start-4">
-							<h2 class="max-w-3xl text-headline text-ink">{question}</h2>
+							<h3 class="max-w-3xl text-headline text-ink">{question}</h3>
 							<p class="mt-5 max-w-2xl text-body text-slate">{why}</p>
 							{href && (
 								<a href={href} class="link mt-4 inline-flex min-h-11 items-center text-small font-medium text-ink">
@@ -70,13 +657,68 @@ const questions = [
 				))
 			}
 		</ol>
-	</div>
+	</Section>
 
-	<Section label="Foundations">
-		<p class="statement max-w-3xl">
-			We build on runtime verification and the monitoring of distributed systems, and prefer guarantees
-			that can be stated&nbsp;precisely.
-		</p>
+	<Section id="approach" index="09" label="What we do differently" tone="panel">
+		<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+			<div class="lg:col-span-5">
+				<p class="statement">
+					A common approach asks a second model to grade the first.{' '}
+					<span class="quiet">A grade is an opinion. A verdict is a result.</span>
+				</p>
+				<p class="mt-8 max-w-md text-body text-haze">
+					Anyone can compute a verdict again from the same events and the same rule, and get the same
+					answer. That is the property that a team needs when an agent moves money.
+				</p>
+			</div>
+			<ol class="lg:col-span-6 lg:col-start-7">
+				{
+					commitments.map(({ term, body }, i) => (
+						<li class="border-t border-rule py-6 first:pt-4">
+							<p class="meta text-haze">{String(i + 1).padStart(2, '0')}</p>
+							<p class="mt-3 text-body text-haze">
+								<span class="font-medium text-white">{term}</span> {body}
+							</p>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</Section>
+
+	<Section id="references" index="10" label="References and further reading">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">Start with the surveys. Then read the results that this page names.</p>
+			<div class="space-y-12 lg:col-span-7 lg:col-start-6">
+				{
+					[
+						{ name: 'Formal verification at scale', group: 'verification' },
+						{ name: 'Runtime verification and its foundations', group: 'rv' },
+					].map(({ name, group }) => (
+						<div>
+							<p class="meta text-dusk">{name}</p>
+							<ul class="mt-4 border-t border-line">
+								{references
+									.filter((r) => r.group === group)
+									.map(({ id, cite, title, where, href }) => (
+										<li id={`ref-${refNumber(id)}`} class="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-b border-line py-5">
+											<span class="meta pt-1.5 text-dusk">{refNumber(id)}</span>
+											<span>
+												<a href={href} class="link text-body text-ink" target="_blank" rel="noopener noreferrer">
+													{title} ↗<span class="sr-only"> (opens in a new tab)</span>
+												</a>
+												<span class="mt-1 block text-small text-slate">
+													{cite}. <span class="text-dusk">{where}.</span>
+												</span>
+											</span>
+										</li>
+									))}
+							</ul>
+						</div>
+					))
+				}
+			</div>
+		</div>
 	</Section>
 
 	<ContactSection lead="Working on these problems?" follow="We would like to compare notes." />

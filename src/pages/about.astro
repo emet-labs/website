@@ -1,6 +1,37 @@
 ---
 import ContactSection from '../components/ContactSection.astro';
+import Section from '../components/Section.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Founder {
+	name: string;
+	role: string;
+	/** What the person studies or has built. Short and factual. */
+	bio: string;
+	/** Optional. Path under /public, for example /team/name.webp. Square, at least 640px. */
+	photo?: string;
+	links?: { label: string; href: string }[];
+}
+
+const founders: Founder[] = [
+	{
+		name: 'Abhishek Pujara',
+		role: 'Cofounder',
+		bio: 'Studies mathematics and computer science at Northeastern University.',
+	},
+	{
+		name: 'Arnab Ghosh',
+		role: 'Cofounder',
+		bio: 'Studies mathematics and computer science at Cornell University.',
+		links: [{ label: 'arnabg.me', href: 'https://www.arnabg.me' }],
+	},
+	{
+		name: 'Smyan Sengupta',
+		role: 'Cofounder',
+		bio: 'Studies mathematics and computer science at Northeastern University.',
+		links: [{ label: 'smyan.dev', href: 'https://www.smyan.dev' }],
+	},
+];
 ---
 
 <BaseLayout
@@ -18,8 +49,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	<div class="wrap grid gap-14 pb-8 sm:pb-12 lg:grid-cols-12 lg:gap-8">
 		<div class="measure text-lede text-slate lg:order-last lg:col-span-6 lg:col-start-4">
 			<p>
-				Emet Labs is a research and engineering company building verification infrastructure for AI
-				agents.
+				Emet Labs is a research and engineering company building runtime verification infrastructure for
+				services, applications and AI agents.
+			</p>
+			<p class="mt-6">
+				Our field is <a href="/research/#rv" class="link text-ink">runtime verification</a>. A monitor
+				checks what a system did against a rule written in logic. A verdict names its evidence, and
+				says so when the evidence is not enough.
 			</p>
 			<p class="mt-6">
 				As agents start to take actions with consequences, the people responsible for them need a record
@@ -33,7 +69,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<dt class="meta text-dusk">Work</dt>
 				<dd class="mt-1 text-ink">
 					<a href="/sentinel/" class="link">Sentinel</a>, <a href="/research/" class="link">research</a>{' '}
-					and <a href="/trace-grab/" class="link">trace-grab</a>
+					and <a href="/trace-grab/" class="link">trace sharing</a>
 				</dd>
 			</div>
 			<div>
@@ -47,5 +83,47 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		</dl>
 	</div>
 
-	<ContactSection lead="Engineers, researchers, teams deploying agents:" follow="we are glad to talk." channels />
+	<Section id="founders" label="Founders">
+		<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+			<p class="statement lg:col-span-4">
+				Three cofounders.{' '}
+				<span class="quiet">Mathematics and computer science.</span>
+			</p>
+			<ul class="ticks grid gap-px bg-line sm:grid-cols-3 lg:col-span-8 lg:col-start-5">
+				{
+					founders.map(({ name, role, bio, photo, links: profile }) => (
+						<li class="flex flex-col bg-paper p-6">
+							{photo && (
+								<img
+									src={photo}
+									alt=""
+									width="640"
+									height="640"
+									loading="lazy"
+									decoding="async"
+									class="mb-6 aspect-square w-full rounded-frame border border-line object-cover"
+								/>
+							)}
+							<p class="meta text-dusk">{role}</p>
+							<h3 class="mt-6 text-subhead text-ink">{name}</h3>
+							<p class="mt-3 text-small text-slate">{bio}</p>
+							{profile && profile.length > 0 ? (
+								<p class="mt-auto flex flex-wrap gap-x-5 pt-4 text-small font-medium">
+									{profile.map(({ label, href }) => (
+										<a href={href} class="link inline-flex min-h-11 items-center text-ink" target="_blank" rel="noopener noreferrer">
+											{label} ↗<span class="sr-only"> (opens in a new tab)</span>
+										</a>
+									))}
+								</p>
+							) : (
+								<span class="mt-auto block pt-4" />
+							)}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</Section>
+
+	<ContactSection lead="Engineers, researchers and teams that deploy agents." follow="Talk to us." channels />
 </BaseLayout>
