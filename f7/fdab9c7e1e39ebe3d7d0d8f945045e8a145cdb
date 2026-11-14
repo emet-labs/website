@@ -1,0 +1,19 @@
+.github/workflows/astro.yml
+  s_e9bfbe2fb262c1::t_9106782a407332 34,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f7fdab9c7e1e39ebe3d7d0d8f945045e8a145cdb",
+  "prompts": {},
+  "sessions": {
+    "s_e9bfbe2fb262c1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "04179526-90ec-451a-9c14-0344667f24da",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Arnab Ghosh <arnabcare21@gmail.com>"
+    }
+  }
+}
